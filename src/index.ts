@@ -1,13 +1,18 @@
-import { pad0, hhmm } from "./format";
+import { hhmm } from "./format";
 import { Commit, ProjectMap, getProjectMap, DailyHours, getDaily } from "./gtm";
-// import * as Chart from "chart.js"
 import { Chart } from "chart.js"
-// import * as DataLabels  from 'chartjs-plugin-datalabels';
 import { Context } from 'chartjs-plugin-datalabels';
 import moment from 'moment';
 
-// const colorSchemes = Chart.colorschemes;
-// console.log(colorSchemes);
+import 'chartjs-plugin-colorschemes';
+
+
+const colorSchemes = Chart.defaults.global.plugins!.colorschemes
+console.log(colorSchemes);
+
+const colorSchemes2 = (Chart as any).colorschemes
+
+console.log(colorSchemes2);
 
 function fetchjson(url: string, f: (response: any) => any) {
   fetch(`${url}${window.location.search}`)
