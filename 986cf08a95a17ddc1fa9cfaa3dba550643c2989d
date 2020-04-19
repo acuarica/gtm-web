@@ -1,0 +1,12 @@
+[ver:1,total:11040]
+src/index.ts:8021,1587308400:510,1587312000:2690,1587315600:3095,1587319200:1236,1587322800:290,1587326400:200,m
+index.html:1395,1587308400:30,1587312000:70,1587315600:185,1587319200:220,1587322800:800,1587326400:90,m
+src/components.ts:774,1587319200:744,1587326400:30,m
+.gtm/terminal.app:440,1587308400:210,1587315600:90,1587319200:140,r
+node_modules/chartjs-plugin-datalabels/types/index.d.ts:195,1587322800:175,1587326400:20,r
+package.json:80,1587308400:60,1587326400:20,m
+src/settings.ts:50,1587315600:50,d
+node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.js:30,1587322800:30,r
+package-lock.json:30,1587308400:30,r
+node_modules/chartjs-plugin-datalabels/types/context.d.ts:15,1587322800:15,r
+node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js:10,1587322800:10,r
