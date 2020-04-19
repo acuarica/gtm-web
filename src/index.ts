@@ -1,18 +1,12 @@
 import { hhmm } from "./format";
 import { Commit, ProjectMap, getProjectMap, DailyHours, getDaily } from "./gtm";
+import { DropdownSelect, UI } from "./components";
 import { Chart } from "chart.js"
-import { Context } from 'chartjs-plugin-datalabels';
+import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 import moment from 'moment';
-
 import 'chartjs-plugin-colorschemes';
 
-
-const colorSchemes = Chart.defaults.global.plugins!.colorschemes
-console.log(colorSchemes);
-
-const colorSchemes2 = (Chart as any).colorschemes
-
-console.log(colorSchemes2);
+const ui = new UI()
 
 function fetchjson(url: string, f: (response: any) => any) {
   fetch(`${url}${window.location.search}`)
@@ -20,11 +14,12 @@ function fetchjson(url: string, f: (response: any) => any) {
     .then(f)
 }
 
-function newchart(chartid: string, config: Chart.ChartConfiguration) {
-  const canvas = <HTMLCanvasElement>document.getElementById(chartid)
-  const ctx = canvas.getContext('2d')
-  new Chart(ctx!, config)
-}
+const colorSelector = new DropdownSelect('color-scheme-select', [
+  "tableau.Tableau10",
+  "office.Excel16",
+  "tableau.Tableau20",
+  "tableau.Classic10",
+  "tableau.ColorBlind10"])
 
 fetchjson('/data/commits', (res: Commit[]) => {
   const projects: ProjectMap = getProjectMap(res)
@@ -39,8 +34,12 @@ fetchjson('/data/commits', (res: Commit[]) => {
     data.push(p.total)
     commitcounts.push(p.commitcount)
   }
-  newchart('projectTotalsChart', {
+
+  Chart.defaults.global.plugins!.colorschemes.scheme = colorSelector.value
+
+  ui.newChart('projectTotalsChart', {
     type: 'doughnut',
+    plugins: [ChartDataLabels],
     data: {
       datasets: [{
         data: data,
@@ -52,9 +51,7 @@ fetchjson('/data/commits', (res: Commit[]) => {
       title: { display: true, text: 'Reported time by Project' },
       legend: { position: 'left', },
       plugins: {
-        colorschemes: { scheme: 'office.BlackTie6' },
         datalabels: {
-          display: 'auto',
           formatter: (value: number, _context: Context) => hhmm(value),
         },
       },
@@ -75,7 +72,7 @@ fetchjson('/data/commits', (res: Commit[]) => {
   const max = moment();
   const min = max.clone().subtract(7, 'day');
 
-  newchart('activityChart', {
+  ui.newChart('activityChart', {
     type: 'matrix',
     data: {
       datasets: Object.keys(projects).map(p => {
@@ -139,7 +136,6 @@ fetchjson('/data/commits', (res: Commit[]) => {
         datalabels: {
           display: false,
         },
-        colorschemes: { scheme: 'office.BlackTie6' },
         zoom: {
           pan: {
             enabled: true,
@@ -157,4 +153,12 @@ fetchjson('/data/commits', (res: Commit[]) => {
       }
     }
   });
+
+  colorSelector.whenChange((select: HTMLSelectElement) => {
+    ui.charts.forEach(chart => {
+      chart.options.plugins!.colorschemes.scheme = select.value;
+      chart.update();
+    })
+  })
+
 });
