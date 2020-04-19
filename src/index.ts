@@ -4,7 +4,9 @@ import { DropdownSelect, UI } from "./components";
 import { Chart } from "chart.js"
 import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 import moment from 'moment';
+import 'chartjs-chart-matrix';
 import 'chartjs-plugin-colorschemes';
+import 'chartjs-plugin-zoom';
 
 const ui = new UI()
 
@@ -28,28 +30,55 @@ fetchjson('/data/commits', (res: Commit[]) => {
   const labels: string[] = []
   const data: number[] = []
   const commitcounts: number[] = []
+  const ds = []
   for (const pname in projects) {
     const p = projects[pname]
     labels.push(pname)
     data.push(p.total)
     commitcounts.push(p.commitcount)
+    ds.push({
+      data: [p.total],
+      label: pname,
+    })
   }
+
+  let div = document.getElementById('test') as HTMLDivElement
+  for (const c of res) {
+    let a = document.createElement('a')
+    a.text = c.Subject
+    a.href = '#'
+    let idiv = document.createElement('div')
+    idiv.appendChild(a)
+    div.appendChild(idiv)
+  }
+
 
   Chart.defaults.global.plugins!.colorschemes.scheme = colorSelector.value
 
   ui.newChart('projectTotalsChart', {
-    type: 'doughnut',
+    // type: 'doughnut',
+    type: 'horizontalBar',
     plugins: [ChartDataLabels],
     data: {
-      datasets: [{
-        data: data,
-      }],
-      labels: labels,
+      // datasets32: [{
+      //   data: data,
+      // }],
+      datasets: ds,
+      // labels: labels,
+      labels: ["Total"],
     },
     options: {
       maintainAspectRatio: false,
       title: { display: true, text: 'Reported time by Project' },
-      legend: { position: 'left', },
+      legend: { position: 'top', },
+      scales: {
+
+        xAxes: [{
+          stacked: true,
+
+        }],
+        yAxes: [{ stacked: true }]
+      },
       plugins: {
         datalabels: {
           formatter: (value: number, _context: Context) => hhmm(value),
@@ -81,9 +110,9 @@ fetchjson('/data/commits', (res: Commit[]) => {
           data: projects[p].timelineMatrix,
           borderWidth: 1,
           width: function (ctx: Context) {
-            const value = (<{ v: number }>ctx.dataset.data![ctx.dataIndex]!).v;
-            const levels = 10;
-            const alpha = Math.floor(value * levels / 3600) / levels + (1 / levels);
+            // const value = (<{ v: number }>ctx.dataset.data![ctx.dataIndex]!).v;
+            // const levels = 10;
+            // const alpha = Math.floor(value * levels / 3600) / levels + (1 / levels);
             var a = ctx.chart.chartArea;
             return (a.right - a.left) / 25;
           },
@@ -98,7 +127,8 @@ fetchjson('/data/commits', (res: Commit[]) => {
       }),
     },
     options: {
-      maintainAspectRatio: false,
+      // maintainAspectRatio: false,
+      title: { display: true, text: 'Reported timeline by Project' },
       scales: {
         xAxes: [{
           type: 'time',

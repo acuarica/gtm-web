@@ -8,15 +8,10 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-
     <a class="navbar-brand" href="#"><img src="https://cloud.githubusercontent.com/assets/630550/19619834/43c460dc-9835-11e6-8652-1c8fff91cf02.png" width="82" height="34" class="d-inline-block align-top" alt="">Dashboard</a>
-
-
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
@@ -42,7 +37,6 @@
         <li class="nav-item">
           <select class="form-control" id="color-scheme-select"></select>
         </li>
-
       </ul>
       <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -51,21 +45,13 @@
     </div>
   </nav>
   <main role="main" class="container">
-    <div style="width:40%;height:400px;">
-      <canvas id="projectTotalsChart"></canvas>
-    </div>
-    <div style="height:200px;">
-      <canvas id="activityChart"></canvas>
-    </div>
+    <div><canvas id="projectTotalsChart"></canvas></div>
+    <div style="width: 70%;"><canvas id="activityChart"></canvas></div>
+    <div id="test"></div>
     <!-- <div style="width:40%;height:200px;">
     <canvas id="projectStatusChart" width="200" height="200"></canvas>
   </div> -->
   </main>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.js"></script> -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.4"></script> -->
   <script src="./src/index.ts"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix/dist/chartjs-chart-matrix.js"></script>
 </body>
 </html>

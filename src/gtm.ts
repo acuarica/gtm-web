@@ -1,16 +1,26 @@
 import moment from "moment";
 import { pad0 } from "./format";
 
+///
+export type Seconds = number
+
 /// 
 export type Commit = {
+  Author: string,
+  Date: string,
+  When: string,
+  Hash: string,
+  Subject: string,
   Project: string,
+  Message: string,
   Note: {
     Files: {
-      Timeline: { [id: number]: number },
-      TimeSpent: number,
+      SourceFile: string,
+      TimeSpent: Seconds,
+      Timeline: { [id: number]: Seconds },
+      Status: string,
     }[]
   }
-  When: string,
 }
 
 ///
