@@ -1,0 +1,39 @@
+{
+  "name": "gtmweb",
+  "version": "0.0.1",
+  "description": "Git Time Metric Web Console",
+  "keywords": [
+    "gtm",
+    "git",
+    "time",
+    "tracker",
+    "productivity"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^7.1.3",
+    "@types/chart.js": "^2.9.19",
+    "@types/node": "^13.13.0",
+    "browserify": "^16.5.1",
+    "chart.js": "^2.9.3",
+    "chartjs-plugin-datalabels": "^0.7.0",
+    "moment": "^2.24.0",
+    "parcel-bundler": "^1.12.4",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
