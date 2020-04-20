@@ -1,6 +1,6 @@
 import { hhmm } from "./format";
 import { Commit, ProjectMap, getProjectMap, DailyHours, getDaily } from "./gtm";
-import { DropdownSelect, UI } from "./components";
+import { DropdownSelect, UI, getCommitElement } from "./components";
 import { Chart } from "chart.js"
 import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 import moment from 'moment';
@@ -28,13 +28,11 @@ fetchjson('/data/commits', (res: Commit[]) => {
   const daily: DailyHours = getDaily(projects)
 
   const labels: string[] = []
-  const data: number[] = []
   const commitcounts: number[] = []
   const ds = []
   for (const pname in projects) {
     const p = projects[pname]
     labels.push(pname)
-    data.push(p.total)
     commitcounts.push(p.commitcount)
     ds.push({
       data: [p.total],
@@ -42,14 +40,15 @@ fetchjson('/data/commits', (res: Commit[]) => {
     })
   }
 
-  let div = document.getElementById('test') as HTMLDivElement
-  for (const c of res) {
-    let a = document.createElement('a')
-    a.text = c.Subject
-    a.href = '#'
-    let idiv = document.createElement('div')
-    idiv.appendChild(a)
-    div.appendChild(idiv)
+  let div = document.getElementById('commitsHolder') as HTMLDivElement
+  for (const c of res.sort((c, d) => c.When >= d.When ? 1 : -1)) {
+    // let a = document.createElement('a')
+    // a.text = c.Subject
+    // a.href = '#'
+    // let idiv = document.createElement('div')
+    // idiv.appendChild(a)
+    // div.appendChild(idiv)
+    div.insertAdjacentHTML('afterend', getCommitElement(c))
   }
 
 
@@ -65,19 +64,23 @@ fetchjson('/data/commits', (res: Commit[]) => {
       // }],
       datasets: ds,
       // labels: labels,
-      labels: ["Total"],
+      labels: ['Total by\nProject'.split('\n')],
     },
     options: {
       maintainAspectRatio: false,
       title: { display: true, text: 'Reported time by Project' },
       legend: { position: 'top', },
       scales: {
-
         xAxes: [{
+          display: false,
           stacked: true,
-
         }],
-        yAxes: [{ stacked: true }]
+        yAxes: [{
+          stacked: true,
+          gridLines: {
+            display: false,
+          },
+        }]
       },
       plugins: {
         datalabels: {
@@ -153,10 +156,10 @@ fetchjson('/data/commits', (res: Commit[]) => {
           time: { unit: 'day', parser: 'YYYY-MM-DD' },
           ticks: {
             // reverse: true,
-            callback: function (value, index, values: any) {
+            callback: function (_value, index, values: any) {
               const d = moment((values as { value: any }[])[index].value).format('YYYY-MM-DD');
               const date = daily[d];
-              return date === undefined ? value : hhmm(date.total);
+              return date === undefined ? "" : hhmm(date.total);
             }
           },
           gridLines: { drawOnChartArea: false, },
