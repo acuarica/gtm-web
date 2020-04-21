@@ -11,7 +11,7 @@ let commitsDataUrl: string
 if (process.env.NODE_ENV === 'development') {
   commitsDataUrl ='/data/commits'
 } else {
-  commitsDataUrl ='/data-commits.json' 
+  commitsDataUrl ='/gtm-web/data-commits.json' 
 }
 
 const ui = new UI()
