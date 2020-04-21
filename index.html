@@ -3,35 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <title>gtm Dashboard</title>
 </head>
 <body>
-  <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6">
-    <div class="flex items-center flex-shrink-0 text-white mr-6">
-      <img src="https://cloud.githubusercontent.com/assets/630550/19619834/43c460dc-9835-11e6-8652-1c8fff91cf02.png" width="82" height="34">
-      <span class="font-semibold text-xl tracking-tight">Dashboard</span>
-    </div>
-    <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-      <div class="text-sm lg:flex-grow">
-        <a href="#" class="block mt-4 lg:inline-block lg:mt-0 mr-4">(test)</a>
-      </div>
-      <div><select id="color-scheme-select"></select></div>
+  <nav class="navbar navbar-expand-xl navbar-light" style="background-color: #e3f2fd;">
+    <div class="container-xl">
+      <a class="navbar-brand" href="#">
+        <img src="https://cloud.githubusercontent.com/assets/630550/19619834/43c460dc-9835-11e6-8652-1c8fff91cf02.png" width="82" height="34">
+        Dashboard
+      </a>
+      <span id="reportrange" class="navbar-text" style="cursor: pointer">
+        <i class="fa fa-calendar"></i>&nbsp;
+        <span></span> <i class="fa fa-caret-down"></i>
+      </span>
+      <form class="form-inline">
+        <select id="color-scheme-select"></select>
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
     </div>
   </nav>
-  <div class="grid grid-cols-12 gap-4 bg-beige-400">
-    <div class="col-span-8">
-      <div style="width: 100%;">
-        <canvas id="projectTotalsChart"></canvas>
+  <div class="container-xl">
+    <div class="row">
+      <div class="col-7">
+        <div style="width: 100%;">
+          <canvas id="projectTotalsChart"></canvas>
+        </div>
+        <div style="width: 100%; height: 600px;">
+          <canvas id="activityChart"></canvas>
+        </div>
       </div>
-      <div style="width: 100%;">
-        <canvas id="activityChart"></canvas>
+      <div class="col-5">
+        <div class="list-group list-group-flush">
+          <div id="commitsPlaceholder"></div>
+        </div>
       </div>
-    </div>
-    <div class="col-span-4">
-      <div id="commitsHolder"></div>
     </div>
   </div>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script> -->
   <script src="./src/index.ts"></script>
 </body>
 </html>

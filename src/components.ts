@@ -40,16 +40,16 @@ export class DropdownSelect {
 }
 
 export function getCommitElement(commit: Commit): string {
-  return `<div class="shadow-md m-2 p-3">
-            <span><span class="border rounded-full py-2 px-6">${commit.Author}</span>
-            ${commit.When}
-            </span>
-            <h6>${commit.Subject}</h6>
-            <p>${commit.Message.replace('\n', '<br>')}</p>
-            <div>
-              <ul class="">
-                ${commit.Note.Files.map(file => `<li class="">${file.SourceFile}</li>`).join('')}
-              </ul>
+  const id = `collapse-${commit.Hash}`
+  return `<a class="list-group-item list-group-item-action btn btn-primary" href="#${id}" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="${id}">
+            <div class="d-flex w-100 justify-content-between">
+              <small class="mb-2 text-muted">${commit.Author}</small>
+              <small class="text-muted">${commit.When}</small>
             </div>
-          </div>`
+            <h6 class="mb-1">${commit.Subject}</h6>
+            <small class="mb-1">${commit.Message.replace('\n', '<br>')}</small>
+            <div class="collapse" id="${id}">
+              <ul>${commit.Note.Files.map(file => `<li class="">${file.SourceFile}</li>`).join('')}</ul>
+            </div>
+          </a>`
 }
