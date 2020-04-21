@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <title>gtm Dashboard</title>
   <style>
+    @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 
     .sidebar {
       overflow-y: auto;
@@ -34,11 +35,6 @@
   </nav>
   <div class="container-fluid">
     <div class="row">
-      <nav class="sidebar col-5" style="background-color: bisque;">
-        <div class="list-group list-group-flush">
-          <div id="commitsPlaceholder"></div>
-        </div>
-      </nav>
       <div class="col-7">
         <div style="width: 100%;">
           <canvas id="projectTotalsChart"></canvas>
@@ -47,8 +43,27 @@
           <canvas id="activityChart"></canvas>
         </div>
       </div>
+      <nav class="sidebar col-5" style="background-color: bisque;">
+        <div class="list-group list-group-flush">
+          <div id="commitsPlaceholder"></div>
+        </div>
+      </nav>
     </div>
   </div>
   <script src="./src/index.ts"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fafafa;
+    }
+
+    p {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1em;
+      font-weight: 300;
+      line-height: 1.7em;
+      color: #999;
+    }
+  </style>
 </body>
 </html>
