@@ -7,6 +7,13 @@ import 'chartjs-plugin-colorschemes';
 import 'daterangepicker'
 import { projectTotalsChartConfig, activityChartConfig } from "./charts";
 
+let commitsDataUrl: string
+if (process.env.NODE_ENV === 'development') {
+  commitsDataUrl ='/data/commits'
+} else {
+  commitsDataUrl ='/data-commits.json' 
+}
+
 const ui = new UI()
 
     $(function() {
@@ -51,7 +58,7 @@ const colorSelector = new DropdownSelect('color-scheme-select', [
   "tableau.Classic10",
   "tableau.ColorBlind10"])
 
-fetchjson('/data/commits', (res: Commit[]) => {
+fetchjson(commitsDataUrl, (res: Commit[]) => {
   const projects: ProjectMap = getProjectMap(res)
   const daily: DailyHours = getDaily(projects)
 
