@@ -3,9 +3,7 @@ import { DropdownSelect, UI, getCommitElement } from "./components";
 import { Chart } from "chart.js"
 import moment from 'moment';
 import $ from 'jquery';
-import 'bootstrap'
 import 'chartjs-plugin-colorschemes';
-import 'chartjs-plugin-zoom';
 import 'daterangepicker'
 import { projectTotalsChartConfig, activityChartConfig } from "./charts";
 
@@ -57,18 +55,6 @@ fetchjson('/data/commits', (res: Commit[]) => {
   const projects: ProjectMap = getProjectMap(res)
   const daily: DailyHours = getDaily(projects)
 
-  const labels: string[] = []
-  const commitcounts: number[] = []
-  const ds = []
-  for (const pname in projects) {
-    const p = projects[pname]
-    labels.push(pname)
-    commitcounts.push(p.commitcount)
-    ds.push({
-      data: [p.total],
-      label: pname,
-    })
-  }
 
   const e = document.getElementById('commitsPlaceholder')
   for (const c of res.sort((c, d) => c.When >= d.When ? 1 : -1)) {
@@ -79,7 +65,7 @@ fetchjson('/data/commits', (res: Commit[]) => {
 
   Chart.defaults.global.plugins!.colorschemes.scheme = colorSelector.value
 
-  ui.newChart('projectTotalsChart', projectTotalsChartConfig(ds, commitcounts));
+  ui.newChart('projectTotalsChart', projectTotalsChartConfig(projects));
   ui.newChart('activityChart', activityChartConfig(projects, daily));
 
   colorSelector.whenChange((select: HTMLSelectElement) => {
@@ -90,3 +76,9 @@ fetchjson('/data/commits', (res: Commit[]) => {
   })
 
 });
+
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.css'
+import '@fortawesome/fontawesome-free/css/all.css'
+import 'chartjs-chart-matrix';
+import 'chartjs-plugin-zoom';

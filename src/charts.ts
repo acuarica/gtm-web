@@ -3,10 +3,22 @@ import { ChartConfiguration } from "chart.js";
 import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 import { hhmm } from "./format";
 import { ProjectMap, DailyHours } from "./gtm";
-import 'chartjs-chart-matrix';
 
 ///
-export function projectTotalsChartConfig(datasets: { data: number[], label: string }[], commitCounts: number[]): ChartConfiguration {
+export function projectTotalsChartConfig(projects: ProjectMap): ChartConfiguration {
+  const labels: string[] = []
+  const commitCounts: number[] = []
+  const datasets = []
+  for (const pname in projects) {
+    const p = projects[pname]
+    labels.push(pname)
+    commitCounts.push(p.commitcount)
+    datasets.push({
+      data: [p.total],
+      label: pname,
+    })
+  }
+
   return {
     type: 'horizontalBar',
     plugins: [ChartDataLabels],
@@ -54,7 +66,7 @@ export function projectTotalsChartConfig(datasets: { data: number[], label: stri
 }
 
 ///
-export function activityChartConfig(projects: ProjectMap, daily: DailyHours) {
+export function activityChartConfig(projects: ProjectMap, daily: DailyHours): ChartConfiguration {
   return {
     type: 'matrix',
     data: {
