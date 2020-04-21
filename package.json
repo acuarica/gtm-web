@@ -38,7 +38,7 @@
   },
   "scripts": {
     "dev": "parcel watch index.html",
-    "build": "parcel build index.html --public-url ./gtm-web/",
+    "build": "parcel build index.html --public-url /gtm-web/",
     "watch": "tsc --watch",
     "prepare": "npm run build",
     "test": "echo \"Warning: no test specified\" && exit 0"
