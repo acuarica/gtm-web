@@ -14,7 +14,15 @@
   "files": [
     "dist"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@popperjs/core": "^2.3.3",
+    "@types/daterangepicker": "^3.0.1",
+    "@types/jquery": "^3.3.35",
+    "bootstrap": "^4.4.1",
+    "daterangepicker": "^3.0.5",
+    "popper": "^1.0.1",
+    "popper.js": "^1.16.1"
+  },
   "devDependencies": {
     "@types/chart.js": "^2.9.19",
     "chart.js": "^2.9.3",
