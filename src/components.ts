@@ -1,5 +1,6 @@
 import { Chart } from "chart.js"
-import { Commit } from "./gtm"
+import { Commit, timeSpent } from "./gtm"
+import { hhmm } from "./format"
 
 export class UI {
 
@@ -43,13 +44,26 @@ export function getCommitElement(commit: Commit): string {
   const id = `collapse-${commit.Hash}`
   return `<a class="list-group-item list-group-item-action btn btn-primary" href="#${id}" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="${id}">
             <div class="d-flex w-100 justify-content-between">
-              <small class="mb-2 text-muted">${commit.Author}</small>
-              <small class="text-muted">${commit.When}</small>
+              <div class="mb-2">
+                <span class="badge badge-pill badge-light text-muted">${commit.Author}</span>
+              </div>
+              <small class="mb-2 text-muted">
+                <i class="fas fa-clock"></i>
+                ${hhmm(timeSpent(commit))}
+              </small>
+              <small class="text-muted">
+                <i class="fa fa-calendar"></i>&nbsp;
+                ${commit.When}
+              </small>
             </div>
             <h6 class="mb-1">${commit.Subject}</h6>
             <small class="mb-1">${commit.Message.replace('\n', '<br>')}</small>
             <div class="collapse" id="${id}">
-              <ul>${commit.Note.Files.map(file => `<li class="">${file.SourceFile}</li>`).join('')}</ul>
+              <ul>${commit.Note.Files.map(file => 
+                `<li class="small">${file.SourceFile} &nbsp; 
+                  <i class="fas fa-clock"></i> ${hhmm(file.TimeSpent)}
+                </li>`)
+                .join('')}</ul>
             </div>
           </a>`
 }

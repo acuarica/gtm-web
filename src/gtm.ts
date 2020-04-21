@@ -24,6 +24,15 @@ export type Commit = {
 }
 
 ///
+export function timeSpent(commit: Commit): number {
+  let value = 0
+  for (const file of commit.Note.Files) {
+    value += file.TimeSpent
+  }
+  return value
+}
+
+///
 export type Project = {
   name: string,
   total: number,
