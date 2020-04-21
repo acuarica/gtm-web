@@ -1,0 +1,8 @@
+[ver:1,total:1080]
+.gtm/terminal.app:400,1587470400:180,1587474000:220,r
+data-commits.json:155,1587474000:155,m
+src/index.ts:150,1587470400:150,m
+package.json:150,1587470400:30,1587474000:120,m
+../../../.git/modules/#forks/gtm/modules/web/COMMIT_EDITMSG:120,1587474000:120,r
+dist/data-commits.js:60,1587474000:60,d
+dist/data-commits.json:45,1587474000:45,r
