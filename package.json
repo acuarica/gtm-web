@@ -38,10 +38,10 @@
   },
   "scripts": {
     "dev": "parcel watch index.html",
-    "build": "parcel build index.html",
+    "build": "parcel build index.html --public-url ./gtm-web/",
     "watch": "tsc --watch",
     "prepare": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "echo \"Warning: no test specified\" && exit 0"
   },
   "author": "Luis Mastrangelo",
   "license": "ISC"
