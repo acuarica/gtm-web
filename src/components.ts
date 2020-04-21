@@ -45,6 +45,9 @@ export function getCommitElement(commit: Commit): string {
   return `<a class="list-group-item list-group-item-action btn btn-primary" href="#${id}" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="${id}">
             <div class="d-flex w-100 justify-content-between">
               <div class="mb-2">
+                <span class="badge badge-pill badge-primary">${commit.Project}</span>
+              </div>
+              <div class="mb-2">
                 <span class="badge badge-pill badge-light text-muted">${commit.Author}</span>
               </div>
               <small class="mb-2 text-muted">
