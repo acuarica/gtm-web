@@ -3,178 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
-
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-  <style>
-    @media screen and (max-width: 1200px) {
-      .container {
-        width: 96%;
-      }
-    }
-    @media screen and (min-width: 1200px) {
-      .container {
-        width: 85%;
-      }
-    }
-  </style>
-
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
   <title>gtm Dashboard</title>
-
 </head>
 <body>
-
-  <!-- <div class="container" style="background-color: cadetblue;">
-    Page Content goes here
-  </div> -->
-  <div class="row">
-    <div class="col s12 m5">
-      <div class="card-panel teal">
-        <span class="white-text">I am a very simple card. I am good at containing small bits of information.
-        I am convenient because I require little markup to use effectively. I am similar to what is called a panel in other frameworks.
-        </span>
+  <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6">
+    <div class="flex items-center flex-shrink-0 text-white mr-6">
+      <img src="https://cloud.githubusercontent.com/assets/630550/19619834/43c460dc-9835-11e6-8652-1c8fff91cf02.png" width="82" height="34">
+      <span class="font-semibold text-xl tracking-tight">Dashboard</span>
+    </div>
+    <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+      <div class="text-sm lg:flex-grow">
+        <a href="#" class="block mt-4 lg:inline-block lg:mt-0 mr-4">(test)</a>
+      </div>
+      <div><select id="color-scheme-select"></select></div>
+    </div>
+  </nav>
+  <div class="grid grid-cols-12 gap-4 bg-beige-400">
+    <div class="col-span-8">
+      <div style="width: 100%;">
+        <canvas id="projectTotalsChart"></canvas>
+      </div>
+      <div style="width: 100%;">
+        <canvas id="activityChart"></canvas>
       </div>
     </div>
-  </div>
-  <ul class="collection">
-    <li class="collection-item">Alvin</li>
-    <li class="collection-item">Alvin</li>
-    <li class="collection-item">Alvin</li>
-    <li class="collection-item">Alvin</li>
-  </ul>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title">
-          <a href="#"><img src="https://cloud.githubusercontent.com/assets/630550/19619834/43c460dc-9835-11e6-8652-1c8fff91cf02.png" width="82" height="34"></a>
-          Dashboard
-        </span>
-        <!-- Add spacer, to align navigation to the right -->
-        <div class="mdl-layout-spacer"></div>
-        <!-- Navigation. We hide it in small screens. -->
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <select id="color-scheme-select"></select>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-        </nav>
-      </div>
-    </header>
-    <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Title</span>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-      </nav>
+    <div class="col-span-4">
+      <div id="commitsHolder"></div>
     </div>
-    <main class="mdl-layout__content">
-      <div class="page-content">
-        <div class="mdl-grid">
-          <div class="mdl-cell mdl-cell--7-col">
-            <div style="width: 100%;">
-              <canvas id="projectTotalsChart"></canvas>
-            </div>
-            <div style="width: 100%;">
-              <canvas id="activityChart"></canvas>
-            </div>
-          </div>
-          <div class="mdl-cell mdl-cell--5-col">
-
-
-
-            <ul class="mdl-list">
-              <li class="mdl-list__item mdl-list__item--three-line mdl-shadow--2dp">
-                <span class="mdl-list__item-primary-content">
-                  <i class="material-icons mdl-list__item-avatar">person</i>
-                  <span>Bryan Cranston</span>
-                  <span class="mdl-list__item-text-body">
-                    Bryan Cranston played the role of Walter in Breaking Bad. He is also known
-                    for playing Hal in Malcom in the Middle.
-                    Bryan Cranston played the role of Walter in Breaking Bad. He is also known
-                    for playing Hal in Malcom in the Middle.
-                  </span>
-                </span>
-                <span class="mdl-list__item-secondary-content">
-                  <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
-                </span>
-              </li>
-
-              <li class="mdl-list__item mdl-list__item--three-line mdl-shadow--2dp">
-                <span class="mdl-list__item-primary-content">
-                  <i class="material-icons mdl-list__item-avatar">person</i>
-                  <span>Bryan Cranston</span>
-                  <span class="mdl-list__item-text-body">
-                    Bryan Cranston played the role of Walter in Breaking Bad. He is also known
-                    for playing Hal in Malcom in the Middle.
-                  </span>
-                </span>
-                <span class="mdl-list__item-secondary-content">
-                  <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
-                </span>
-              </li>
-            </ul>
-
-
-
-            <div class="demo-card-wide mdl-shadow--2dp">
-              <div class="mdl-card__title">adsfasdf
-                <!-- <h6 class="mdl-card__title-text">Welcome</h6> -->
-
-
-                <!-- Contact Chip -->
-
-
-
-              </div>
-              <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.!
-                Mauris sagittis pellentesque lacus eleifend lacinia...
-              </div>
-              <!-- <div class="mdl-card__actions mdl-card--border"> -->
-              <!-- <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-              Get Started
-            </a> -->
-              <!-- </div> -->
-              <!-- <div class="mdl-card__menu"> -->
-
-              <!-- <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"> -->
-              <!-- <i class="material-icons">share</i> -->
-              <!-- </button> -->
-              <!-- </div> -->
-            </div>
-            <div id="commitsHolder"></div>
-          </div>
-        </div>
-        <input id="datetest" />
-        <!-- <div style="width:40%;height:200px;">
-          <canvas id="projectStatusChart" width="200" height="200"></canvas>
-        </div> -->
-
-
-
-
-      </div>
-    </main>
   </div>
-  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="./src/index.ts"></script>
-  <script>
-
-    var d = document.getElementById("datetest")
-    console.log(d)
-    flatpickr(d, {});
-
-  </script>
 </body>
 </html>

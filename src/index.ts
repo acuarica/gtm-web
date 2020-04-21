@@ -40,17 +40,10 @@ fetchjson('/data/commits', (res: Commit[]) => {
     })
   }
 
-  let div = document.getElementById('commitsHolder') as HTMLDivElement
+  const e = document.getElementById('commitsHolder')
   for (const c of res.sort((c, d) => c.When >= d.When ? 1 : -1)) {
-    // let a = document.createElement('a')
-    // a.text = c.Subject
-    // a.href = '#'
-    // let idiv = document.createElement('div')
-    // idiv.appendChild(a)
-    // div.appendChild(idiv)
-    div.insertAdjacentHTML('afterend', getCommitElement(c))
+    e!.insertAdjacentHTML('afterend', getCommitElement(c))
   }
-
 
   Chart.defaults.global.plugins!.colorschemes.scheme = colorSelector.value
 
