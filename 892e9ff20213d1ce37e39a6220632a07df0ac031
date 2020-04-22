@@ -1,0 +1,13 @@
+[ver:1,total:1740]
+src/index.ts:774,1587592800:600,1587596400:174,m
+index.html:327,1587592800:300,1587596400:27,m
+.gtm/terminal.app:175,1587592800:175,r
+src/gtmweb.ts:170,1587592800:170,r
+package.json:75,1587596400:75,m
+README.md:72,1587592800:60,1587596400:12,r
+src/charts.ts:35,1587592800:35,r
+src/components.ts:32,1587592800:20,1587596400:12,r
+node_modules/bootstrap-select/Gruntfile.js:30,1587592800:30,r
+docs/index.html:20,1587592800:20,r
+src/gtm.ts:15,1587592800:15,r
+node_modules/bootstrap-select/bower.json:15,1587592800:15,r
