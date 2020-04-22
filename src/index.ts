@@ -89,3 +89,5 @@ import 'bootstrap/dist/css/bootstrap.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 import 'chartjs-chart-matrix';
 import 'chartjs-plugin-zoom';
+import 'bootstrap-select'
+import 'bootstrap-select/dist/css/bootstrap-select.css'
