@@ -150,3 +150,6 @@ export function activityChartConfig(projects: ProjectMap, daily: DailyHours): Ch
     }
   }
 }
+
+import 'chartjs-chart-matrix';
+import 'chartjs-plugin-zoom';

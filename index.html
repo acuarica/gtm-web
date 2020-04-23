@@ -3,17 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.css" />
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.css" />
+  <link rel="stylesheet" href="node_modules/daterangepicker/daterangepicker.css" />
   <title>gtm Dashboard</title>
   <style>
     @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-
 
     .sidebar {
       overflow-y: auto;
       height: 100vh;
     }
-
   </style>
 </head>
 <body>
@@ -28,7 +29,7 @@
         <span></span> <i class="fa fa-caret-down"></i>
       </span>
       <form class="form-inline">
-        <select id="color-scheme-select" class="selectpicker"></select>
+        <select id="color-scheme-picker" class="selectpicker form-control"></select>
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>

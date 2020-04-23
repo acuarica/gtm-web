@@ -19,11 +19,16 @@ export class DropdownSelect {
 
   private readonly select: HTMLSelectElement
 
-  constructor(selectId: string, options: string[]) {
+  constructor(selectId: string, className: string, options: { value: string, data: { [key: string]: string } }[]) {
     this.select = <HTMLSelectElement>document.getElementById(selectId)
-    for (const text of options) {
+    this.select.className = className
+    for (const { value, data } of options) {
       const option = document.createElement('option')
-      option.text = text
+      option.text = value
+      for (const key in data) {
+        const value = data[key];
+        option.setAttribute(`data-${key}`, value)
+      }
       this.select.options.add(option)
     }
   }
@@ -62,11 +67,11 @@ export function getCommitElement(commit: Commit): string {
             <h6 class="mb-1">${commit.Subject}</h6>
             <small class="mb-1">${commit.Message.replace('\n', '<br>')}</small>
             <div class="collapse" id="${id}">
-              <ul>${commit.Note.Files.map(file => 
-                `<li class="small">${file.SourceFile} &nbsp; 
+              <ul>${commit.Note.Files.map(file =>
+    `<li class="small">${file.SourceFile} &nbsp; 
                   <i class="fas fa-clock"></i> ${hhmm(file.TimeSpent)}
                 </li>`)
-                .join('')}</ul>
+      .join('')}</ul>
             </div>
           </a>`
 }
