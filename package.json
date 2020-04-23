@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "description": "Git Time Metric Web Console",
   "keywords": [
-    "gtm",
     "git",
-    "time",
-    "tracker",
-    "productivity"
+    "gtm",
+    "metrics",
+    "time-tracker",
+    "productivity",
+    "dashboard"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
