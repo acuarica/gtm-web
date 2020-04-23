@@ -39,7 +39,7 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "dev": "parcel watch index.html",
+    "dev": "parcel watch *.html",
     "build": "parcel build index.html --public-url /gtm-web/ && cp -v data-commits.json dist/",
     "watch": "tsc --watch",
     "prepare": "npm run build",
