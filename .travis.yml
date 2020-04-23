@@ -10,6 +10,7 @@ before_deploy:
 
 deploy:
   provider: pages
+  cleanup: false
   github_token: $GITHUB_TOKEN
   local_dir: dist
   on:
