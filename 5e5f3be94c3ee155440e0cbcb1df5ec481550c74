@@ -1,0 +1,9 @@
+[ver:1,total:2519]
+src/components.ts:1011,1587632400:134,1587661200:877,m
+index.html:460,1587628800:460,r
+.gtm/terminal.app:402,1587628800:90,1587632400:240,1587650400:12,1587661200:60,r
+src/charts.ts:314,1587632400:182,1587650400:132,r
+node_modules/@types/chart.js/index.d.ts:212,1587632400:212,r
+node_modules/@types/node/globals.d.ts:80,1587661200:80,r
+status.html:20,1587628800:20,r
+node_modules/@types/node/assert.d.ts:20,1587661200:20,r
