@@ -3,8 +3,8 @@ import Chart from 'chart.js';
 import { DropdownSelect } from './components'
 import 'chartjs-plugin-colorschemes';
 
-export function colorSchemeSelect(selectId: string): DropdownSelect {
-  return new DropdownSelect(selectId, "selectpicker form-control", [
+export function colorSchemeSelect(selectId: string, className: string = "form-control"): DropdownSelect {
+  return new DropdownSelect(selectId, `selectpicker ${className}`, [
     "tableau.Tableau10",
     "office.Excel16",
     "tableau.Tableau20",
