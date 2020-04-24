@@ -8,8 +8,9 @@ export class UI {
 
   newChart(chartid: string, config: Chart.ChartConfiguration): Chart {
     const canvas = document.getElementById(chartid) as HTMLCanvasElement
+    console.assert(canvas, `Chart canvas element '${chartid}' not found`)
     const ctx = canvas.getContext('2d')
-    // if (!ctx) return null
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const chart = new Chart(ctx!, config)
     this.charts.push(chart)
     return chart
@@ -39,8 +40,8 @@ export class DropdownSelect {
     return this.select.value
   }
 
-  whenChange(listener: (select: HTMLSelectElement) => any) {
-    this.select.addEventListener('change', function (this, _event) {
+  whenChange(listener: (select: HTMLSelectElement) => void): void {
+    this.select.addEventListener('change', function (this, ) {
       listener(this)
     })
   }
