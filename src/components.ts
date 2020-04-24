@@ -6,11 +6,12 @@ export class UI {
 
   readonly charts: Chart[] = []
 
-  newChart(chartid: string, config: Chart.ChartConfiguration) {
+  newChart(chartid: string, config: Chart.ChartConfiguration): Chart {
     const canvas = <HTMLCanvasElement>document.getElementById(chartid)
     const ctx = canvas.getContext('2d')
     const chart = new Chart(ctx!, config)
     this.charts.push(chart)
+    return chart
   }
 
 }

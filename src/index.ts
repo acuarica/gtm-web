@@ -17,6 +17,73 @@ if (process.env.NODE_ENV === 'development') {
 
 const ui = new UI()
 
+
+function fetchjson(url: string, f: (response: any) => any) {
+  fetch(url)
+    .then(data => data.json())
+    .then(f)
+}
+
+
+const colorSelector = colorSchemeSelect('color-scheme-picker')
+
+Chart.defaults.global.plugins!.colorschemes.scheme = colorSelector.value
+
+let pchart: Chart | null = null
+let achart: Chart | null = null
+
+
+const pdiv = <HTMLDivElement>document.getElementById("progress")
+
+function fetchCommits(from: string, to: string) {
+  const nav = window.location.search.length == 0 ? "?" : window.location.search
+  console.log(window.location.search)
+  const url = `${commitsDataUrl}${nav}&from=${from}&to=${to}`
+
+  pdiv.hidden = false
+  fetchjson(url, (res: Commit[]) => {
+    const projects: ProjectMap = getProjectMap(res)
+    const daily: DailyHours = getDaily(projects)
+
+    const e = document.getElementById('commitsPlaceholder')
+    for (const c of res.sort((c, d) => c.When >= d.When ? 1 : -1)) {
+      if (c.Note.Files.length == 0) continue
+      e!.insertAdjacentHTML('afterend', getCommitElement(c))
+    }
+    $('.collapse').collapse('hide')
+
+
+    pdiv.hidden = true
+
+    const commitCounts: number[] = []
+    const datasets = []
+    for (const pname in projects) {
+      const p = projects[pname]
+      commitCounts.push(p.commitcount)
+      datasets.push({
+        data: [p.total],
+        label: pname,
+      })
+    }
+
+    if (pchart == null) {
+      pchart = ui.newChart('projectTotalsChart', projectTotalsChartConfig());
+      achart = ui.newChart('activityChart', activityChartConfig(projects, daily));
+    }
+    pchart.data.datasets = datasets
+    pchart.update()
+    // ui.charts.forEach(chart => chart.update)
+
+    colorSelector.whenChange(select => {
+      ui.charts.forEach(chart => {
+        chart.options.plugins!.colorschemes.scheme = select.value;
+        chart.update();
+      })
+    })
+  });
+}
+
+
 $(function () {
 
   var start = moment().subtract(29, 'days');
@@ -25,8 +92,8 @@ $(function () {
   function cb(start: any, end: any) {
     $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     console.log('asdf')
+    fetchCommits(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
   }
-
 
   $('#reportrange').daterangepicker({
     startDate: start,
@@ -42,40 +109,6 @@ $(function () {
   }, cb);
 
   cb(start, end);
-
-});
-
-
-function fetchjson(url: string, f: (response: any) => any) {
-  fetch(`${url}${window.location.search}`)
-    .then(data => data.json())
-    .then(f)
-}
-
-const colorSelector = colorSchemeSelect('color-scheme-picker')
-
-fetchjson(commitsDataUrl, (res: Commit[]) => {
-  const projects: ProjectMap = getProjectMap(res)
-  const daily: DailyHours = getDaily(projects)
-
-  const e = document.getElementById('commitsPlaceholder')
-  for (const c of res.sort((c, d) => c.When >= d.When ? 1 : -1)) {
-    if (c.Note.Files.length == 0) continue
-    e!.insertAdjacentHTML('afterend', getCommitElement(c))
-  }
-  $('.collapse').collapse('hide')
-
-  Chart.defaults.global.plugins!.colorschemes.scheme = colorSelector.value
-
-  ui.newChart('projectTotalsChart', projectTotalsChartConfig(projects));
-  ui.newChart('activityChart', activityChartConfig(projects, daily));
-
-  colorSelector.whenChange((select: HTMLSelectElement) => {
-    ui.charts.forEach(chart => {
-      chart.options.plugins!.colorschemes.scheme = select.value;
-      chart.update();
-    })
-  })
 
 });
 

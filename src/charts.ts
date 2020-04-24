@@ -5,25 +5,12 @@ import { hhmm } from "./format";
 import { ProjectMap, DailyHours } from "./gtm";
 
 ///
-export function projectTotalsChartConfig(projects: ProjectMap): ChartConfiguration {
-  const labels: string[] = []
-  const commitCounts: number[] = []
-  const datasets = []
-  for (const pname in projects) {
-    const p = projects[pname]
-    labels.push(pname)
-    commitCounts.push(p.commitcount)
-    datasets.push({
-      data: [p.total],
-      label: pname,
-    })
-  }
-
+export function projectTotalsChartConfig(): ChartConfiguration {
   return {
     type: 'horizontalBar',
     plugins: [ChartDataLabels],
     data: {
-      datasets: datasets,
+      // datasets: datasets,
       labels: ['Total by\nProject'.split('\n')],
     },
     options: {
@@ -53,11 +40,12 @@ export function projectTotalsChartConfig(projects: ProjectMap): ChartConfigurati
       tooltips: {
         callbacks: {
           label: (tooltipItem, data) => {
-            const i = tooltipItem.index!;
-            const ds = data.datasets![0];
-            const commitcount = commitCounts[i];
-            const committext = commitcount == 1 ? 'commit' : 'commits';
-            return `${data.labels![i]}: ${hhmm(ds.data![i] as number)} (${commitcount} ${committext})`;
+            return ''
+            // const i = tooltipItem.index!;
+            // const ds = data.datasets![0];
+            // const commitcount = commitCounts[i];
+            // const committext = commitcount == 1 ? 'commit' : 'commits';
+            // return `${data.labels![i]}: ${hhmm(ds.data![i] as number)} (${commitcount} ${committext})`;
           },
         }
       },
