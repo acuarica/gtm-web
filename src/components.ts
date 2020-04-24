@@ -21,7 +21,7 @@ export class DropdownSelect {
   private readonly select: HTMLSelectElement
 
   constructor(selectId: string, className: string, options: { value: string, data: { [key: string]: string } }[]) {
-    this.select = <HTMLSelectElement>document.getElementById(selectId)
+    this.select = document.getElementById(selectId) as HTMLSelectElement
     console.assert(this.select, `Element '${selectId}' must be of type 'HTMLSelectElement', but got`, this.select)
     this.select.className = className
     for (const { value, data } of options) {
