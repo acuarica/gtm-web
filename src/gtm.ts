@@ -6,21 +6,21 @@ export type Seconds = number
 
 /// 
 export type Commit = {
-  Author: string,
-  Date: string,
-  When: string,
-  Hash: string,
-  Subject: string,
-  Project: string,
-  Message: string,
+  Author: string;
+  Date: string;
+  When: string;
+  Hash: string;
+  Subject: string;
+  Project: string;
+  Message: string;
   Note: {
     Files: {
-      SourceFile: string,
-      TimeSpent: Seconds,
-      Timeline: { [id: number]: Seconds },
-      Status: string,
-    }[]
-  }
+      SourceFile: string;
+      TimeSpent: Seconds;
+      Timeline: { [id: number]: Seconds };
+      Status: string;
+    }[];
+  };
 }
 
 ///
@@ -34,17 +34,21 @@ export function timeSpent(commit: Commit): number {
 
 ///
 export type Project = {
-  name: string,
-  total: number,
-  commitcount: number,
+  name: string;
+  total: number;
+  commitcount: number;
   timeline: {
     [id: string]: {
       [hour: number]: {
-        total: number
-      }
-    }
-  },
-  timelineMatrix: { x: string, y: string, v: number }[],
+        total: number;
+      };
+    };
+  };
+  timelineMatrix: {
+    x: string;
+    y: string;
+    v: number;
+  }[];
 }
 
 ///
@@ -69,7 +73,7 @@ export function getProjectMap(commits: Commit[]): ProjectMap {
     }
     for (const file of commit.Note.Files) {
       let filesecs = 0;
-      for (let timestamp2 in file.Timeline) {
+      for (const timestamp2 in file.Timeline) {
         const timestamp = Number(timestamp2)
         const secs = file.Timeline[timestamp];
         if (secs > 3600) console.warn("gtm check: Duration (in seconds) should be less than 3600:", secs);
