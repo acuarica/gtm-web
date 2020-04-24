@@ -9,30 +9,54 @@
   <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.css" />
   <title>gtm Dashboard</title>
   <style>
-
     .sidebar {
       overflow-y: auto;
       height: 100vh;
     }
-
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
-    <div class="container-xl">
-      <a class="navbar-brand" href="#">
-        <img src="https://cloud.githubusercontent.com/assets/630550/19619834/43c460dc-9835-11e6-8652-1c8fff91cf02.png" width="82" height="34">
-        Dashboard
-        <i class="fas fa-cog"></i>
-      </a>
-      <span id="reportrange" class="navbar-text" style="cursor: pointer">
+
+  <div class="collapse" id="settings-toggle">
+    <div class="bg-secondary p-4">
+      <h5 class="text-white">Settings</h5>
+      <form>
+        <div class="form-group">
+          <label for="color-scheme-picker" class="text-light">Color Pallette for Charts</label>
+          <select id="color-scheme-picker" class="form-control" aria-describedby="color-scheme-picker-help"></select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+      <img src="./src/assets/gtm-logo.png" width="82" height="34">
+      Dashboard
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">
+            <i class="fas fa-home"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Projects</a>
+        </li>
+      </ul>
+      <span id="reportrange" class="navbar-text mr-sm-2" style="cursor: pointer">
         <i class="fa fa-calendar"></i>&nbsp;
         <span></span> <i class="fa fa-caret-down"></i>
       </span>
-      <form class="form-inline">
-        <select id="color-scheme-picker"></select>
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <form class="form-inline my-2 my-md-0">
+        <input class="form-control mr-sm-2 form-control-sm" type="text" placeholder="Search ...">
+        <button class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" data-target="#settings-toggle" aria-controls="settings-toggle" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-cog"></i>
+        </button>
       </form>
     </div>
   </nav>
@@ -61,6 +85,7 @@
       </nav>
     </div>
   </div>
+
   <script src="./src/index.ts"></script>
 </body>
 </html>

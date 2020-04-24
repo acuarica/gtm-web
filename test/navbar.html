@@ -7,10 +7,23 @@
   <title>NavBar | gtm Dashboard Playground</title>
 </head>
 <body class="container">
+
+  <div class="bg-dark p-4">
+    <h4 class="text-white">Settings</h4>
+    <span class="text-muted">Toggleable via the navbar brand.</span>
+    <form>
+      <div class="form-group">
+        <label for="color-scheme-picker" class="text-light">Color Pallette for Charts</label>
+        <select id="color-scheme-picker" class="form-control" aria-describedby="color-scheme-picker-help"></select>
+        <small id="color-scheme-picker-help" class="form-text text-muted"></small>
+      </div>
+    </form>
+  </div>
+
   <div class="row">
     <div class="col-sm">
       <h3>Color Scheme Picker</h3>
-      <select id="color-scheme-picker"></select>
+      <!-- <select id="color-scheme-picker"></select> -->
       <input id="color-scheme-output" class="form-control" placeholder="Color Scheme Selection" disabled>
     </div>
   </div>

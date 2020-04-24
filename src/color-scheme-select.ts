@@ -17,7 +17,8 @@ export function colorSchemeSelect(selectId: string, className = "form-control"):
       return {
         value: e,
         data: {
-          content: `<div><div style="width: 125px; display: inline-block"><small class="text-muted">${pallete}</small></div>
+          width: "400px",
+          content: `<div><div style="width: 80px; display: inline-block"><small class="text-muted">${pallete}</small></div>
           ${colorSchemes[group][pallete].map(color =>
             `<div style="background-color: ${color}; width: 12px; display: inline-block">&nbsp;</div>`).join('')}
           </div>`,
