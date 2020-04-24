@@ -5,7 +5,7 @@ import moment from 'moment';
 import $ from 'jquery';
 // import 'chartjs-plugin-colorschemes';
 import 'daterangepicker'
-import { projectTotalsChartConfig, activityChartConfig } from "./charts";
+import { projectTotalsChartConfig, activityChartConfig, totalTimeChartConfig } from "./charts";
 import { colorSchemeSelect } from "./color-scheme-select";
 
 let commitsDataUrl: string
@@ -29,8 +29,9 @@ const colorSelector = colorSchemeSelect('color-scheme-picker')
 
 Chart.defaults.global.plugins!.colorschemes.scheme = colorSelector.value
 
+let totalTimeChart: Chart | null = null
 let pchart: Chart | null = null
-let achart: Chart | null = null
+// let _achart: Chart | null = null
 
 
 const pdiv = <HTMLDivElement>document.getElementById("progress")
@@ -67,9 +68,15 @@ function fetchCommits(from: string, to: string) {
     }
 
     if (pchart == null) {
+      totalTimeChart = ui.newChart('totalTimeChart', totalTimeChartConfig());
       pchart = ui.newChart('projectTotalsChart', projectTotalsChartConfig());
-      achart = ui.newChart('activityChart', activityChartConfig(projects, daily));
+      // _achart = 
+      ui.newChart('activityChart', activityChartConfig(projects, daily));
     }
+    // totalTimeChart!.data.datasets = [{ data: [20], label: "123"}]
+    totalTimeChart!.data.datasets![0].data = [12]// = [{ data: [20], label: "123"}]
+    totalTimeChart!.update()
+
     pchart.data.datasets = datasets
     pchart.update()
     // ui.charts.forEach(chart => chart.update)
