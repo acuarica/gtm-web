@@ -1,12 +1,11 @@
 import { Commit, ProjectMap, getProjectMap, DailyHours, getDaily } from "./gtm";
-import { UI, getCommitElement } from "./components";
+import { UI, getCommitElement, colorSchemeSelect } from "./components";
 import { Chart } from "chart.js"
 import moment from 'moment';
 import $ from 'jquery';
 // import 'chartjs-plugin-colorschemes';
 import 'daterangepicker'
 import { projectTotalsChartConfig, activityChartConfig, totalTimeChartConfig } from "./charts";
-import { colorSchemeSelect } from "./color-scheme-select";
 
 let commitsDataUrl: string
 if (process.env.NODE_ENV === 'development') {
@@ -34,7 +33,7 @@ let pchart: Chart | null = null
 // let _achart: Chart | null = null
 
 
-const pdiv = <HTMLDivElement>document.getElementById("progress")
+const pdiv = document.getElementById("progress") as HTMLDivElement
 
 function fetchCommits(from: string, to: string) {
   const nav = window.location.search.length == 0 ? "?" : window.location.search
