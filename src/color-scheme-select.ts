@@ -1,9 +1,9 @@
 // import $ from 'jquery';
 import Chart from 'chart.js';
 import { DropdownSelect } from './components'
-import 'chartjs-plugin-colorschemes';
+import 'chartjs-plugin-colorschemes/src/colorschemes';
 
-export function colorSchemeSelect(selectId: string, className: string = "form-control"): DropdownSelect {
+export function colorSchemeSelect(selectId: string, className: "form-control"): DropdownSelect {
   return new DropdownSelect(selectId, `selectpicker ${className}`, [
     "tableau.Tableau10",
     "office.Excel16",
@@ -11,8 +11,9 @@ export function colorSchemeSelect(selectId: string, className: string = "form-co
     "tableau.Classic10",
     "tableau.ColorBlind10"].map(e => {
       const [group, pallete] = e.split('.')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const colorSchemes = (Chart as any).colorschemes as {
-        [group: string]: { [pallete: string]: string[] }
+        [group: string]: { [pallete: string]: string[] };
       }
       return {
         value: e,
