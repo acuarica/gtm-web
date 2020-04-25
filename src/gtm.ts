@@ -6,21 +6,21 @@ export type Seconds = number
 
 /// 
 export type Commit = {
-  Author: string,
-  Date: string,
-  When: string,
-  Hash: string,
-  Subject: string,
-  Project: string,
-  Message: string,
+  Author: string;
+  Date: string;
+  When: string;
+  Hash: string;
+  Subject: string;
+  Project: string;
+  Message: string;
   Note: {
     Files: {
-      SourceFile: string,
-      TimeSpent: Seconds,
-      Timeline: { [id: number]: Seconds },
-      Status: string,
-    }[]
-  }
+      SourceFile: string;
+      TimeSpent: Seconds;
+      Timeline: { [id: number]: Seconds };
+      Status: 'm' | 'r' | 'd';
+    }[];
+  };
 }
 
 ///
@@ -34,27 +34,36 @@ export function timeSpent(commit: Commit): number {
 
 ///
 export type Project = {
-  name: string,
-  total: number,
-  commitcount: number,
+  name: string;
+  total: number;
+  commitcount: number;
   timeline: {
     [id: string]: {
       [hour: number]: {
-        total: number
-      }
-    }
-  },
-  timelineMatrix: { x: string, y: string, v: number }[],
+        total: number;
+      };
+    };
+  };
+  timelineMatrix: {
+    x: string;
+    y: string;
+    v: number;
+  }[];
 }
 
 ///
 export type ProjectMap = { [id: string]: Project }
 
+///
+export type FileStatus<T> = { [s: string]: T }
+
 /// Hours is expressed by the total field in seconds.
 export type DailyHours = { [date: string]: { total: number } }
 
-export function getProjectMap(commits: Commit[]): ProjectMap {
+export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds; status: FileStatus<Seconds> } {
   const projects: ProjectMap = {};
+  const status: FileStatus<Seconds> = { 'm': 0, 'r': 0, 'd': 0 }
+  let totalSecs: Seconds = 0
 
   for (const commit of commits) {
     let project = projects[commit.Project];
@@ -68,8 +77,8 @@ export function getProjectMap(commits: Commit[]): ProjectMap {
       continue;
     }
     for (const file of commit.Note.Files) {
-      let filesecs = 0;
-      for (let timestamp2 in file.Timeline) {
+      let fileSecs: Seconds = 0;
+      for (const timestamp2 in file.Timeline) {
         const timestamp = Number(timestamp2)
         const secs = file.Timeline[timestamp];
         if (secs > 3600) console.warn("gtm check: Duration (in seconds) should be less than 3600:", secs);
@@ -88,13 +97,16 @@ export function getProjectMap(commits: Commit[]): ProjectMap {
           dateline[hour] = hourline;
         }
         hourline.total += secs;
-        filesecs += secs;
+        fileSecs += secs;
+        totalSecs += secs
+        console.assert(Object.keys(status).includes(file.Status), `Unexpected status '${file.Status}' for file ${file.SourceFile}`)
+        status[file.Status] += secs
       }
-      if (filesecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
+      if (fileSecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
     }
   }
 
-  return projects
+  return { projects, totalSecs, status }
 }
 
 export function getDaily(projects: ProjectMap): DailyHours {

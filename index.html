@@ -3,40 +3,89 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" href="./src/gtm.scss" />
+  <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.css" />
+  <link rel="stylesheet" href="node_modules/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.css" />
   <title>gtm Dashboard</title>
   <style>
-    @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-
-
     .sidebar {
       overflow-y: auto;
       height: 100vh;
     }
-
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-xl navbar-light" style="background-color: #e3f2fd;">
-    <div class="container-xl">
-      <a class="navbar-brand" href="#">
-        <img src="https://cloud.githubusercontent.com/assets/630550/19619834/43c460dc-9835-11e6-8652-1c8fff91cf02.png" width="82" height="34">
-        Dashboard
-      </a>
-      <span id="reportrange" class="navbar-text" style="cursor: pointer">
+
+  <div class="collapse" id="settings-toggle">
+    <div class="bg-secondary p-4">
+      <h5 class="text-white">Settings</h5>
+      <form>
+        <div class="form-group">
+          <label for="color-scheme-picker" class="text-light">Color Pallette for Charts</label>
+          <select id="color-scheme-picker" class="selectpicker form-control" aria-describedby="color-scheme-picker-help"></select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+      <img src="./src/assets/gtm-logo.png" width="82" height="34">
+      Dashboard
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">
+            <i class="fas fa-home"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Projects</a>
+        </li>
+      </ul>
+      <span id="reportrange" class="navbar-text mr-sm-2" style="cursor: pointer">
         <i class="fa fa-calendar"></i>&nbsp;
         <span></span> <i class="fa fa-caret-down"></i>
       </span>
-      <form class="form-inline">
-        <select id="color-scheme-select" class="selectpicker"></select>
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <form class="form-inline my-2 my-md-0">
+        <input class="form-control mr-sm-2 form-control-sm" type="text" placeholder="Search ...">
+        <button class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" data-target="#settings-toggle" aria-controls="settings-toggle" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-cog"></i>
+        </button>
       </form>
     </div>
   </nav>
+
+  <div id="progress" class="progress" style="height: 3px; display: none;">
+    <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+  </div>
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-7">
+        <div class="row">
+          <div class="col-3">
+            <div class="card">
+              <div class="card-header">Total Time</div>
+              <div class="card-body">
+                <h5 id="totalSecs" class="card-title text-primary">-</h5>
+                <p class="card-text text-muted">
+                  In <span id="totalNoCommits" class="text-info">-</span> commits
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="width: 100%;">
+              <canvas id="totalTimeChart"></canvas>
+            </div>
+          </div>
+        </div>
         <div style="width: 100%;">
           <canvas id="projectTotalsChart"></canvas>
         </div>
@@ -44,27 +93,14 @@
           <canvas id="activityChart"></canvas>
         </div>
       </div>
-      <nav class="sidebar col-5" style="background-color: bisque;">
+      <nav class="sidebar col-5">
         <div class="list-group list-group-flush">
           <div id="commitsPlaceholder"></div>
         </div>
       </nav>
     </div>
   </div>
-  <script src="./src/index.ts"></script>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #fafafa;
-    }
 
-    p {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1.1em;
-      font-weight: 300;
-      line-height: 1.7em;
-      color: #999;
-    }
-  </style>
+  <script src="./src/index.ts"></script>
 </body>
 </html>

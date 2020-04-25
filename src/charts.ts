@@ -4,35 +4,53 @@ import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 import { hhmm } from "./format";
 import { ProjectMap, DailyHours } from "./gtm";
 
-///
-export function projectTotalsChartConfig(projects: ProjectMap): ChartConfiguration {
-  const labels: string[] = []
-  const commitCounts: number[] = []
-  const datasets = []
-  for (const pname in projects) {
-    const p = projects[pname]
-    labels.push(pname)
-    commitCounts.push(p.commitcount)
-    datasets.push({
-      data: [p.total],
-      label: pname,
-    })
-  }
-
+export function timeByFileStatusChartConfig(): ChartConfiguration {
   return {
     type: 'horizontalBar',
-    plugins: [ChartDataLabels],
-    data: {
-      datasets: datasets,
-      labels: ['Total by\nProject'.split('\n')],
-    },
     options: {
       maintainAspectRatio: false,
       title: {
         display: true,
-        text: 'Reported time by Project'
+        text: 'Time by Activity'
       },
-      legend: { position: 'top', },
+      legend: {
+        position: 'bottom',
+      },
+      scales: {
+        xAxes: [{
+          display: false,
+          stacked: true,
+        }],
+        yAxes: [{
+          stacked: true,
+          gridLines: {
+            display: false,
+          },
+        }]
+      },
+      plugins: {
+        datalabels: {
+          display: false,
+        },
+      }
+    },
+  }
+}
+
+///
+export function projectTotalsChartConfig(): ChartConfiguration {
+  return {
+    type: 'horizontalBar',
+    plugins: [ChartDataLabels],
+    options: {
+      maintainAspectRatio: false,
+      title: {
+        display: true,
+        text: 'Time by Project'
+      },
+      legend: {
+        position: 'top',
+      },
       scales: {
         xAxes: [{
           display: false,
@@ -52,12 +70,13 @@ export function projectTotalsChartConfig(projects: ProjectMap): ChartConfigurati
       },
       tooltips: {
         callbacks: {
-          label: (tooltipItem, data) => {
-            const i = tooltipItem.index!;
-            const ds = data.datasets![0];
-            const commitcount = commitCounts[i];
-            const committext = commitcount == 1 ? 'commit' : 'commits';
-            return `${data.labels![i]}: ${hhmm(ds.data![i] as number)} (${commitcount} ${committext})`;
+          label: (_tooltipItem, _data) => {
+            return ''
+            // const i = tooltipItem.index!;
+            // const ds = data.datasets![0];
+            // const commitcount = commitCounts[i];
+            // const committext = commitcount == 1 ? 'commit' : 'commits';
+            // return `${data.labels![i]}: ${hhmm(ds.data![i] as number)} (${commitcount} ${committext})`;
           },
         }
       },
@@ -150,3 +169,6 @@ export function activityChartConfig(projects: ProjectMap, daily: DailyHours): Ch
     }
   }
 }
+
+import 'chartjs-chart-matrix';
+import 'chartjs-plugin-zoom';

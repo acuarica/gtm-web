@@ -6,11 +6,14 @@ export class UI {
 
   readonly charts: Chart[] = []
 
-  newChart(chartid: string, config: Chart.ChartConfiguration) {
-    const canvas = <HTMLCanvasElement>document.getElementById(chartid)
+  newChart(chartid: string, config: Chart.ChartConfiguration): Chart {
+    const canvas = document.getElementById(chartid) as HTMLCanvasElement
+    console.assert(canvas, `Chart canvas element '${chartid}' not found`)
     const ctx = canvas.getContext('2d')
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const chart = new Chart(ctx!, config)
     this.charts.push(chart)
+    return chart
   }
 
 }
@@ -19,11 +22,16 @@ export class DropdownSelect {
 
   private readonly select: HTMLSelectElement
 
-  constructor(selectId: string, options: string[]) {
-    this.select = <HTMLSelectElement>document.getElementById(selectId)
-    for (const text of options) {
+  constructor(selectId: string, options: { value: string; data: { [key: string]: string } }[]) {
+    this.select = document.getElementById(selectId) as HTMLSelectElement
+    console.assert(this.select, `Element '${selectId}' must be of type 'HTMLSelectElement', but got`, this.select)
+    for (const { value, data } of options) {
       const option = document.createElement('option')
-      option.text = text
+      option.text = value
+      for (const key in data) {
+        const value = data[key];
+        option.setAttribute(`data-${key}`, value)
+      }
       this.select.options.add(option)
     }
   }
@@ -32,12 +40,38 @@ export class DropdownSelect {
     return this.select.value
   }
 
-  whenChange(listener: (select: HTMLSelectElement) => any) {
-    this.select.addEventListener('change', function (this, _event) {
+  whenChange(listener: (select: HTMLSelectElement) => void): void {
+    this.select.addEventListener('change', function (this, ) {
       listener(this)
     })
   }
 
+}
+
+export function colorSchemeSelect(selectId: string): DropdownSelect {
+  return new DropdownSelect(selectId, [
+    "tableau.Tableau10",
+    "office.Excel16",
+    "tableau.Tableau20",
+    "tableau.Classic10",
+    "tableau.ColorBlind10"].map(e => {
+      const [group, pallete] = e.split('.')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const colorSchemes = (Chart as any).colorschemes as {
+        [group: string]: { [pallete: string]: string[] };
+      }
+      return {
+        value: e,
+        data: {
+          width: "400px",
+          content: `<div><div style="width: 80px; display: inline-block"><small class="text-muted">${pallete}</small></div>
+          ${colorSchemes[group][pallete].map(color =>
+            `<div style="background-color: ${color}; width: 12px; display: inline-block">&nbsp;</div>`).join('')}
+          </div>`,
+        }
+      }
+    })
+  )
 }
 
 export function getCommitElement(commit: Commit): string {
@@ -62,11 +96,15 @@ export function getCommitElement(commit: Commit): string {
             <h6 class="mb-1">${commit.Subject}</h6>
             <small class="mb-1">${commit.Message.replace('\n', '<br>')}</small>
             <div class="collapse" id="${id}">
-              <ul>${commit.Note.Files.map(file => 
-                `<li class="small">${file.SourceFile} &nbsp; 
+              <ul>${commit.Note.Files.map(file =>
+    `<li class="small">${file.SourceFile} &nbsp; 
                   <i class="fas fa-clock"></i> ${hhmm(file.TimeSpent)}
                 </li>`)
-                .join('')}</ul>
+      .join('')}</ul>
             </div>
           </a>`
 }
+
+import 'chartjs-plugin-colorschemes';
+import 'bootstrap'
+import 'bootstrap-select'

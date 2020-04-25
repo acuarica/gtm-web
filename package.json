@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "description": "Git Time Metric Web Console",
   "keywords": [
-    "gtm",
     "git",
-    "time",
-    "tracker",
-    "productivity"
+    "gtm",
+    "metrics",
+    "time-tracker",
+    "productivity",
+    "dashboard"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,6 +16,7 @@
     "dist"
   ],
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "@popperjs/core": "^2.3.3",
     "bootstrap": "^4.4.1",
     "bootstrap-select": "^1.13.15",
@@ -24,25 +26,32 @@
     "chartjs-plugin-datalabels": "^0.7.0",
     "chartjs-plugin-zoom": "^0.7.5",
     "daterangepicker": "^3.0.5",
+    "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "popper.js": "^1.16.1"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0",
+    "@types/bootstrap": "^4.3.2",
     "@types/chart.js": "^2.9.19",
     "@types/daterangepicker": "^3.0.1",
     "@types/jquery": "^3.3.35",
+    "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.1",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
+    "eslint": "^6.8.0",
+    "mocha": "^7.1.1",
     "parcel-bundler": "^1.12.4",
-    "tslint": "^6.1.1",
+    "sass": "^1.26.5",
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "dev": "parcel watch index.html",
+    "dev": "parcel watch index.html test/*.html",
     "build": "parcel build index.html --public-url /gtm-web/ && cp -v data-commits.json dist/",
     "watch": "tsc --watch",
-    "prepare": "npm run build",
-    "test": "echo \"Warning: no test specified\" && exit 0"
+    "prepare": "echo preparing from package json",
+    "test": "echo \"Warning: no test specified\" && exit 0",
+    "test1": "mocha"
   },
   "author": "Luis Mastrangelo",
   "license": "ISC"
