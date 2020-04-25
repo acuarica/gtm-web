@@ -1,0 +1,8 @@
+[ver:1,total:2662]
+src/gtm.ts:897,1587780000:20,1587783600:877,m
+src/charts.ts:825,1587780000:20,1587783600:805,m
+src/index.ts:630,1587780000:140,1587783600:490,m
+.gtm/terminal.app:175,1587783600:175,r
+test/gtm-test.ts:80,1587783600:80,r
+node_modules/@types/chart.js/index.d.ts:40,1587783600:40,r
+data-commits.json:15,1587783600:15,r
