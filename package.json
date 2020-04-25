@@ -15,6 +15,12 @@
   "files": [
     "dist"
   ],
+  "scripts": {
+    "dev": "parcel watch index.html test/*.html test/*-test.ts",
+    "build": "parcel build index.html --public-url /gtm-web/ && cp -v data-commits.json dist/",
+    "watch": "tsc --watch",
+    "test": "mocha dist/test/*-test.js"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@popperjs/core": "^2.3.3",
@@ -43,15 +49,8 @@
     "mocha": "^7.1.1",
     "parcel-bundler": "^1.12.4",
     "sass": "^1.26.5",
+    "ts-node": "^8.9.0",
     "typescript": "^3.8.3"
-  },
-  "scripts": {
-    "dev": "parcel watch index.html test/*.html",
-    "build": "parcel build index.html --public-url /gtm-web/ && cp -v data-commits.json dist/",
-    "watch": "tsc --watch",
-    "prepare": "echo preparing from package json",
-    "test": "echo \"Warning: no test specified\" && exit 0",
-    "test1": "mocha"
   },
   "author": "Luis Mastrangelo",
   "license": "ISC"
