@@ -1,0 +1,15 @@
+[ver:1,total:2537]
+.gtm/terminal.app:1270,1587783600:540,1587787200:430,1587816000:300,r
+tsconfig.json:437,1587787200:295,1587816000:142,r
+src/format.ts:315,1587816000:315,m
+.travis.yml:167,1587816000:167,r
+test/format-test.ts:97,1587816000:97,r
+test/navbar.ts:79,1587787200:64,1587816000:15,r
+src/index.ts:35,1587816000:35,r
+data-commits.json:27,1587816000:27,r
+dist/src/charts.js:27,1587787200:27,r
+src/charts.ts:23,1587816000:23,r
+dist/test/gtm-test.js:15,1587816000:15,r
+test/data/data-commits.json:15,1587816000:15,d
+src/components.ts:15,1587816000:15,r
+src/gtm.ts:15,1587816000:15,r
