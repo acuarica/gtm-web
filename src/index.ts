@@ -1,4 +1,4 @@
-import { Commit, getProjectMap, DailyHours, getDaily } from "./gtm";
+import { Commit, getProjectMap, DailyHours, getDaily, Status } from "./gtm";
 import { UI, getCommitElement, colorSchemeSelect } from "./components";
 import { Chart } from "chart.js"
 import moment from 'moment';
@@ -33,13 +33,15 @@ let totalTimeChart: Chart | null = null
 let pchart: Chart | null = null
 // let _achart: Chart | null = null
 
+const StatusIndicator: Status<string> = {'m': 'Modifying', 'r': 'Reading', 'd': 'Deleting'}
+
 function fetchCommits(from: string, to: string): void {
   const nav = window.location.search.length == 0 ? "?" : window.location.search
   console.log(window.location.search)
   const url = `${commitsDataUrl}${nav}&from=${from}&to=${to}`
 
   fetchjson(url, (res: Commit[]) => {
-    const { projects, totalSecs } = getProjectMap(res)
+    const { projects, totalSecs, status } = getProjectMap(res)
     const daily: DailyHours = getDaily(projects)
 
     document.getElementById('totalSecs')!.innerText = hhmm(totalSecs)
@@ -70,7 +72,12 @@ function fetchCommits(from: string, to: string): void {
       ui.newChart('activityChart', activityChartConfig(projects, daily));
     }
     // totalTimeChart!.data.datasets = [{ data: [20], label: "123"}]
-    totalTimeChart!.data.datasets![0].data = [12]// = [{ data: [20], label: "123"}]
+    totalTimeChart!.data.datasets = Object.keys(status).map(s => {
+      return {
+        data: [status[s]],
+        label: `${StatusIndicator[s]}: ${hhmm(status[s])}`
+      }
+    })
     totalTimeChart!.update()
 
     pchart.data.datasets = datasets

@@ -6,8 +6,8 @@ import { ProjectMap, DailyHours } from "./gtm";
 
 export function totalTimeChartConfig(): ChartConfiguration {
   return {
-    type: 'pie',
-    plugins: [ChartDataLabels],
+    type: 'horizontalBar',
+    // plugins: [ChartDataLabels],
     data: {
       datasets: [{
         // data: [],
@@ -20,7 +20,22 @@ export function totalTimeChartConfig(): ChartConfiguration {
       maintainAspectRatio: false,
       title: {
         display: true,
-        text: 'Total Time'
+        text: 'Time by Activity'
+      },
+      legend: {
+        position: 'bottom',
+      },
+      scales: {
+        xAxes: [{
+          display: false,
+          stacked: true,
+        }],
+        yAxes: [{
+          stacked: true,
+          gridLines: {
+            display: false,
+          },
+        }]
       },
     },
   }

@@ -54,11 +54,14 @@ export type Project = {
 ///
 export type ProjectMap = { [id: string]: Project }
 
+export type Status<T> = { [s: string]: T }
+
 /// Hours is expressed by the total field in seconds.
 export type DailyHours = { [date: string]: { total: number } }
 
-export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds } {
+export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds; status: Status<Seconds> } {
   const projects: ProjectMap = {};
+  const status: Status<Seconds> = { 'm': 0, 'r': 0, 'd': 0 }
   let totalSecs: Seconds = 0
 
   for (const commit of commits) {
@@ -95,12 +98,14 @@ export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalS
         hourline.total += secs;
         fileSecs += secs;
         totalSecs += secs
+        console.assert(Object.keys(status).includes(file.Status), `Unexpected status '${file.Status}' for file ${file.SourceFile}`)
+        status[file.Status] += secs
       }
       if (fileSecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
     }
   }
 
-  return { projects, totalSecs }
+  return { projects, totalSecs, status }
 }
 
 export function getDaily(projects: ProjectMap): DailyHours {
