@@ -57,8 +57,9 @@ export type ProjectMap = { [id: string]: Project }
 /// Hours is expressed by the total field in seconds.
 export type DailyHours = { [date: string]: { total: number } }
 
-export function getProjectMap(commits: Commit[]): ProjectMap {
+export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds } {
   const projects: ProjectMap = {};
+  let totalSecs: Seconds = 0
 
   for (const commit of commits) {
     let project = projects[commit.Project];
@@ -72,7 +73,7 @@ export function getProjectMap(commits: Commit[]): ProjectMap {
       continue;
     }
     for (const file of commit.Note.Files) {
-      let filesecs = 0;
+      let fileSecs: Seconds = 0;
       for (const timestamp2 in file.Timeline) {
         const timestamp = Number(timestamp2)
         const secs = file.Timeline[timestamp];
@@ -92,13 +93,14 @@ export function getProjectMap(commits: Commit[]): ProjectMap {
           dateline[hour] = hourline;
         }
         hourline.total += secs;
-        filesecs += secs;
+        fileSecs += secs;
+        totalSecs += secs
       }
-      if (filesecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
+      if (fileSecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
     }
   }
 
-  return projects
+  return { projects, totalSecs }
 }
 
 export function getDaily(projects: ProjectMap): DailyHours {

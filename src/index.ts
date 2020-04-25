@@ -1,9 +1,8 @@
-import { Commit, ProjectMap, getProjectMap, DailyHours, getDaily } from "./gtm";
+import { Commit, getProjectMap, DailyHours, getDaily } from "./gtm";
 import { UI, getCommitElement, colorSchemeSelect } from "./components";
 import { Chart } from "chart.js"
 import moment from 'moment';
 import $ from 'jquery';
-// import 'chartjs-plugin-colorschemes';
 import 'daterangepicker'
 import { projectTotalsChartConfig, activityChartConfig, totalTimeChartConfig } from "./charts";
 
@@ -16,13 +15,15 @@ if (process.env.NODE_ENV === 'development') {
 
 const ui = new UI()
 
-
-function fetchjson(url: string, f: (response: any) => any) {
+function fetchjson(url: string, handler: (response: Commit[]) => void): void {
+  $('#progress').show()
   fetch(url)
     .then(data => data.json())
-    .then(f)
+    .then(response => {
+      $('#progress').hide()
+      handler(response)
+    })
 }
-
 
 const colorSelector = colorSchemeSelect('color-scheme-picker')
 
@@ -32,18 +33,17 @@ let totalTimeChart: Chart | null = null
 let pchart: Chart | null = null
 // let _achart: Chart | null = null
 
-
-const pdiv = document.getElementById("progress") as HTMLDivElement
-
-function fetchCommits(from: string, to: string) {
+function fetchCommits(from: string, to: string): void {
   const nav = window.location.search.length == 0 ? "?" : window.location.search
   console.log(window.location.search)
   const url = `${commitsDataUrl}${nav}&from=${from}&to=${to}`
 
-  pdiv.hidden = false
   fetchjson(url, (res: Commit[]) => {
-    const projects: ProjectMap = getProjectMap(res)
+    const { projects, totalSecs } = getProjectMap(res)
     const daily: DailyHours = getDaily(projects)
+
+    document.getElementById('totalSecs')!.innerText = hhmm(totalSecs)
+    document.getElementById('totalNoCommits')!.innerText = `${res.length}`
 
     const e = document.getElementById('commitsPlaceholder')
     for (const c of res.sort((c, d) => c.When >= d.When ? 1 : -1)) {
@@ -51,9 +51,6 @@ function fetchCommits(from: string, to: string) {
       e!.insertAdjacentHTML('afterend', getCommitElement(c))
     }
     $('.collapse').collapse('hide')
-
-
-    pdiv.hidden = true
 
     const commitCounts: number[] = []
     const datasets = []
@@ -119,4 +116,5 @@ $(function () {
 });
 
 import 'bootstrap'
-import 'bootstrap-select'
+import 'bootstrap-select'import { hhmm } from "./format";
+

@@ -61,15 +61,30 @@
     </div>
   </nav>
 
-  <div id="progress" class="progress" style="height: 4px; display: none;">
+  <div id="progress" class="progress" style="height: 3px; display: none;">
     <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
   </div>
 
   <div class="container-fluid">
     <div class="row">
       <div class="col-7">
-        <div style="width: 100%;">
-          <canvas id="totalTimeChart"></canvas>
+        <div class="row">
+          <div class="col-3">
+            <div class="card">
+              <div class="card-header">Total Time</div>
+              <div class="card-body">
+                <h5 id="totalSecs" class="card-title text-primary">-</h5>
+                <p class="card-text text-muted">
+                  In <span id="totalNoCommits" class="text-info">-</span> commits
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="width: 100%;">
+              <canvas id="totalTimeChart"></canvas>
+            </div>
+          </div>
         </div>
         <div style="width: 100%;">
           <canvas id="projectTotalsChart"></canvas>
@@ -78,7 +93,7 @@
           <canvas id="activityChart"></canvas>
         </div>
       </div>
-      <nav class="sidebar col-5" style="background-color: bisque;">
+      <nav class="sidebar col-5">
         <div class="list-group list-group-flush">
           <div id="commitsPlaceholder"></div>
         </div>
