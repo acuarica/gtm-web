@@ -1,6 +1,6 @@
 /// 
 export function pad0(num: number): string {
-  return num < 100 ? '0' + num : '' + num
+  return num < 100 ? ('0' + num).slice(-2) : '' + num
 }
 
 /// Formats a number of seconds to '00h 00m'.
