@@ -1,10 +1,13 @@
-import { Commit, getProjectMap, DailyHours, getDaily, Status } from "./gtm";
+import { Commit, getProjectMap, DailyHours, getDaily, FileStatus } from "./gtm";
 import { UI, getCommitElement, colorSchemeSelect } from "./components";
 import { Chart } from "chart.js"
 import moment from 'moment';
 import $ from 'jquery';
 import 'daterangepicker'
-import { projectTotalsChartConfig, activityChartConfig, totalTimeChartConfig } from "./charts";
+import { projectTotalsChartConfig, activityChartConfig, timeByFileStatusChartConfig } from "./charts";
+import { hhmm } from "./format";
+import 'bootstrap'
+import 'bootstrap-select'
 
 let commitsDataUrl: string
 if (process.env.NODE_ENV === 'development') {
@@ -33,7 +36,7 @@ let totalTimeChart: Chart | null = null
 let pchart: Chart | null = null
 // let _achart: Chart | null = null
 
-const StatusIndicator: Status<string> = {'m': 'Modifying', 'r': 'Reading', 'd': 'Deleting'}
+const StatusIndicator: FileStatus<string> = {'m': 'Modify', 'r': 'Read', 'd': 'Delete'}
 
 function fetchCommits(from: string, to: string): void {
   const nav = window.location.search.length == 0 ? "?" : window.location.search
@@ -66,7 +69,7 @@ function fetchCommits(from: string, to: string): void {
     }
 
     if (pchart == null) {
-      totalTimeChart = ui.newChart('totalTimeChart', totalTimeChartConfig());
+      totalTimeChart = ui.newChart('totalTimeChart', timeByFileStatusChartConfig());
       pchart = ui.newChart('projectTotalsChart', projectTotalsChartConfig());
       // _achart = 
       ui.newChart('activityChart', activityChartConfig(projects, daily));
@@ -121,7 +124,3 @@ $(function () {
   cb(start, end);
 
 });
-
-import 'bootstrap'
-import 'bootstrap-select'import { hhmm } from "./format";
-

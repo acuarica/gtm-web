@@ -18,7 +18,7 @@ export type Commit = {
       SourceFile: string;
       TimeSpent: Seconds;
       Timeline: { [id: number]: Seconds };
-      Status: string;
+      Status: 'm' | 'r' | 'd';
     }[];
   };
 }
@@ -54,14 +54,15 @@ export type Project = {
 ///
 export type ProjectMap = { [id: string]: Project }
 
-export type Status<T> = { [s: string]: T }
+///
+export type FileStatus<T> = { [s: string]: T }
 
 /// Hours is expressed by the total field in seconds.
 export type DailyHours = { [date: string]: { total: number } }
 
-export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds; status: Status<Seconds> } {
+export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds; status: FileStatus<Seconds> } {
   const projects: ProjectMap = {};
-  const status: Status<Seconds> = { 'm': 0, 'r': 0, 'd': 0 }
+  const status: FileStatus<Seconds> = { 'm': 0, 'r': 0, 'd': 0 }
   let totalSecs: Seconds = 0
 
   for (const commit of commits) {

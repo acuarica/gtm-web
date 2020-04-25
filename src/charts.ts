@@ -4,18 +4,9 @@ import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 import { hhmm } from "./format";
 import { ProjectMap, DailyHours } from "./gtm";
 
-export function totalTimeChartConfig(): ChartConfiguration {
+export function timeByFileStatusChartConfig(): ChartConfiguration {
   return {
     type: 'horizontalBar',
-    // plugins: [ChartDataLabels],
-    data: {
-      datasets: [{
-        // data: [],
-        label: "asdf",
-        backgroundColor: '#17a2b8', //!important
-      }],
-      // labels: ['sddsd']
-    },
     options: {
       maintainAspectRatio: false,
       title: {
@@ -37,6 +28,11 @@ export function totalTimeChartConfig(): ChartConfiguration {
           },
         }]
       },
+      plugins: {
+        datalabels: {
+          display: false,
+        },
+      }
     },
   }
 }
@@ -44,29 +40,16 @@ export function totalTimeChartConfig(): ChartConfiguration {
 ///
 export function projectTotalsChartConfig(): ChartConfiguration {
   return {
-    // type: 'horizontalBar',
-    type: 'pie',
+    type: 'horizontalBar',
     plugins: [ChartDataLabels],
-    data: {
-      // datasets: datasets,
-      labels: ['Total by\nProject'.split('\n')],
-    },
     options: {
       maintainAspectRatio: false,
       title: {
         display: true,
-        text: 'Reported time by Project'
+        text: 'Time by Project'
       },
       legend: {
         position: 'top',
-        labels: {
-          generateLabels: function (chart) {
-            return [{
-              text: "asd"
-            }]
-
-          }
-        },
       },
       scales: {
         xAxes: [{
