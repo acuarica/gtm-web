@@ -151,20 +151,20 @@ export function activityChartConfig(projects: ProjectMap, daily: DailyHours): Ch
         datalabels: {
           display: false,
         },
-        zoom: {
-          pan: {
-            enabled: true,
-            mode: "y",
-            speed: 100,
-            threshold: 10,
-          },
-          zoom: {
-            enabled: true,
-            mode: 'y',
-            speed: 0.1,
-            sensitivity: 3,
-          }
-        },
+        // zoom: {
+        //   pan: {
+        //     enabled: true,
+        //     mode: "y",
+        //     speed: 100,
+        //     threshold: 10,
+        //   },
+        //   zoom: {
+        //     enabled: true,
+        //     mode: 'y',
+        //     speed: 0.1,
+        //     sensitivity: 3,
+        //   }
+        // },
       }
     }
   }

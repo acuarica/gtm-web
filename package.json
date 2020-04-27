@@ -15,9 +15,13 @@
   "files": [
     "dist"
   ],
+  "browserslist": [
+    "last 1 chrome versions"
+  ],
   "scripts": {
-    "dev": "parcel watch index.html test/*.html test/*-test.ts",
-    "build": "parcel build index.html --public-url /gtm-web/ && cp -v data-commits.json dist/",
+    "dev": "cp -v -r src/assets dist && parcel watch index.html test/*.html test/*-test.ts --no-source-maps --no-cache --no-hmr",
+    "build2": "parcel build index.html --no-source-maps --public-url /gtm-web/ && cp -v data-commits.json dist/",
+    "build": "parcel build index.html --no-source-maps && cp -v data-commits.json dist/",
     "watch": "tsc --watch",
     "test": "mocha dist/test/*-test.js"
   },
@@ -32,6 +36,7 @@
     "chartjs-plugin-datalabels": "^0.7.0",
     "chartjs-plugin-zoom": "^0.7.5",
     "daterangepicker": "^3.0.5",
+    "gtm": "^0.1.0-56-g1b5486c",
     "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "popper.js": "^1.16.1"
@@ -48,7 +53,9 @@
     "eslint": "^6.8.0",
     "mocha": "^7.1.1",
     "parcel-bundler": "^1.12.4",
+    "parcel-plugin-svelte": "^4.0.6",
     "sass": "^1.26.5",
+    "svelte": "^3.21.0",
     "typescript": "^3.8.3"
   },
   "author": "Luis Mastrangelo",

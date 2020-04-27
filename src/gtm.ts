@@ -21,15 +21,7 @@ export type Commit = {
       Status: 'm' | 'r' | 'd';
     }[];
   };
-}
-
-///
-export function timeSpent(commit: Commit): number {
-  let value = 0
-  for (const file of commit.Note.Files) {
-    value += file.TimeSpent
-  }
-  return value
+  timeSpent: Seconds;
 }
 
 ///
@@ -60,7 +52,7 @@ export type FileStatus<T> = { [s: string]: T }
 /// Hours is expressed by the total field in seconds.
 export type DailyHours = { [date: string]: { total: number } }
 
-export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds; status: FileStatus<Seconds> } {
+export function computeStats(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds; status: FileStatus<Seconds> } {
   const projects: ProjectMap = {};
   const status: FileStatus<Seconds> = { 'm': 0, 'r': 0, 'd': 0 }
   let totalSecs: Seconds = 0
@@ -76,7 +68,10 @@ export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalS
       console.warn("gtm check: Commit note files not available:", commit);
       continue;
     }
+    let commitTimeSpent = 0;
     for (const file of commit.Note.Files) {
+      commitTimeSpent += file.TimeSpent
+
       let fileSecs: Seconds = 0;
       for (const timestamp2 in file.Timeline) {
         const timestamp = Number(timestamp2)
@@ -104,6 +99,8 @@ export function getProjectMap(commits: Commit[]): { projects: ProjectMap; totalS
       }
       if (fileSecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
     }
+
+    commit.timeSpent = commitTimeSpent
   }
 
   return { projects, totalSecs, status }

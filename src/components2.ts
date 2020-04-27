@@ -2,6 +2,11 @@ import { Chart } from "chart.js"
 import { Commit, timeSpent } from "./gtm"
 import { hhmm } from "./format"
 
+import 'chartjs-plugin-colorschemes';
+// import 'bootstrap'
+import 'bootstrap/js/dist/dropdown'
+import 'bootstrap-select'
+
 export class UI {
 
   readonly charts: Chart[] = []
@@ -28,6 +33,7 @@ export class DropdownSelect {
     for (const { value, data } of options) {
       const option = document.createElement('option')
       option.text = value
+
       for (const key in data) {
         const value = data[key];
         option.setAttribute(`data-${key}`, value)
@@ -104,7 +110,3 @@ export function getCommitElement(commit: Commit): string {
             </div>
           </a>`
 }
-
-import 'chartjs-plugin-colorschemes';
-import 'bootstrap'
-import 'bootstrap-select'
