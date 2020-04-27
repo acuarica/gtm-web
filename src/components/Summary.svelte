@@ -5,7 +5,7 @@
     projectTotalsChartConfig
   } from "../charts";
   import { hhmm } from "./../gtm";
-  import Chart from "../components/Chart.svelte";
+  import Chart from "./Chart.svelte";
   export let commits = null;
   export let map = null;
 

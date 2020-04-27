@@ -1,6 +1,6 @@
 <script>
   import { getDaily } from "../gtm";
-  import Commit from "../components/Commit.svelte";
+  import Commit from "./Commit.svelte";
 
   export let commits = null;
   export let map = null;

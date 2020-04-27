@@ -1,5 +1,5 @@
 <script>
-  import Chart from "../components/Chart.svelte";
+  import Chart from "./Chart.svelte";
   import { activityChartConfig } from "../charts";
   import { getDaily } from "../gtm";
   import "chartjs-chart-matrix";

@@ -6,9 +6,6 @@
   import "bootstrap-select";
   import "chartjs-plugin-colorschemes";
 
-  // console.log("set cs")
-  // Chart.defaults.global.plugins.colorschemes.scheme = "asdf"
-
   export let palette = [
     "tableau.Tableau10",
     "office.Excel16",

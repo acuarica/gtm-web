@@ -4,10 +4,10 @@
   import Settings from "./components/Settings.svelte";
   import Progress from "./components/Progress.svelte";
   import DateRangePicker from "./components/DateRangePicker.svelte";
-  import Summary from "./views/Summary.svelte";
-  import Projects from "./views/Projects.svelte";
-  import Timeline from "./views/Timeline.svelte";
-  import Commits from "./views/Commits.svelte";
+  import Summary from "./components/Summary.svelte";
+  import Projects from "./components/Projects.svelte";
+  import Timeline from "./components/Timeline.svelte";
+  import Commits from "./components/Commits.svelte";
 
   export let view = Summary;
   export let toggleSettings = false;
