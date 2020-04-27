@@ -9,9 +9,6 @@
   import Timeline from "./components/Timeline.svelte";
   import Commits from "./components/Commits.svelte";
 
-  export let view = Summary;
-  export let toggleSettings = false;
-
   const navs = [
     { title: "Summary", view: Summary },
     { title: "Projects", view: Projects },
@@ -19,9 +16,9 @@
     { title: "Commits", view: Commits }
   ];
 
-  let promise = new Promise((_resolve, _reject) => {
-    console.log("init");
-  }); //= fetchCommits();
+  let view = Summary;
+  let toggleSettings = false;
+  let promise = new Promise((_resolve, _reject) => {});
 
   // Chart.defaults.global.plugins.colorschemes.scheme = "tableau.Tableau10";
 
