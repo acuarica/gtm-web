@@ -41,7 +41,6 @@
   });
 
   function handleChange() {
-    console.log("select", Chart.instances);
     Chart.defaults.global.plugins.colorschemes.scheme = select.value;
     for (const i in Chart.instances) {
       const chart = Chart.instances[i];
