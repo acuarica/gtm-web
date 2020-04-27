@@ -36,7 +36,6 @@
     "chartjs-plugin-datalabels": "^0.7.0",
     "chartjs-plugin-zoom": "^0.7.5",
     "daterangepicker": "^3.0.5",
-    "gtm": "^0.1.0-56-g1b5486c",
     "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "popper.js": "^1.16.1"
