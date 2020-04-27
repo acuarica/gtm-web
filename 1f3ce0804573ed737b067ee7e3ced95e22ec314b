@@ -1,0 +1,16 @@
+[ver:1,total:240]
+src/components/ChartPalettePicker.svelte:24,1587970800:24,m
+src/components/Commit.svelte:24,1587970800:24,r
+src/App.svelte:24,1587970800:24,m
+src/components/Summary.svelte:20,1587970800:20,m
+.gtm/terminal.app:20,1587970800:20,r
+src/components/Commits.svelte:18,1587970800:18,m
+src/components/Timeline.svelte:15,1587970800:15,m
+src/views/Summary.svelte:15,1587970800:15,d
+src/gtm.ts:15,1587970800:15,r
+test/format-test.ts:15,1587970800:15,r
+src/components/DateRangePicker.svelte:14,1587970800:14,r
+src/components/Settings.svelte:12,1587970800:12,r
+src/components/Projects.svelte:12,1587970800:12,m
+src/components/Chart.svelte:8,1587970800:8,r
+src/components/Progress.svelte:4,1587970800:4,r
