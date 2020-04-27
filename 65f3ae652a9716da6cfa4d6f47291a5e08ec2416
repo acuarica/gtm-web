@@ -1,0 +1,6 @@
+[ver:1,total:120]
+src/index.ts:45,1587970800:45,m
+src/charts.ts:30,1587970800:30,r
+src/components/Commits.svelte:15,1587970800:15,r
+src/components/ChartPalettePicker.svelte:15,1587970800:15,r
+src/App.svelte:15,1587970800:15,r
