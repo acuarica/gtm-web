@@ -19,7 +19,7 @@
     "last 1 chrome versions"
   ],
   "scripts": {
-    "dev": "cp -v -r src/assets dist && parcel watch index.html test/*.html test/*-test.ts --no-source-maps --no-cache --no-hmr",
+    "dev": "cp -v -r src/assets dist/ && parcel watch index.html test/*.html test/*-test.ts --no-source-maps --no-cache --no-hmr",
     "build2": "parcel build index.html --no-source-maps --public-url /gtm-web/ && cp -v data-commits.json dist/",
     "build": "parcel build index.html --no-source-maps && cp -v data-commits.json dist/",
     "watch": "tsc --watch",
