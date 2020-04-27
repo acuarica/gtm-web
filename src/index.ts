@@ -1,13 +1,3 @@
-// import { Commit, getProjectMap, DailyHours, getDaily, FileStatus } from "./gtm";
-// import { UI, getCommitElement, colorSchemeSelect } from "./components2";
-// import { Chart } from "chart.js"
-// import moment from 'moment';
-// import $ from 'jquery';
-// import 'daterangepicker'
-// import { projectTotalsChartConfig, activityChartConfig, timeByFileStatusChartConfig } from "./charts";
-// import { hhmm } from "./format";
-// import *from 'chartjs-chart-matrix'
-
 import App from './App.svelte';
 
 new App({
