@@ -1,0 +1,6 @@
+[ver:1,total:2280]
+package.json:642,1587974400:570,1587996000:72,m
+src/components/DateRangePicker.svelte:552,1587974400:540,1587996000:12,r
+.gtm/terminal.app:550,1587974400:550,r
+src/App.svelte:524,1587974400:20,1587978000:420,1587996000:84,r
+src/components/Chart.svelte:12,1587996000:12,r
