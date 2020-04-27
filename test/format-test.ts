@@ -1,4 +1,4 @@
-import { hhmm, pad0 } from '../src/format'
+import { hhmm, pad0 } from '../src/gtm'
 import assert from 'assert';
 
 describe('format', function () {

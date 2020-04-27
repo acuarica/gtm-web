@@ -1,8 +1,7 @@
 import moment from 'moment';
 import { ChartConfiguration } from "chart.js";
 import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
-import { hhmm } from "./format";
-import { ProjectMap, DailyHours } from "./gtm";
+import { hhmm, ProjectMap, DailyHours } from "./gtm";
 
 export function timeByFileStatusChartConfig(): ChartConfiguration {
   return {

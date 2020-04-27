@@ -4,7 +4,7 @@
     timeByFileStatusChartConfig,
     projectTotalsChartConfig
   } from "../charts";
-  import { hhmm } from "./../format";
+  import { hhmm } from "./../gtm";
   import Chart from "../components/Chart.svelte";
   export let commits = null;
   export let map = null;
