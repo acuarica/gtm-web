@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { Chart } from "chart.js";
+  import Chart from "chart.js";
+  // import * as Chart from "chart.js";
   import "chartjs-plugin-datalabels";
   export let config;
   export let datasets;

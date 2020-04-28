@@ -26,7 +26,16 @@ describe('format', function () {
   describe('#hhmm()', function () {
 
     it('hhmm', () => {
-      assert.equal(hhmm(12*60*60+5*60), '12h 05m')
+      assert.equal(hhmm(12 * 60 * 60 + 5 * 60), '12h 05m')
+    })
+
+    it('fetch', () => {
+      assert.equal(hhmm(12 * 60 * 60 + 5 * 60), '12h 05m')
+
+      const commitsDataUrl = "/data/projects";
+      fetch(commitsDataUrl).then(r => r.json()).then(ps => {
+        console.log(ps)
+      });
     })
   })
 

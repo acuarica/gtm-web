@@ -1,9 +1,10 @@
 <script>
   import { onMount } from "svelte";
-  import { Chart } from "chart.js";
-  import JQ from "jquery";
-  import "bootstrap";
-  import "bootstrap-select";
+  // import { Chart } from "chart.js";
+  import * as Chart from "chart.js";
+  // import * as JQ from "jquery";
+  // import "bootstrap";
+  // import "bootstrap-select";
   import "chartjs-plugin-colorschemes";
 
   export let palette = [
@@ -18,7 +19,7 @@
   let select;
 
   onMount(() => {
-    JQ(select).selectpicker();
+    // JQ(select).selectpicker();
   });
 
   const options = palette.map(e => {

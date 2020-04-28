@@ -3,11 +3,16 @@
   import { computeStats } from "./gtm";
   import Settings from "./components/Settings.svelte";
   import Progress from "./components/Progress.svelte";
+  import Select from "./components/Select.svelte";
   import DateRangePicker from "./components/DateRangePicker.svelte";
   import Summary from "./components/Summary.svelte";
   import Projects from "./components/Projects.svelte";
   import Timeline from "./components/Timeline.svelte";
   import Commits from "./components/Commits.svelte";
+
+  export let fetchCommits;
+  export let fetchProjectList;
+  export let fetchWorkDirStatus;
 
   const navs = [
     { title: "Summary", view: Summary },
@@ -19,15 +24,11 @@
   let view = Summary;
   let toggleSettings = false;
   let promise = new Promise((_resolve, _reject) => {});
+  let projectList = [];
 
-  // Chart.defaults.global.plugins.colorschemes.scheme = "tableau.Tableau10";
-
-  async function fetchCommits(range) {
-    const commitsDataUrl = "/data/commits";
-    const url = `${commitsDataUrl}?all&from=${range.start}&to=${range.end}`;
-    const json = await fetch(url).then(r => r.json());
-    return json;
-  }
+  onMount(async () => {
+    projectList = await fetchProjectList();
+  });
 
   function handleRangeChange(event) {
     console.log("handle range");
@@ -42,7 +43,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="#">
-    <img src="../assets/gtm-logo.png" width="82" height="34" alt="gtm Logo" />
+    <img src="./assets/gtm-logo.png" width="82" height="34" alt="gtm Logo" />
     Dashboard
   </a>
   <button
@@ -74,9 +75,10 @@
       {/each}
     </ul>
     <DateRangePicker on:change={handleRangeChange} />
-    <!-- <DateRangePicker
-      on:change={event => (promise = fetchCommits(event.detail))} /> -->
     <form class="form-inline my-2 my-md-0">
+      {#if projectList.length > 0}
+        <Select options={projectList} multiple />
+      {/if}
       <input
         class="form-control mr-sm-2 form-control-sm"
         type="text"

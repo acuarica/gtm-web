@@ -29,11 +29,11 @@ export type Commit = {
     Files: {
       SourceFile: string;
       TimeSpent: Seconds;
-      Timeline: { [id: number]: Seconds };
-      Status: 'm' | 'r' | 'd';
+      Timeline: { [id: string]: Seconds };
+      Status: string;
     }[];
   };
-  timeSpent: Seconds;
+  timeSpent?: Seconds;
 }
 
 ///
@@ -106,7 +106,7 @@ export function computeStats(commits: Commit[]): { projects: ProjectMap; totalSe
         hourline.total += secs;
         fileSecs += secs;
         totalSecs += secs
-        console.assert(Object.keys(status).includes(file.Status), `Unexpected status '${file.Status}' for file ${file.SourceFile}`)
+        // console.assert(Object.keys(status).includes(file.Status), `Unexpected status '${file.Status}' for file ${file.SourceFile}`)
         status[file.Status] += secs
       }
       if (fileSecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
