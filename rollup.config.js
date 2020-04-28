@@ -17,18 +17,13 @@ export default {
     dir: 'dist',
     format: 'iife',
     sourcemap: true,
-    globals: {
-      // 'jquery': 'JQ',
-    },
   },
   plugins: [
-
-
-    copy({
-      assets: [
-        "src/assets",
-      ],
-    }),
+    // copy({
+    //   assets: [
+    //     "src/assets",
+    //   ],
+    // }),
 
     json(), // only in dev
 
@@ -49,7 +44,8 @@ export default {
       //   include: 'src'
       // }
     ),
-    commonjs({ include: "node_modules/**", extensions: [".js", ".ts"] }),
+    // commonjs({ include: "node_modules/**", extensions: [".js", ".ts"] }),
+    commonjs({ sourceMap: false }),
     // commonjs(),
     resolve({
       browser: true,
