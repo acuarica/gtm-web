@@ -15,9 +15,12 @@
   "files": [
     "dist"
   ],
+  "browserslist": [
+    "last 1 chrome versions"
+  ],
   "scripts": {
-    "dev4": "parcel build index.html",
     "dev": "rollup --config --watch",
+    "hmr": "parcel serve index.html --no-source-maps",
     "serve": "cp -v -r src/assets dist/ && parcel serve index.html --no-source-maps --no-hmr",
     "build2": "parcel build index.html --no-source-maps --public-url /gtm-web/ && cp -v data-commits.json dist/",
     "build": "parcel build index.html --no-source-maps && cp -v data-commits.json dist/",
@@ -49,6 +52,8 @@
     "autoprefixer": "^9.7.6",
     "eslint": "^6.8.0",
     "mocha": "^7.1.1",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-svelte": "^4.0.6",
     "postcss": "^7.0.27",
     "postcss-import": "^12.0.1",
     "rollup": "^2.7.3",
