@@ -1,8 +1,13 @@
+
+// import '@fortawesome/free-solid-svg-icon'
+import '@fortawesome/fontawesome-free/css/all.css'
+
 import App from './App.svelte'
 
 import commits from './commits.json'
 // import { Commit } from './gtm';
 
+import "./main.css";
 
 new App({
   target: document.body,

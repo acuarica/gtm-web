@@ -1,6 +1,7 @@
 <script>
   import { onMount, setContext } from "svelte";
   import { computeStats } from "./gtm";
+  import Navbar from "./components/Navbar.svelte";
   import Settings from "./components/Settings.svelte";
   import Progress from "./components/Progress.svelte";
   import Select from "./components/Select.svelte";
@@ -12,7 +13,7 @@
 
   export let fetchCommits;
   export let fetchProjectList;
-  export let fetchWorkDirStatus;
+  export const fetchWorkDirStatus = null;
 
   const navs = [
     { title: "Summary", view: Summary },
@@ -41,8 +42,10 @@
   <Settings />
 {/if}
 
+<Navbar></Navbar>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">
+  <a class="navbar-brand" href="#a">
     <img src="./assets/gtm-logo.png" width="82" height="34" alt="gtm Logo" />
     Dashboard
   </a>
@@ -59,7 +62,7 @@
   <div class="collapse navbar-collapse" id="main-navbar">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="#3">
           <i class="fas fa-home" />
         </a>
       </li>
@@ -88,6 +91,7 @@
         on:click={() => (toggleSettings = !toggleSettings)}
         type="button">
         <i class="fas fa-cog" />
+        asdf
       </button>
     </form>
   </div>

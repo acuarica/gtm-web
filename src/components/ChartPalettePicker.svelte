@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  // import { Chart } from "chart.js";
-  import * as Chart from "chart.js";
+  import Chart from "chart.js";
+  // import * as Chart from "chart.js";
   // import * as JQ from "jquery";
   // import "bootstrap";
   // import "bootstrap-select";

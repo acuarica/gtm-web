@@ -4,7 +4,7 @@
   import { getDaily } from "../gtm";
   import "chartjs-chart-matrix";
 
-  export let commits = null;
+  export const commits = null;
   export let map = null;
 </script>
 

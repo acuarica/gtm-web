@@ -3,7 +3,7 @@
   import Commit from "./Commit.svelte";
 
   export let commits = null;
-  export let map = null;
+  export const map = null;
 </script>
 
 <div class="list-group list-group-flush">

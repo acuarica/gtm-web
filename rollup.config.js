@@ -7,6 +7,9 @@ const html = require('@rollup/plugin-html');
 import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
 import json from '@rollup/plugin-json';
+import postcss from 'rollup-plugin-postcss'
+import copy from "rollup-plugin-copy-assets";
+
 
 export default {
   input: './src/index.ts',
@@ -19,7 +22,20 @@ export default {
     },
   },
   plugins: [
+
+
+    copy({
+      assets: [
+        "src/assets",
+      ],
+    }),
+
     json(), // only in dev
+
+    postcss({
+      extract: true
+    }),
+
     svelte({
       ...svelteOptions,
 
@@ -35,19 +51,18 @@ export default {
     ),
     commonjs({ include: "node_modules/**", extensions: [".js", ".ts"] }),
     // commonjs(),
-    resolve({ browser: true ,
-    
+    resolve({
+      browser: true,
+
       dedupe: importee =>
         importee === "svelte" || importee.startsWith("svelte/")
-    
+
     }),
     html(),
     serve({
-      verbose: true,
-      contentBase:'dist'}),
-      livereload('dist'),
-
-
-
+      port: 1234,
+      contentBase: 'dist'
+    }),
+    livereload('dist'),
   ]
 };
