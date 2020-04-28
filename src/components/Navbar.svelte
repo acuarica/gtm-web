@@ -1,8 +1,23 @@
 <script>
+  import ChartPalettePicker from "./ChartPalettePicker.svelte";
+
   let items = ["Working Tree", "Summary", "Timeline", "Projects", "Commits"];
 
   let isOpen = false;
+  let toggleSettings = false;
 </script>
+
+{#if toggleSettings}
+  <div class="bg-gray-600 p-4">
+    <h4 class="text-white">Settings</h4>
+    <form>
+      <div class="form-group">
+        <label class="text-light">Color Pallette for Charts</label>
+        <ChartPalettePicker classes="form-control" />
+      </div>
+    </form>
+  </div>
+{/if}
 
 <header class="bg-gray-700 sm:flex sm:justify-between">
   <div class="flex items-center justify-between px-4 py-1">
@@ -42,5 +57,14 @@
         {item}
       </a>
     {/each}
+
+    <button
+      class="text-white px-2 py-1 mr-2 hidden sm:block focus:outline-none
+      rounded hover:bg-gray-800"
+      on:click={() => (toggleSettings = !toggleSettings)}
+      type="button">
+      <i class="fas fa-cog" />
+    </button>
+
   </div>
 </header>

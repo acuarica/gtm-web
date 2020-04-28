@@ -2,7 +2,6 @@
   import { onMount, setContext } from "svelte";
   import { computeStats } from "./gtm";
   import Navbar from "./components/Navbar.svelte";
-  import Settings from "./components/Settings.svelte";
   import Progress from "./components/Progress.svelte";
   import Select from "./components/Select.svelte";
   import DateRangePicker from "./components/DateRangePicker.svelte";
@@ -23,7 +22,6 @@
   ];
 
   let view = Summary;
-  let toggleSettings = false;
   let promise = new Promise((_resolve, _reject) => {});
   let projectList = [];
 
@@ -38,27 +36,9 @@
   }
 </script>
 
-{#if toggleSettings}
-  <Settings />
-{/if}
-
-<Navbar></Navbar>
+<Navbar />
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#a">
-    <img src="./assets/gtm-logo.png" width="82" height="34" alt="gtm Logo" />
-    Dashboard
-  </a>
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#main-navbar"
-    aria-controls="main-navbar"
-    aria-expanded="false"
-    aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon" />
-  </button>
   <div class="collapse navbar-collapse" id="main-navbar">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
@@ -86,13 +66,6 @@
         class="form-control mr-sm-2 form-control-sm"
         type="text"
         placeholder="Search in commits ..." />
-      <button
-        class="btn btn-outline-secondary btn-sm"
-        on:click={() => (toggleSettings = !toggleSettings)}
-        type="button">
-        <i class="fas fa-cog" />
-        asdf
-      </button>
     </form>
   </div>
 </nav>
