@@ -1,0 +1,10 @@
+[ver:1,total:1918]
+.gtm/terminal.app:722,1588057200:275,1588060800:447,r
+src/index.ts:476,1588060800:476,r
+rollup.config.js:295,1588057200:30,1588060800:265,m
+.parcelrc:155,1588057200:155,r
+tsconfig.json:150,1588060800:150,r
+index.html:79,1588057200:60,1588060800:19,r
+.gitignore:22,1588060800:22,r
+postcss.config.js:12,1588060800:12,r
+node_modules/svelte/types/runtime/ambient.d.ts:7,1588060800:7,r
