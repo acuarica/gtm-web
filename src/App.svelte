@@ -1,6 +1,5 @@
 <script>
   import { onMount, setContext } from "svelte";
-  import { fly, slide } from "svelte/transition";
   import { computeStats } from "./gtm";
   import router from "page";
   import Navbar from "./components/Navbar.svelte";
@@ -23,7 +22,7 @@
   ];
 
   let view = Summary;
-  let promise = new Promise((_resolve, _reject) => {});
+  let promise = new Promise((_resolve, _reject) => { });
   let projectList = [];
   let workdirStatus;
 
@@ -63,32 +62,19 @@
     <div class="flex flex-1 w-screen">
       <div class="flex flex-row w-full">
         <div class="w-56 flex-shrink-0 bg-gray-500 p-3">
-          <button
-            type="button"
-            class="w-5 focus:outline-none"
-            on:click={() => (toggleProjects = !toggleProjects)}>
-            {#if toggleProjects}
-              <i class="fas fa-chevron-down" />
-            {:else}
-              <i class="fas fa-chevron-right" />
-            {/if}
-          </button>
 
-          <a class="text-lg rounded hover:bg-gray-400" href="/projects">
-            Projects
+          <a class="block py-1 pl-1 text-lg rounded hover:bg-gray-600 hover:text-gray-300" href="/projects">
+            <i class="fas fa-tasks" />
+            All Projects
           </a>
 
-          {#if toggleProjects}
-            <div transition:slide={{ delay: 0, duration: 100 }}>
-              {#each projectList as project}
-                <a
-                  class="block py-1 pl-6 rounded hover:bg-gray-400"
+          {#each projectList as project}
+              <a
+                  class="block py-1 pl-6 rounded hover:bg-gray-600 hover:text-gray-300"
                   href="/projects/{project}">
                   {project}
                 </a>
-              {/each}
-            </div>
-          {/if}
+                {/each}
         </div>
 
         <div class="flex-1 w-auto flex-col bg-blue-100">
