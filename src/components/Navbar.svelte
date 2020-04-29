@@ -1,7 +1,10 @@
 <script>
+  import DatePicker from "./DatePicker.svelte";
+  import DateRangePicker from "./DateRangePicker.svelte";
   import ChartPalettePicker from "./ChartPalettePicker.svelte";
 
   export let navs;
+  export let handleRangeChange;
 
   let isOpen = false;
   let toggleSettings = false;
@@ -53,11 +56,16 @@
 
     {#each navs as nav}
       <a
-        href="{nav.href}"
+        href={nav.href}
         class="block sm:mx-2 mt-1 px-2 py-1 text-white rounded hover:bg-gray-800">
         {nav.title}
       </a>
     {/each}
+
+    <input type="text" placeholder="Search in commits ..." />
+
+    <DateRangePicker on:change={handleRangeChange} />
+    <DatePicker />
 
     <button
       class="text-white px-2 py-1 mr-2 hidden sm:block focus:outline-none

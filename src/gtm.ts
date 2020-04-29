@@ -16,6 +16,23 @@ export function hhmm(secs: number): string {
 ///
 export type Seconds = number
 
+///
+export type WorkdirStatus = {
+  Total: Seconds;
+  Label: string;
+  CommitNote: CommitNote;
+}
+
+///
+export type CommitNote = {
+  Files: {
+    SourceFile: string;
+    TimeSpent: Seconds;
+    Timeline: { [id: string]: Seconds };
+    Status: string;
+  }[];
+}
+
 /// 
 export type Commit = {
   Author: string;
@@ -25,14 +42,7 @@ export type Commit = {
   Subject: string;
   Project: string;
   Message: string;
-  Note: {
-    Files: {
-      SourceFile: string;
-      TimeSpent: Seconds;
-      Timeline: { [id: string]: Seconds };
-      Status: string;
-    }[];
-  };
+  Note: CommitNote;
   timeSpent?: Seconds;
 }
 
@@ -64,7 +74,16 @@ export type FileStatus<T> = { [s: string]: T }
 /// Hours is expressed by the total field in seconds.
 export type DailyHours = { [date: string]: { total: number } }
 
-export function computeStats(commits: Commit[]): { projects: ProjectMap; totalSecs: Seconds; status: FileStatus<Seconds> } {
+///
+export function computeStats(commits: {
+  Project: string;
+  Note: CommitNote;
+  timeSpent: Seconds;
+}[]): {
+  projects: ProjectMap;
+  totalSecs: Seconds;
+  status: FileStatus<Seconds>;
+} {
   const projects: ProjectMap = {};
   const status: FileStatus<Seconds> = { 'm': 0, 'r': 0, 'd': 0 }
   let totalSecs: Seconds = 0
@@ -142,4 +161,14 @@ export function getDaily(projects: ProjectMap): DailyHours {
   }
 
   return daily
+}
+
+export function computeWorkdirStatus(wds: { [p: string]: WorkdirStatus }): ReturnType<typeof computeStats> {
+  const commits = []
+  for (const p in wds) {
+    const cn = wds[p]
+    commits.push({ Project: p, Note: cn.CommitNote, timeSpent: 0 })
+  }
+
+  return computeStats(commits)
 }

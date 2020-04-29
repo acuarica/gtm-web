@@ -6,7 +6,7 @@ import App from './App.svelte'
 
 import commits from './data-commits.json'
 import projects from './data-projects.json'
-// import { Commit } from './gtm';
+import workdir from './data-workdir.json'
 
 import "./main.css";
 
@@ -15,6 +15,7 @@ new App({
   props: {
     fetchCommits: async (): Promise<any[]> => commits,
     fetchProjectList: async (): Promise<string[]> => projects.map(p => p.substring(p.lastIndexOf("/") + 1)),
+    fetchWorkdirStatus: async (): Promise<any> => workdir,
   }
 });
 

@@ -2,12 +2,11 @@
   import { getDaily } from "../gtm";
   import Commit from "./Commit.svelte";
 
-  export let commits = null;
-  export const map = null;
+  export let config;
 </script>
 
 <div>
-  {#each commits as commit}
+  {#each config.commits as commit}
     <Commit {commit} />
   {/each}
 </div>
