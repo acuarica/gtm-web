@@ -11,6 +11,7 @@
     var start = moment().subtract(29, "days");
     var end = moment();
 
+console.log(start,end)
     function cb(start, end) {
       // JQ(datetext).html(
       //   start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY")

@@ -1,5 +1,24 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
+  import moment from "moment";
+
+  const ranges = {
+    Today: [moment(), moment()],
+    Yesterday: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+    "Last 7 Days": [moment().subtract(6, "days"), moment()],
+    "Last 30 Days": [moment().subtract(29, "days"), moment()],
+    "This Month": [moment().startOf("month"), moment().endOf("month")],
+    "Last Month": [
+      moment()
+        .subtract(1, "month")
+        .startOf("month"),
+      moment()
+        .subtract(1, "month")
+        .endOf("month")
+    ]
+  };
+
+  const dispatch = createEventDispatcher();
 
   const MONTH_NAMES = [
     "January",
@@ -19,7 +38,7 @@
 
   let datepickerValue = "";
   let month = "";
-  let showDatepicker = false;
+  let showDatepicker = true;
   let year = "";
   let no_of_days = [];
   let blankdays = [];
@@ -31,10 +50,28 @@
     return today.toDateString() === d.toDateString();
   }
 
+  function selectRange(text, [start, end]) {
+    datepickerValue = text;
+    showDatepicker = false;
+
+    dispatch("change", {
+      start: start.format("YYYY-MM-DD"),
+      end: end.format("YYYY-MM-DD")
+    });
+  }
+
   function getDateValue(day) {
     const selectedDate = new Date(year, month, day);
     datepickerValue = selectedDate.toDateString();
     showDatepicker = false;
+
+    const start = moment(selectedDate);
+    const end = moment();
+
+    dispatch("change", {
+      start: start.format("YYYY-MM-DD"),
+      end: end.format("YYYY-MM-DD")
+    });
   }
 
   function nextMonth() {
@@ -92,6 +129,9 @@
     datepickerValue = new Date(year, month, today.getDate()).toDateString();
 
     getNoOfDays();
+
+    const defaultRange = "Last 30 Days";
+    selectRange(defaultRange, ranges[defaultRange]);
   });
 </script>
 
@@ -132,88 +172,105 @@
   {#if showDatepicker}
     <div
       class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0"
-      style="width: 17rem"
-      click.away="showDatepicker = false">
+      style="width: 21rem">
 
-      <div class="flex justify-between items-center mb-2">
-        <div>
-          <span class="text-lg font-bold text-gray-800">
-            {MONTH_NAMES[month]}
-          </span>
-          <span class="ml-1 text-lg text-gray-600 font-normal">{year}</span>
-        </div>
-        <div>
-          <button
-            type="button"
-            class="transition ease-in-out duration-100 inline-flex
-            cursor-pointer hover:bg-gray-200 focus:outline-none p-1 rounded-full"
-            on:click={() => {
-              prevMonth();
-              getNoOfDays();
-            }}>
-            <svg
-              class="h-6 w-6 text-gray-500 inline-flex"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            class="transition ease-in-out duration-100 inline-flex
-            cursor-pointer hover:bg-gray-200 focus:outline-none p-1 rounded-full"
-            on:click={() => {
-              nextMonth();
-              getNoOfDays();
-            }}>
-            <svg
-              class="h-6 w-6 text-gray-500 inline-flex"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </div>
+      <div class="flex">
+        <div class="wd-48">
+          {#each Object.entries(ranges) as [text, range]}
+            <button
+              class="block"
+              type="button"
+              on:click={() => selectRange(text, range)}>
+              {text}
+            </button>
+          {/each}
 
-      <div class="flex flex-wrap mb-3 -mx-1">
-        {#each DAYS as day}
-          <div style="width: 14.26%" class="px-1">
-            <div class="text-gray-800 font-medium text-center text-xs">
-              {day}
+        </div>
+        <div class="flex-1">
+          <div class="flex justify-between items-center mb-2">
+            <div>
+              <span class="text-lg font-bold text-gray-800">
+                {MONTH_NAMES[month]}
+              </span>
+              <span class="ml-1 text-lg text-gray-600 font-normal">{year}</span>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="transition ease-in-out duration-100 inline-flex
+                cursor-pointer hover:bg-gray-200 focus:outline-none p-1
+                rounded-full"
+                on:click={() => {
+                  prevMonth();
+                  getNoOfDays();
+                }}>
+                <svg
+                  class="h-6 w-6 text-gray-500 inline-flex"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="transition ease-in-out duration-100 inline-flex
+                cursor-pointer hover:bg-gray-200 focus:outline-none p-1
+                rounded-full"
+                on:click={() => {
+                  nextMonth();
+                  getNoOfDays();
+                }}>
+                <svg
+                  class="h-6 w-6 text-gray-500 inline-flex"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
           </div>
-        {/each}
-      </div>
 
-      <div class="flex flex-wrap -mx-1">
-        {#each blankdays as blankday}
-          <div
-            style="width: 14.28%"
-            class="text-center border p-1 border-transparent text-sm" />
-        {/each}
-        {#each no_of_days as day}
-          <div style="width: 14.28%" class="px-1 mb-1">
-            <div
-              on:click={() => getDateValue(day)}
-              class="cursor-pointer text-center text-sm leading-none
-              rounded-full leading-loose transition ease-in-out duration-100 {isToday(day) ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-blue-200'}">
-              {day}
-            </div>
+          <div class="flex flex-wrap mb-3 -mx-1">
+            {#each DAYS as day}
+              <div style="width: 14.26%" class="px-1">
+                <div class="text-gray-800 font-medium text-center text-xs">
+                  {day}
+                </div>
+              </div>
+            {/each}
           </div>
-        {/each}
-      </div>
 
+          <div class="flex flex-wrap -mx-1">
+            {#each blankdays as blankday}
+              <div
+                style="width: 14.28%"
+                class="text-center border p-1 border-transparent text-sm" />
+            {/each}
+            {#each no_of_days as day}
+              <div style="width: 14.28%" class="px-1 mb-1">
+                <div
+                  on:click={() => getDateValue(day)}
+                  class="cursor-pointer text-center text-sm leading-none
+                  rounded-full leading-loose transition ease-in-out duration-100
+                  {isToday(day) ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-blue-200'}">
+                  {day}
+                </div>
+              </div>
+            {/each}
+          </div>
+
+        </div>
+      </div>
     </div>
   {/if}
 </div>

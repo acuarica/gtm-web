@@ -1,4 +1,5 @@
 <script>
+  import SearchBox from "./SearchBox.svelte";
   import DatePicker from "./DatePicker.svelte";
   import DateRangePicker from "./DateRangePicker.svelte";
   import ChartPalettePicker from "./ChartPalettePicker.svelte";
@@ -55,10 +56,9 @@
   </div>
   <div class="px-2 pb-1 sm:flex sm:items-center {isOpen ? 'block' : 'hidden'}">
 
-    <DateRangePicker on:change={handleRangeChange} />
-    <DatePicker />
+    <DatePicker on:change={handleRangeChange} />
 
-    <input type="text" placeholder="Search in commits ..." />
+    <SearchBox />
 
     <button
       class="text-white px-2 py-1 mr-2 hidden sm:block focus:outline-none
