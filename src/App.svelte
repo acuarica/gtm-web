@@ -1,9 +1,13 @@
 <script>
   import { onMount, setContext } from "svelte";
+  import { fly, slide } from "svelte/transition";
   import { computeStats } from "./gtm";
+  import router from "page";
+  import Gear from "./components/Gear.svelte";
   import Navbar from "./components/Navbar.svelte";
   import Progress from "./components/Progress.svelte";
   import Select from "./components/Select.svelte";
+  import DatePicker from "./components/DatePicker.svelte";
   import DateRangePicker from "./components/DateRangePicker.svelte";
   import Summary from "./components/Summary.svelte";
   import Projects from "./components/Projects.svelte";
@@ -15,15 +19,22 @@
   export const fetchWorkDirStatus = null;
 
   const navs = [
-    { title: "Summary", view: Summary },
-    { title: "Projects", view: Projects },
-    { title: "Timeline", view: Timeline },
-    { title: "Commits", view: Commits }
+    { title: "Working Trees", view: Summary, href: "/" },
+    { title: "Timeline", view: Timeline, href: "/timeline" },
+    { title: "Projects", view: Projects, href: "/projects" },
+    { title: "Commits", view: Commits, href: "/commits" }
   ];
 
   let view = Summary;
   let promise = new Promise((_resolve, _reject) => {});
   let projectList = [];
+
+  let toggleProjects = true;
+
+  for (const nav of navs) {
+    router(nav.href, () => (view = nav.view));
+  }
+  router.start();
 
   onMount(async () => {
     projectList = await fetchProjectList();
@@ -36,46 +47,60 @@
   }
 </script>
 
-<Navbar />
+<div class="antialiased sans-serif h-screen bg-red-300">
+  <div class="flex flex-col h-full">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="collapse navbar-collapse" id="main-navbar">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#3">
-          <i class="fas fa-home" />
-        </a>
-      </li>
-      {#each navs as nav}
-        <li class="nav-item">
+    <Navbar {navs} />
+
+    <div class="flex flex-1 bg-yellow-400">
+      <div class="flex flex-row">
+        <div class="w-56 bg-gray-500 p-3">
           <button
             type="button"
-            class="nav-link btn btn-link"
-            on:click={() => (view = nav.view)}>
-            {nav.title}
+            class="w-5 focus:outline-none"
+            on:click={() => (toggleProjects = !toggleProjects)}>
+            {#if toggleProjects}
+              <i class="fas fa-chevron-down" />
+            {:else}
+              <i class="fas fa-chevron-right" />
+            {/if}
           </button>
-        </li>
-      {/each}
-    </ul>
-    <DateRangePicker on:change={handleRangeChange} />
-    <form class="form-inline my-2 my-md-0">
-      {#if projectList.length > 0}
-        <Select options={projectList} multiple />
-      {/if}
-      <input
-        class="form-control mr-sm-2 form-control-sm"
-        type="text"
-        placeholder="Search in commits ..." />
-    </form>
-  </div>
-</nav>
 
-{#await promise}
-  <Progress />
-{:then commits}
-  <div class="container-fluid">
-    <svelte:component this={view} {commits} map={computeStats(commits)} />
+          <a class="text-lg rounded hover:bg-gray-400" href="/projects">Projects</a>
+
+          {#if toggleProjects}
+            <div transition:slide={{ delay: 0, duration: 100 }}>
+              {#each projectList as project}
+                <a class="block py-1 pl-6 rounded hover:bg-gray-400" href="/projects/{project}">
+                  {project}
+                </a>
+              {/each}
+            </div>
+          {/if}
+        </div>
+
+        <div class="w-64 bg-blue-100">
+          <DateRangePicker on:change={handleRangeChange} />
+          {#await promise}
+            <Progress />
+          {:then commits}
+            <div>
+              <input type="text" placeholder="Search in commits ..." />
+              <DatePicker />
+              {#if projectList.length > 0}
+                <Select options={projectList} multiple />
+              {/if}
+              <svelte:component
+                this={view}
+                {commits}
+                map={computeStats(commits)} />
+            </div>
+          {:catch error}
+            <p style="color: red">{error.message}</p>
+          {/await}
+        </div>
+
+      </div>
+    </div>
   </div>
-{:catch error}
-  <p style="color: red">{error.message}</p>
-{/await}
+</div>

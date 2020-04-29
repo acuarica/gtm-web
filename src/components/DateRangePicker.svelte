@@ -55,7 +55,7 @@
 
 <span
   bind:this={reportrange}
-  class="navbar-text mr-sm-2"
+  class="hidden navbar-text mr-sm-2"
   style="cursor: pointer">
   <i class="fa fa-calendar" />
   &nbsp;

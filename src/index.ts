@@ -4,7 +4,8 @@ import '@fortawesome/fontawesome-free/css/all.css'
 
 import App from './App.svelte'
 
-import commits from './commits.json'
+import commits from './data-commits.json'
+import projects from './data-projects.json'
 // import { Commit } from './gtm';
 
 import "./main.css";
@@ -13,7 +14,7 @@ new App({
   target: document.body,
   props: {
     fetchCommits: async (): Promise<any[]> => commits,
-    fetchProjectList: async (): Promise<string[]> => ['proj1', 'proj2', 'proj3'],
+    fetchProjectList: async (): Promise<string[]> => projects.map(p => p.substring(p.lastIndexOf("/") + 1)),
   }
 });
 

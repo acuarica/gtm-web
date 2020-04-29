@@ -1,7 +1,7 @@
 <script>
   import ChartPalettePicker from "./ChartPalettePicker.svelte";
 
-  let items = ["Working Tree", "Summary", "Timeline", "Projects", "Commits"];
+  export let navs;
 
   let isOpen = false;
   let toggleSettings = false;
@@ -11,9 +11,9 @@
   <div class="bg-gray-600 p-4">
     <h4 class="text-white">Settings</h4>
     <form>
-      <div class="form-group">
+      <div class="form-group2">
         <label class="text-light">Color Pallette for Charts</label>
-        <ChartPalettePicker classes="form-control" />
+        <ChartPalettePicker classes="form-control4" />
       </div>
     </form>
   </div>
@@ -22,7 +22,7 @@
 <header class="bg-gray-700 sm:flex sm:justify-between">
   <div class="flex items-center justify-between px-4 py-1">
     <div>
-      <img class="inline h-8" src="./assets/gtm-logo.png" alt="gtm Logo" />
+      <img class="inline h-8" src="/assets/gtm-logo.png" alt="gtm Logo" />
       <span class="text-white">Dashboard</span>
     </div>
     <div class="sm:hidden">
@@ -50,11 +50,12 @@
     </div>
   </div>
   <div class="px-2 pb-1 sm:flex sm:items-center {isOpen ? 'block' : 'hidden'}">
-    {#each items as item}
+
+    {#each navs as nav}
       <a
-        href="12"
+        href="{nav.href}"
         class="block sm:mx-2 mt-1 px-2 py-1 text-white rounded hover:bg-gray-800">
-        {item}
+        {nav.title}
       </a>
     {/each}
 

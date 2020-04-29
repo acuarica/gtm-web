@@ -6,8 +6,7 @@
   export const map = null;
 </script>
 
-<div class="list-group list-group-flush">
-  <div id="commitsPlaceholder" />
+<div>
   {#each commits as commit}
     <Commit {commit} />
   {/each}
