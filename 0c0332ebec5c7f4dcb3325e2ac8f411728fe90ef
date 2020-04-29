@@ -1,0 +1,5 @@
+[ver:1,total:1200]
+src/index.ts:790,1588161600:520,1588165200:270,m
+.gtm/terminal.app:290,1588161600:260,1588165200:30,r
+src/app/App.svelte:80,1588161600:80,r
+src/app/components/Navbar.svelte:40,1588161600:40,r
