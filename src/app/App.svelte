@@ -1,14 +1,14 @@
 <script>
   import { onMount, setContext } from "svelte";
-  import { computeStats } from "./gtm";
+  import { computeStats } from "../gtm";
   import router from "page";
   import Navbar from "./components/Navbar.svelte";
   import Progress from "./components/Progress.svelte";
   import Select from "./components/Select.svelte";
-  import Summary from "./components/Summary.svelte";
-  import Projects from "./components/Projects.svelte";
-  import Timeline from "./components/Timeline.svelte";
-  import Commits from "./components/Commits.svelte";
+  import Summary from "./Summary.svelte";
+  import Projects from "./Projects.svelte";
+  import Timeline from "./Timeline.svelte";
+  import Commits from "./Commits.svelte";
 
   export let fetchCommits;
   export let fetchProjectList;

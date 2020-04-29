@@ -5,9 +5,9 @@
     projectTotalsChartConfig
   } from "../charts";
   import { hhmm } from "./../gtm";
-  import Chart from "./Chart.svelte";
+  import Chart from "./components/Chart.svelte";
   import Timeline from "./Timeline.svelte";
-  import DashboardCard from "./DashboardCard.svelte";
+  import DashboardCard from "./components/DashboardCard.svelte";
 
   export let config;
 
