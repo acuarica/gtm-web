@@ -8,14 +8,16 @@ import commits from './data-commits.json'
 import projects from './data-projects.json'
 import workdir from './data-workdir.json'
 
-import "./main.css";
-
 new App({
   target: document.body,
   props: {
-    fetchCommits: async (): Promise<any[]> => commits,
-    fetchProjectList: async (): Promise<string[]> => projects.map(p => p.substring(p.lastIndexOf("/") + 1)),
-    fetchWorkdirStatus: async (): Promise<any> => workdir,
+    fetchCommits: async (): Promise<typeof commits> => {
+      return commits
+    },
+    fetchProjectList: async (): Promise<string[]> => {
+      return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
+    },
+    fetchWorkdirStatus: async (): Promise<typeof workdir> => workdir,
   }
 });
 
