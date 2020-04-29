@@ -41,8 +41,6 @@ new App({
 //   // return json.map(p => p.substring(p.lastIndexOf("/") + 1));
 // }
 
-
-
 // let commitsDataUrl: string
 // if (true || process.env.NODE_ENV === 'development') {
 //   commitsDataUrl = '/data/commits'
@@ -50,14 +48,3 @@ new App({
 // } else {
 //   commitsDataUrl = '/gtm-web/data-commits.json'
 // }
-
-//     const commitCounts: number[] = []
-//     const datasets = []
-//     for (const pname in projects) {
-//       const p = projects[pname]
-//       commitCounts.push(p.commitcount)
-//       datasets.push({
-//         data: [p.total],
-//         label: pname,
-//       })
-//     }
