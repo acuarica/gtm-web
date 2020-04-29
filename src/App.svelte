@@ -3,7 +3,6 @@
   import { fly, slide } from "svelte/transition";
   import { computeStats } from "./gtm";
   import router from "page";
-  import Gear from "./components/Gear.svelte";
   import Navbar from "./components/Navbar.svelte";
   import Progress from "./components/Progress.svelte";
   import Select from "./components/Select.svelte";

@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "dev": "rollup --config --watch",
-    "hmr": "parcel serve index.html --no-source-maps",
+    "hmr": "cp -v -r src/assets dist/ && parcel serve index.html --no-source-maps",
     "serve": "cp -v -r src/assets dist/ && parcel serve index.html --no-source-maps --no-hmr",
     "build2": "parcel build index.html --no-source-maps --public-url /gtm-web/ && cp -v data-commits.json dist/",
     "build": "parcel build index.html --no-source-maps && cp -v data-commits.json dist/",
