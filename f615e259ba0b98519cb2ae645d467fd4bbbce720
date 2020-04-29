@@ -1,0 +1,10 @@
+[ver:1,total:4440]
+src/app/components/DatePicker.svelte:2027,1588154400:600,1588158000:720,1588161600:707,m
+src/app/components/SearchBox.svelte:1539,1588150800:30,1588154400:1500,1588161600:9,m
+src/app/components/Navbar.svelte:361,1588150800:30,1588154400:191,1588161600:140,m
+src/app/components/DateRangePicker.svelte:349,1588154400:349,m
+src/app/Projects.svelte:67,1588154400:45,1588161600:22,r
+.gtm/terminal.app:60,1588154400:60,r
+package.json:15,1588154400:15,r
+src/app/App.svelte:15,1588161600:15,r
+test/navbar.ts:7,1588161600:7,r
