@@ -1,0 +1,14 @@
+[ver:1,total:6420]
+src/App.svelte:2227,1588122000:1887,1588125600:328,1588129200:12,m
+src/gtm.ts:1674,1588122000:370,1588125600:1292,1588129200:12,m
+src/components/Timeline.svelte:1209,1588122000:242,1588125600:943,1588129200:24,m
+src/components/Summary.svelte:450,1588122000:391,1588125600:47,1588129200:12,m
+src/components/Chart.svelte:250,1588122000:40,1588125600:210,m
+src/data-workdir.json:150,1588122000:150,m
+src/index.ts:140,1588122000:140,m
+src/components/Navbar.svelte:130,1588122000:130,m
+src/components/DateRangePicker.svelte:60,1588122000:60,r
+src/components/Commits.svelte:40,1588122000:40,m
+.gtm/terminal.app:40,1588122000:40,r
+package.json:30,1588122000:30,r
+src/components/Projects.svelte:20,1588122000:20,r
