@@ -1,0 +1,8 @@
+[ver:1,total:530]
+src/app/App.svelte:182,1588150800:182,r
+src/app/Summary.svelte:140,1588150800:140,r
+src/gtm.ts:92,1588150800:92,r
+src/index.ts:47,1588150800:47,m
+src/app/components/DashboardCard.svelte:30,1588150800:30,r
+src/app/Timeline.svelte:24,1588150800:24,r
+src/charts.ts:15,1588150800:15,r
