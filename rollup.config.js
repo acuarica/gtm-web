@@ -10,11 +10,12 @@ import json from '@rollup/plugin-json';
 import postcss from 'rollup-plugin-postcss'
 import copy from "rollup-plugin-copy-assets";
 
+const production = !process.env.ROLLUP_WATCH;
 
 export default {
   input: './src/index.ts',
   output: {
-    dir: 'dist',
+    dir: 'dist/rollup',
     format: 'iife',
     sourcemap: true,
   },
@@ -49,16 +50,14 @@ export default {
     // commonjs(),
     resolve({
       browser: true,
-
       dedupe: importee =>
         importee === "svelte" || importee.startsWith("svelte/")
-
     }),
     html(),
     serve({
       port: 1234,
       contentBase: 'dist'
     }),
-    livereload('dist'),
+    !production && livereload('dist'),
   ]
 };
