@@ -1,2 +1,6 @@
+<script>
+  export let config;
+</script>
 
-Projects
+<div>Projects</div>
+<div>{config.currentProject}</div>

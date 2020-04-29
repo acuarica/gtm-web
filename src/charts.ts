@@ -39,10 +39,10 @@ export function timeByFileStatusChartConfig(): ChartConfiguration {
 ///
 export function projectTotalsChartConfig(): ChartConfiguration {
   return {
-    type: 'horizontalBar',
+    type: 'bar',
     plugins: [ChartDataLabels],
     options: {
-      maintainAspectRatio: false,
+      // maintainAspectRatio: false,
       title: {
         display: true,
         text: 'Time by Project'
@@ -52,11 +52,11 @@ export function projectTotalsChartConfig(): ChartConfiguration {
       },
       scales: {
         xAxes: [{
-          display: false,
-          stacked: true,
+          // display: false,
+          // stacked: true,
         }],
         yAxes: [{
-          stacked: true,
+          // stacked: true,
           gridLines: {
             display: false,
           },
@@ -111,7 +111,7 @@ export function activityChartConfig(projects: ProjectMap, daily: DailyHours): Ch
       }),
     },
     options: {
-      maintainAspectRatio: false,
+      // maintainAspectRatio: false,
       title: { display: true, text: 'Reported timeline by Project' },
       scales: {
         xAxes: [{

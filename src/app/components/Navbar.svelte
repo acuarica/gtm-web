@@ -3,7 +3,6 @@
   import DateRangePicker from "./DateRangePicker.svelte";
   import ChartPalettePicker from "./ChartPalettePicker.svelte";
 
-  export let navs;
   export let handleRangeChange;
 
   let isOpen = false;
@@ -25,8 +24,10 @@
 <header class="bg-gray-700 sm:flex sm:justify-between">
   <div class="flex items-center justify-between px-4 py-1">
     <div>
-      <img class="inline h-8" src="/assets/gtm-logo.png" alt="gtm Logo" />
-      <span class="text-white">Dashboard</span>
+      <a href="/">
+        <img class="inline h-8" src="/assets/gtm-logo.png" alt="gtm Logo" />
+        <span class="text-white">Dashboard</span>
+      </a>
     </div>
     <div class="sm:hidden">
       <button
@@ -53,14 +54,6 @@
     </div>
   </div>
   <div class="px-2 pb-1 sm:flex sm:items-center {isOpen ? 'block' : 'hidden'}">
-
-    {#each navs as nav}
-      <a
-        href={nav.href}
-        class="block sm:mx-2 mt-1 px-2 py-1 text-white rounded hover:bg-gray-800">
-        {nav.title}
-      </a>
-    {/each}
 
     <input type="text" placeholder="Search in commits ..." />
 
