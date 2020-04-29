@@ -1,0 +1,10 @@
+[ver:1,total:2640]
+src/index.ts:1356,1588129200:1356,m
+src/App.svelte:630,1588129200:630,r
+src/data-workdir.json:252,1588129200:252,r
+src/gtm.ts:152,1588129200:152,r
+index.html:120,1588129200:120,r
+.vscode/settings.json:75,1588129200:75,d
+src/gtm.scss:20,1588129200:20,r
+src/main.css:20,1588129200:20,r
+.gtm/terminal.app:15,1588129200:15,r
