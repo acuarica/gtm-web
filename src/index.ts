@@ -17,7 +17,9 @@ new App({
     fetchProjectList: async (): Promise<string[]> => {
       return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
     },
-    fetchWorkdirStatus: async (): Promise<typeof workdir> => workdir,
+    fetchWorkdirStatus: async (): Promise<typeof workdir> => {
+      return workdir
+    },
   }
 });
 
