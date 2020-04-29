@@ -15,7 +15,7 @@
 
 <div class="row12a">
   <div class="col-sdf12">
-    <div style="width123: 100%; heightqwer : 600px;">
+    <div>
       <Chart
         config={activityChartConfig(config.map.projects, getDaily(config.map.projects))} />
     </div>
@@ -23,10 +23,7 @@
       <div>Waiting...</div>
     {:then wd}
       <div>
-      asdf
         <Chart config={getWd(wd)} />
-        ssadf
-        1321
       </div>
     {/await}
   </div>
