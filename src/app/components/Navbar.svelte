@@ -55,10 +55,10 @@
   </div>
   <div class="px-2 pb-1 sm:flex sm:items-center {isOpen ? 'block' : 'hidden'}">
 
-    <input type="text" placeholder="Search in commits ..." />
-
     <DateRangePicker on:change={handleRangeChange} />
     <DatePicker />
+
+    <input type="text" placeholder="Search in commits ..." />
 
     <button
       class="text-white px-2 py-1 mr-2 hidden sm:block focus:outline-none
