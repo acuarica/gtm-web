@@ -1,0 +1,8 @@
+[ver:1,total:300]
+.gtm/terminal.app:162,1588244400:162,r
+@gtm-electron/index.html:30,1588244400:30,r
+@gtm-electron/package.json:30,1588244400:30,r
+@gtm-electron/main.ts:30,1588244400:30,r
+rollup.config.js:24,1588244400:24,d
+svelte.config.js:12,1588244400:12,d
+postcss.config.js:12,1588244400:12,d
