@@ -2,6 +2,10 @@
   "name": "gtmweb",
   "version": "0.0.1",
   "description": "Git Time Metric Web Console",
+
+  "private": true,
+  "workspaces": ["gtm-electron", "gtm-git"],
+
   "keywords": [
     "git",
     "gtm",
@@ -34,6 +38,7 @@
     "chartjs-plugin-colorschemes": "^0.4.0",
     "chartjs-plugin-datalabels": "^0.7.0",
     "moment": "^2.24.0",
+    "nodegit": "^0.26.5",
     "page": "^1.11.6",
     "tailwindcss": "^1.3.5"
   },
@@ -48,6 +53,7 @@
     "@types/chart.js": "^2.9.19",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.1",
+    "@types/nodegit": "^0.26.2",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
     "autoprefixer": "^9.7.6",
