@@ -1,0 +1,12 @@
+[ver:1,total:1500]
+@gtm-format/src/index.ts:409,1588262400:409,r
+.gtm/terminal.app:345,1588258800:150,1588262400:195,r
+@gtm-format/tsconfig.json:289,1588258800:140,1588262400:149,m
+.eslintrc.js:105,1588262400:105,r
+@gtm-app/tsconfig.json:103,1588262400:103,r
+@gtm-format/package.json:86,1588258800:20,1588262400:66,m
+tsconfig.base.json:58,1588262400:58,m
+@gtm-stats/src/index.ts:40,1588262400:40,r
+@gtm-stats/src/gtm.ts:30,1588258800:30,d
+@gtm-format/test/format-test.ts:25,1588258800:10,1588262400:15,r
+@gtm-format/.gitignore:10,1588258800:10,r
