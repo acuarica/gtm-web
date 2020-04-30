@@ -1,7 +1,7 @@
 {
   "name": "@gtm/app",
   "version": "0.0.1",
-  "description": "Git Time Metric - App Console",
+  "description": "Git Time Metric Web Dashboard - Web App",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "browserslist": [

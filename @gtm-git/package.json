@@ -1,7 +1,7 @@
 {
   "name": "@gtm/git",
   "version": "0.0.1",
-  "description": "Git Time Metric Git",
+  "description": "Git Time Metric Web Dashboard - Git Service",
   "main": "dist/index.js",
   "types": "index.ts",
   "scripts": {

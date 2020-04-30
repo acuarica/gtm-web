@@ -1,6 +1,7 @@
 {
   "name": "@gtm/electron",
   "version": "0.0.1",
+  "description": "Git Time Metric Web Dashboard - Electron Adapter",
   "scripts": {
     "build:assets": "mkdir -p dist/assets && cp -v -r ../@gtm-app/dist/assets dist/",
     "build": "tsc",
