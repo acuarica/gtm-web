@@ -1,4 +1,4 @@
-const production = !process.env.ROLLUP_WATCH;
+const production = true; // !process.env.ROLLUP_WATCH;
 const purgecss = require("@fullhuman/postcss-purgecss");
 
 module.exports = {
@@ -8,9 +8,9 @@ module.exports = {
     require("autoprefixer"),
     // Only purge css on production
     production &&
-      purgecss({
-        content: ["./**/*.html", "./**/*.svelte"],
-        defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
-      })
+    purgecss({
+      content: ["./**/*.html", "./**/*.svelte"],
+      defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
+    })
   ]
 };
