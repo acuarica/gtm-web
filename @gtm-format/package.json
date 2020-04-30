@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "description": "Git Time Metric Web Dashboard | Date Formating Utilities",
   "license": "ISC",
+  "main": "dist/src/index.js",
+  "types": "src/index.ts",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "mocha dist/*.js"
+    "test": "mocha dist/test/*.js"
   }
 }
