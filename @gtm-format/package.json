@@ -1,0 +1,11 @@
+{
+  "name": "@gtm/format",
+  "version": "0.0.1",
+  "description": "Git Time Metric Web Dashboard | Date Formating Utilities",
+  "license": "ISC",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "mocha dist/*.js"
+  }
+}
