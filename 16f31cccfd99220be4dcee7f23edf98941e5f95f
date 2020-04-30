@@ -1,0 +1,14 @@
+[ver:1,total:1620]
+.gtm/terminal.app:520,1588215600:520,r
+@gtm-app/package.json:445,1588215600:445,m
+@gtm-electron/main.ts:255,1588215600:255,m
+@gtm-app/dist/@gtm-app.77de5100.js:140,1588215600:140,r
+package.json:98,1588215600:98,m
+@gtm-app/index.html:40,1588215600:40,m
+@gtm-app/.gitignore:30,1588215600:30,m
+tsconfig.json:20,1588215600:20,r
+@gtm-electron/index.html:20,1588215600:20,r
+@gtm-git/tsconfig.json:20,1588215600:20,r
+@gtm-electron/tsconfig.json:13,1588215600:13,r
+@gtm-git/package.json:13,1588215600:13,r
+@gtm-electron/package.json:6,1588215600:6,r
