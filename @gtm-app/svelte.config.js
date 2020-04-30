@@ -17,7 +17,7 @@ const preprocess = makeTsPreprocess(preprocessOptions);
 
 module.exports = {
   dev: process.env.NODE_ENV !== "development",
-  preprocess,
+  preprocess: preprocess,
 
 
   // emitCss: true,
