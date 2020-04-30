@@ -1,7 +1,7 @@
-<script>
-  export let title;
-  export let body;
-  export let footer;
+<script lang="typescript">
+  export let title: string;
+  export let body: string;
+  export let footer: string;
 </script>
 
 <div
