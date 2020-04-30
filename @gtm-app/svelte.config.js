@@ -30,6 +30,6 @@ module.exports = {
 
     // creates `main.css` and `main.css.map` — pass `false`
     // as the second argument if you don't want the sourcemap
-    css.write('dist/main.css');
+    css.write('dist/main32.css');
   },
 };
