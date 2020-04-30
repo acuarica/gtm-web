@@ -3,7 +3,7 @@ import * as path from "path";
 
 let mainWindow: Electron.BrowserWindow;
 
-function createWindow() {
+function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     height: 600,

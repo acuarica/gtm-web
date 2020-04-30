@@ -16,8 +16,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   new App({
     target: document.body,
     props: {
-      fetchCommits: async (): Promise<typeof commits> => {
-        return commits
+      fetchCommits: async (range: any): Promise<typeof commits> => {
+        return g.fetchCommits(range)
       },
       fetchProjectList: async (): Promise<string[]> => {
         return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
@@ -28,10 +28,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   })
 
-  const s = g.fetchCommits()
-  console.log(s, '@preload')
-  const m = await s
-  console.log(m, '@preload')
+  // const s = g.fetchCommits()
+  // console.log(s, '@preload')
+  // const m = await s
+  // console.log(m, '@preload')
 
   for (const type of ["chrome", "node", "electron"]) {
     replaceText(`${type}-version`, (process.versions as any)[type]);

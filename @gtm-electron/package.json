@@ -2,6 +2,7 @@
   "name": "@gtm/electron",
   "version": "0.0.1",
   "scripts": {
+    "build:assets": "mkdir -p dist/assets && cp -v -r ../@gtm-app/dist/assets dist/",
     "build": "tsc",
     "watch": "tsc -w",
     "start": "yarn build && electron ./dist/main.js"
