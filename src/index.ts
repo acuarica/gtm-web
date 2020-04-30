@@ -16,7 +16,7 @@ import workdir from './data-workdir.json'
 
 new App({
   target: document.body,
-  props: false ?
+  props: true ?
     {
       fetchCommits: async (): Promise<typeof commits> => {
         return commits
