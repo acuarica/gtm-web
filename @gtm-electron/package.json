@@ -4,13 +4,13 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "start": "npm run build && electron index.html",
-    "start2": "npm run build && electron ./dist/main.js"
+    "start": "yarn build && electron ./dist/main.js"
   },
   "devDependencies": {
     "electron": "^6.0.8",
     "typescript": "^3.6.0",
     "@gtm/git": "0.0.1",
     "@gtm/app": "0.0.1"
-  }
+  },
+  "license": "CC0-1.0"
 }
