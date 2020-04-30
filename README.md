@@ -1,4 +1,4 @@
-# Git Time Metric Console/Dashboard
+# Git Time Metric Web Dashboard
 
 [![Build Status](https://travis-ci.com/acuarica/gtm-web.svg?branch=master)](https://travis-ci.com/acuarica/gtm-web)
 
