@@ -4,7 +4,7 @@
   "description": "Git Time Metric Web Console",
 
   "private": true,
-  "workspaces": ["gtm-electron", "gtm-git"],
+  "workspaces": ["@gtm-electron", "@gtm-git"],
 
   "keywords": [
     "git",
