@@ -1,0 +1,9 @@
+[ver:1,total:1320]
+@gtm-format/test/format-test.ts:510,1588258800:510,m
+@gtm-format/tsconfig.json:263,1588258800:263,m
+.gtm/terminal.app:242,1588258800:242,r
+@gtm-format/package.json:204,1588258800:204,m
+@gtm-format/src/index.ts:68,1588258800:68,r
+@gtm-format/.gitignore:15,1588258800:15,r
+@gtm-format/dist/test/format-test.js:10,1588258800:10,r
+@gtm-format/dist/src/index.js:8,1588258800:8,r
