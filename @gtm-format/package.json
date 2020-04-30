@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
+    "lint": "eslint src/* test/*",
     "test": "mocha dist/test/*.js"
   }
 }
