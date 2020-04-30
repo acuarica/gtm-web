@@ -15,6 +15,15 @@
       moment()
         .subtract(1, "month")
         .endOf("month")
+    ],
+    "This Year": [moment().startOf("year"), moment().endOf("year")],
+    "Last Year": [
+      moment()
+        .subtract(1, "year")
+        .startOf("year"),
+      moment()
+        .subtract(1, "year")
+        .endOf("year")
     ]
   };
 
@@ -38,7 +47,7 @@
 
   let datepickerValue = "";
   let month = "";
-  let showDatepicker = true;
+  let showDatepicker = false;
   let year = "";
   let no_of_days = [];
   let blankdays = [];
@@ -130,7 +139,7 @@
 
     getNoOfDays();
 
-    const defaultRange = "Last 30 Days";
+    const defaultRange = "Last 7 Days";
     selectRange(defaultRange, ranges[defaultRange]);
   });
 </script>
@@ -172,13 +181,13 @@
   {#if showDatepicker}
     <div
       class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0"
-      style="width: 21rem">
+      style="width: 25rem">
 
-      <div class="flex">
-        <div class="wd-48">
+      <div class="flex divide-x">
+        <div style="width: 7.5rem">
           {#each Object.entries(ranges) as [text, range]}
             <button
-              class="block"
+              class="block focus:outline-none hover:bg-blue-200 rounded pt-1 px-2"
               type="button"
               on:click={() => selectRange(text, range)}>
               {text}
@@ -186,7 +195,7 @@
           {/each}
 
         </div>
-        <div class="flex-1">
+        <div class="flex-1 pl-5">
           <div class="flex justify-between items-center mb-2">
             <div>
               <span class="text-lg font-bold text-gray-800">
