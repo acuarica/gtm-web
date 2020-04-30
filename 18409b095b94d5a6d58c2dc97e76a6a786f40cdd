@@ -1,0 +1,8 @@
+[ver:1,total:224]
+@gtm-app/src/Summary.svelte:61,1588233600:51,1588244400:10,m
+@gtm-app/src/Commits.svelte:56,1588233600:46,1588244400:10,m
+@gtm-app/src/Timeline.svelte:35,1588233600:25,1588244400:10,m
+@gtm-app/src/App.svelte:30,1588233600:30,m
+@gtm-app/src/Commit.svelte:22,1588233600:12,1588244400:10,m
+@gtm-app/src/charts.ts:10,1588244400:10,m
+@gtm-app/src/gtm.ts:10,1588244400:10,m
