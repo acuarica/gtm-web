@@ -1,0 +1,16 @@
+[ver:1,total:1050]
+.gtm/terminal.app:192,1588258800:192,r
+@gtm-app/package.json:165,1588258800:165,r
+package.json:150,1588255200:35,1588258800:115,m
+@gtm-app/src/gtm.ts:145,1588255200:115,1588258800:30,m
+@gtm-app/node_modules/@types/node/assert.d.ts:90,1588258800:90,d
+@gtm-format/package.json:84,1588258800:84,m
+@gtm-format/tsconfig.json:75,1588258800:75,m
+@gtm-electron/tsconfig.json:30,1588258800:30,r
+@gtm-app/dev/navbar.ts:20,1588258800:20,r
+@gtm-format/test/format-test.js:18,1588258800:18,d
+@gtm-format/src/index.js:17,1588258800:17,d
+@gtm-format/.gitignore:17,1588258800:17,m
+@gtm-format/test/format-test.ts:17,1588258800:17,m
+@gtm-git/tsconfig.json:15,1588258800:15,r
+@gtm-app/tsconfig.json:15,1588258800:15,r
