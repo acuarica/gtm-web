@@ -13,7 +13,7 @@ import copy from "rollup-plugin-copy-assets";
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
-  input: './index.ts',
+  input: './src/index.ts',
   output: {
     dir: 'dist',
     format: 'cjs',
