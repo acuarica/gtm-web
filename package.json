@@ -1,17 +1,9 @@
 {
   "name": "gtmweb",
   "version": "0.0.1",
-  "description": "Git Time Metric Web Console",
+  "description": "Git Time Metric Web Dashboard",
   "private": true,
   "workspaces": ["@gtm-app", "@gtm-electron", "@gtm-git"],
-  "keywords": [
-    "git",
-    "gtm",
-    "metrics",
-    "time-tracker",
-    "productivity",
-    "dashboard"
-  ],
   "scripts": {
     "build": "rollup --config",
     "test": "mocha dist/test/*-test.js"
