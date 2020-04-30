@@ -1,10 +1,10 @@
 import '@fortawesome/fontawesome-free/css/all.css'
 
-import App from './app/App.svelte'
+import App from '../app/App.svelte'
 
-import commits from './data-commits.json'
-import projects from './data-projects.json'
-import workdir from './data-workdir.json'
+import commits from '../data-commits.json'
+import projects from '../data-projects.json'
+import workdir from '../data-workdir.json'
 
 // let commitsDataUrl: string
 // if (true || process.env.NODE_ENV === 'development') {
@@ -45,3 +45,5 @@ new App({
       },
     }
 });
+
+// export {App, commits, projects, workdir}
