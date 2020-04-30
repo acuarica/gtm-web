@@ -6,7 +6,8 @@
   "types": "index.ts",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "test": "node dist/test.js"
   },
   "devDependencies": {
     "typescript": "^3.6.0"

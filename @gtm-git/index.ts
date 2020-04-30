@@ -1,37 +1,24 @@
-
-// import { Repository, Commit } from 'nodegit';
-
 import { spawn } from 'child_process'
 
-
-// import * as a from 'moment'
-// const getMostRecentCommit = function (repo: Repository): Promise<Commit> {
-//   return repo.getBranchCommit('develop');
-// };
-
-// const getCommitMessage = function (commit: Commit): string {
-//   return commit.message();
-// };
-
-// Repository.open('.')
-//   .then(getMostRecentCommit)
-//   .then(getCommitMessage)
-//   .then(function (message) {
-//     console.log(message);
-//   });
-
-export async function fetchCommits(): Promise<string> {
+export async function fetchCommits(range: { start: string; end: string }): Promise<any> {
   // const child = spawn('/usr/local/bin/gtm', ['report']);
-  const child = spawn('ls');
+  const gtmexec = '/Users/luigi/work/#forks/gtm/bin/gtm'
+  const args = [
+    'export',
+    '-data=commits',
+    `-from-date=${range.start}`,
+    `-to-date=${range.end}`]
+  const child = spawn(gtmexec, args);
 
-  process.stdin.pipe(child.stdin)
+  child.on('exit', code => {
+    console.log(`Exit code is: ${code}`);
+  });
 
   let buf = ""
   for await (const data of child.stdout) {
-    console.log(`stdout from the child: ${data}`);
     buf += data
   };
 
-  return `gtm-git is watching ... ${buf}`
+  return JSON.parse(buf)
 
 }
