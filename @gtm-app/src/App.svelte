@@ -1,6 +1,6 @@
 <script>
   import { onMount, setContext } from "svelte";
-  import { computeStats } from "../gtm";
+  import { computeStats } from "./gtm";
   import router from "page";
   import Navbar from "./components/Navbar.svelte";
   import Progress from "./components/Progress.svelte";

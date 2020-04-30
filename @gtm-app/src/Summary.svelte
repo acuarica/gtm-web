@@ -3,8 +3,8 @@
   import {
     timeByFileStatusChartConfig,
     projectTotalsChartConfig
-  } from "../charts";
-  import { hhmm } from "./../gtm";
+  } from "./charts";
+  import { hhmm } from "./gtm";
   import Chart from "./components/Chart.svelte";
   import Timeline from "./Timeline.svelte";
   import DashboardCard from "./components/DashboardCard.svelte";
