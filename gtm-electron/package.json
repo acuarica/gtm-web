@@ -24,6 +24,6 @@
     "electron": "^6.0.8",
     "tslint": "^5.19.0",
     "typescript": "^3.6.0",
-    "gtm-git": "0.0.1"
+    "@gtm/git": "0.0.1"
   }
 }

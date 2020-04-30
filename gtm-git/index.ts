@@ -32,6 +32,6 @@ export async function fetchCommits(): Promise<string> {
     buf += data
   };
 
-  return `hello from gtm-git${buf}`
+  return `gtm-git is watching ... ${buf}`
 
 }

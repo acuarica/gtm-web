@@ -1,7 +1,6 @@
 
-// import * as g from '@gtm/git'
+import * as g from '@gtm/git'
 
-import * as g from 'gtm-git'
 window.addEventListener("DOMContentLoaded", async () => {
   const replaceText = (selector: string, text: string) => {
     const element = document.getElementById(selector);
@@ -11,9 +10,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   };
 
   const s = g.fetchCommits()
-
   console.log(s, '@preload')
-
   const m = await s
   console.log(m, '@preload')
 
