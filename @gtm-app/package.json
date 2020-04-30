@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "description": "Git Time Metric - App Console",
   "main": "dist/index.js",
+  "types": "src/index.ts",
   "browserslist": [
     "last 1 chrome versions"
   ],
   "scripts": {
     "build:assets": "mkdir -p dist/assets && cp -v -r assets dist/",
-    "build:css": "NODE_ENV=production postcss main.pcss -o dist/main.css",
+    "build:css": "NODE_ENV=production postcss main.pcss -o dist/assets/main.css",
     "dev": "parcel serve dev/index.html",
     "build:electron": "rollup --config",
     "build": "cp -v -r assets dist/ && parcel build index.ts --out-dir dist --public-url ./ --target=node",

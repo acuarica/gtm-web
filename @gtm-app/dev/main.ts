@@ -1,6 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.css'
 
-import App from '../app/App.svelte'
+import App from '../src/App.svelte'
 
 import commits from '../data-commits.json'
 import projects from '../data-projects.json'
