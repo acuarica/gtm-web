@@ -2,5 +2,7 @@
 /.cache/
 /dist/
 /node_modules/
+/gtm-git/node_modules/.bin/
+/gtm-electron/dist/
+/gtm-electron/node_modules/.bin/
 /yarn.lock
-/electron/
