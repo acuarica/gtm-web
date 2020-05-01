@@ -14,22 +14,32 @@ import { workdir } from '@gtm/mock'
 //   commitsDataUrl = '/gtm-web/data-commits.json'
 // }
 
+function delay<T>(func: () => T, timeout: number): Promise<T> {
+  return new Promise(function (resolve, ) {
+    setTimeout(() => {
+      resolve(func())
+    }, timeout);
+  })
+}
+
 new App({
   target: document.body,
   props: true ?
     {
       fetchCommits: async (): Promise<typeof commits> => {
-        return new Promise(function (resolve, ) {
-          // setTimeout(() => {
-            resolve(commits)
-          // }, 1000);
-        })
+        return delay(() => {
+          return commits
+        }, 1000)
       },
       fetchProjectList: async (): Promise<string[]> => {
-        return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
+        return delay(() => {
+          return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
+        }, 1000)
       },
       fetchWorkdirStatus: async (): Promise<typeof workdir> => {
-        return workdir
+        return delay(() => {
+          return workdir
+        }, 1000)
       }
     } : {
       fetchCommits: async (range: { start: string; end: string }): Promise<typeof commits> => {
