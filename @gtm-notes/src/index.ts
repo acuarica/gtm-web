@@ -1,4 +1,5 @@
-import moment from "moment";
+import moment from "moment"
+import { pad0 } from "@gtm/format"
 
 ///
 export type Seconds = number
@@ -124,6 +125,7 @@ export function computeStats(commits: {
   return { projects, totalSecs, status }
 }
 
+///
 export function getDaily(projects: ProjectMap): DailyHours {
   const daily: DailyHours = {};
   for (const pkey in projects) {
