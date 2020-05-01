@@ -1,9 +1,9 @@
-<script>
+<script lang="typescript">
   import { hhmm } from "@gtm/notes";
 
-  export let commit;
+  export let commit: Commit;
 
-  let toggleVisible;
+  let toggleVisible: boolean;
 </script>
 
 <div class="group">
