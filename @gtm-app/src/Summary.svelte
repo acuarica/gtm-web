@@ -4,7 +4,7 @@
     timeByFileStatusChartConfig,
     projectTotalsChartConfig
   } from "./charts";
-  import { hhmm } from "./gtm";
+  import { hhmm } from "@gtm/format";
   import Chart from "./components/Chart.svelte";
   import Timeline from "./Timeline.svelte";
   import DashboardCard from "./components/DashboardCard.svelte";

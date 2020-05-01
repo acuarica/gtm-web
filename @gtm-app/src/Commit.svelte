@@ -1,5 +1,5 @@
 <script>
-  import { hhmm } from "./gtm";
+  import { hhmm } from "@gtm/notes";
 
   export let commit;
 
