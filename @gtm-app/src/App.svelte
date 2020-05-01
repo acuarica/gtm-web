@@ -1,6 +1,6 @@
 <script>
   import { onMount, setContext } from "svelte";
-  import { computeStats } from "./gtm";
+  import { computeStats } from "@gtm/notes";
   import router from "page";
   import Navbar from "./components/Navbar.svelte";
   import Progress from "./components/Progress.svelte";
@@ -26,6 +26,10 @@
 
   router("/", () => (view = Summary));
 
+  let views = {}
+
+  $: if (config&&views&&currentProject) view = views[currentProject].view
+
   router("/projects/:project", ctx => {
     console.log(Projects);
     console.log(view);
@@ -36,9 +40,14 @@
     // Projects.$set({ projectName: "asdsa23232" });
     // view.$set
 
+    let b  = views[currentProject]===views[ctx.params.project]
+    console.log(b, "equal?")
+
     // console.log(currentProject);
-    view = Projects;
     currentProject = ctx.params.project;
+    // view = Projects;
+    view = null
+    view = views[currentProject].view
     // view = view;
     config = config;
 
@@ -53,6 +62,10 @@
   onMount(async () => {
     projectList = await fetchProjectList();
     workdirStatus = fetchWorkdirStatus();
+
+    for (const pkey of projectList) {
+      views[pkey] = {view:Projects}
+    }
   });
 
   function handleRangeChange(event) {

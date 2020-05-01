@@ -5,11 +5,22 @@
   export let config;
   export let datasets;
   let canvas;
+  let chart;
+
+  // $: if (config && canvas) chart = create(config)
+
+  function create(config) {
+    const ctx = canvas.getContext("2d");
+    console.log("@chart/mount", config);
+    return new Chart(ctx, config);
+
+
+  }
 
   onMount(() => {
     const ctx = canvas.getContext("2d");
-    console.log("@chart/mount",config)
-    const chart = new Chart(ctx, config);
+    console.log("@chart/mount", config);
+    chart = new Chart(ctx, config);
 
     console.log(datasets, "@chart");
     if (datasets) {
