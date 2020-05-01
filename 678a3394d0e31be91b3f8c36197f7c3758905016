@@ -1,0 +1,7 @@
+[ver:1,total:780]
+@gtm-app/src/Summary.svelte:540,1588345200:400,1588348800:140,d
+.gtm/terminal.app:100,1588345200:20,1588348800:80,r
+@gtm-app/src/index.ts:60,1588348800:60,r
+@gtm-app/src/charts.ts:30,1588345200:30,r
+@gtm-notes/.gitignore:30,1588345200:30,r
+@gtm-app/src/DashboardCard.svelte:20,1588348800:20,r
