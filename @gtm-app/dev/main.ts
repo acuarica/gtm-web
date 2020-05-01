@@ -2,9 +2,9 @@ import '@fortawesome/fontawesome-free/css/all.css'
 
 import App from '../src/App.svelte'
 
-import commits from './data-commits.json'
-import projects from './data-projects.json'
-import workdir from './data-workdir.json'
+import { commits } from '@gtm/mock'
+import { projects } from '@gtm/mock'
+import { workdir } from '@gtm/mock'
 
 // let commitsDataUrl: string
 // if (true || process.env.NODE_ENV === 'development') {
@@ -19,7 +19,11 @@ new App({
   props: true ?
     {
       fetchCommits: async (): Promise<typeof commits> => {
-        return commits
+        return new Promise(function (resolve, ) {
+          // setTimeout(() => {
+            resolve(commits)
+          // }, 1000);
+        })
       },
       fetchProjectList: async (): Promise<string[]> => {
         return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
@@ -45,5 +49,3 @@ new App({
       },
     }
 });
-
-// export {App, commits, projects, workdir}

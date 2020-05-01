@@ -1,0 +1,11 @@
+{
+  "name": "@gtm/mock",
+  "version": "0.0.1",
+  "description": "Git Time Metric Web Dashboard - Mock Data",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  }
+}
