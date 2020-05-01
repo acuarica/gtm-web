@@ -2,9 +2,9 @@
   import { onMount, setContext } from "svelte";
   import { computeStats } from "@gtm/notes";
   import router from "page";
-  import Navbar from "./components/Navbar.svelte";
-  import Progress from "./components/Progress.svelte";
-  import Select from "./components/Select.svelte";
+  import Navbar from "./Navbar.svelte";
+  import Progress from "./Progress.svelte";
+  import Select from "./Select.svelte";
   import Summary from "./Summary.svelte";
   import Projects from "./Projects.svelte";
   import Timeline from "./Timeline.svelte";

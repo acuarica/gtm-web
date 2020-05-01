@@ -1,8 +1,8 @@
 <script>
   import { onMount } from "svelte";
-  import DashboardCard from "./components/DashboardCard.svelte";
+  import DashboardCard from "./DashboardCard.svelte";
   import { hhmm } from "@gtm/format";
-  import Chart from "./components/Chart.svelte";
+  import Chart from "./Chart.svelte";
   import { activityChartConfig } from "./charts";
   import { getDaily, computeWorkdirStatus } from "@gtm/notes";
   import "chartjs-chart-matrix";

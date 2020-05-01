@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import Chart from "./components/Chart.svelte";
+  import Chart from "./Chart.svelte";
   import { activityChartConfig } from "./charts";
   import { getDaily, computeWorkdirStatus } from "@gtm/notes";
   import "chartjs-chart-matrix";
