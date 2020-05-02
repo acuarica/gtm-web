@@ -22,24 +22,33 @@ function delay<T>(func: () => T, timeout: number): Promise<T> {
   })
 }
 
+export function delayError<T>(func: () => T, timeout: number): Promise<T> {
+  return new Promise(function (_, reject) {
+    setTimeout(() => {
+      reject(func())
+    }, timeout);
+  })
+}
+
 new App({
   target: document.body,
   props: true ?
     {
       fetchCommits: async (): Promise<typeof commits> => {
         return delay(() => {
+          commits.push(commits[0])
           return commits
-        }, 1000)
+        }, 3000)
       },
       fetchProjectList: async (): Promise<string[]> => {
         return delay(() => {
           return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
-        }, 1000)
+        }, 3000)
       },
       fetchWorkdirStatus: async (): Promise<typeof workdir> => {
         return delay(() => {
           return workdir
-        }, 1000)
+        }, 3000)
       }
     } : {
       fetchCommits: async (range: { start: string; end: string }): Promise<typeof commits> => {

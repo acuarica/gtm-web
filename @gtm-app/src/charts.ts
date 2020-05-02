@@ -1,12 +1,26 @@
 import moment from 'moment';
 import { ChartConfiguration } from "chart.js";
 import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
-import { ProjectMap, DailyHours } from "@gtm/notes";
+import { ProjectMap, getDaily } from "@gtm/notes";
 import { hhmm } from "@gtm/format";
 
-export function timeByFileStatusChartConfig(): ChartConfiguration {
+function timeByFileStatusChartDatasets(status) {
+  const StatusIndicator = { m: "Modifying", r: "Reading", d: "Deleting" };
+
+  return Object.keys(status).map(s => {
+    return {
+      data: [status[s]],
+      label: `${StatusIndicator[s]}: ${hhmm(status[s])}`
+    };
+  });
+}
+
+export function timeByFileStatusChartConfig(status: any): ChartConfiguration {
   return {
     type: 'horizontalBar',
+    data: {
+      datasets: timeByFileStatusChartDatasets(status),
+    },
     options: {
       maintainAspectRatio: false,
       title: {
@@ -37,11 +51,29 @@ export function timeByFileStatusChartConfig(): ChartConfiguration {
   }
 }
 
+function getds(projects) {
+  // const commitCounts: number[] = []
+  const datasets = [];
+  for (const pname in projects) {
+    const p = projects[pname];
+    // commitCounts.push(p.commitcount);
+    datasets.push({
+      data: [p.total],
+      label: pname
+    });
+  }
+  console.log(datasets);
+  return datasets;
+}
 ///
-export function projectTotalsChartConfig(): ChartConfiguration {
+export function projectTotalsChartConfig(ds): ChartConfiguration {
+
   return {
     type: 'bar',
     plugins: [ChartDataLabels],
+    data: {
+      datasets: getds(ds)
+    },
     options: {
       // maintainAspectRatio: false,
       title: {
@@ -85,7 +117,9 @@ export function projectTotalsChartConfig(): ChartConfiguration {
 }
 
 ///
-export function activityChartConfig(projects: ProjectMap, daily: DailyHours): ChartConfiguration {
+export function activityChartConfig(projects: ProjectMap): ChartConfiguration {
+  console.log(projects)
+  const daily = getDaily(projects)
   return {
     type: 'matrix',
     data: {

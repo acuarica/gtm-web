@@ -1,89 +1,51 @@
 <script>
-  import { onMount, setContext } from "svelte";
-  import { computeStats } from "@gtm/notes";
+  import { onMount } from "svelte";
+  import { computeStats, computeWorkdirStatus } from "@gtm/notes";
   import router from "page";
+  import Fetch from "./Fetch.svelte";
   import Navbar from "./Navbar.svelte";
   import Progress from "./Progress.svelte";
   import Select from "./Select.svelte";
-  import Summary from "./Summary.svelte";
-  import Projects from "./Projects.svelte";
-  import Timeline from "./Timeline.svelte";
+  import Home from "./Home.svelte";
+  import Project from "./Project.svelte";
   import Commits from "./Commits.svelte";
 
   export let fetchCommits;
   export let fetchProjectList;
   export let fetchWorkdirStatus;
 
-  let view = Summary;
-  let promise = new Promise((_resolve, _reject) => {});
-  let projectList = [];
-  let workdirStatus;
-  let currentProject;
-  let config;
+  let statsPromise = new Promise((_resolve, _reject) => {});
+  let projectListPromise = new Promise((_resolve, _reject) => {});
+  let workdirStatsPromise = new Promise((_resolve, _reject) => {});
+  let projectName;
+  let view;
 
-  $: if (config) config.currentProject = currentProject;
-  let toggleProjects = true;
-
-  router("/", () => (view = Summary));
-
-  let views = {}
-
-  $: if (config&&views&&currentProject) view = views[currentProject].view
-
-  router("/projects/:project", ctx => {
-    console.log(Projects);
-    console.log(view);
-    console.log(ctx);
-    // Projects.projectName = "asdfasdf"
-
-    // Projects;
-    // Projects.$set({ projectName: "asdsa23232" });
-    // view.$set
-
-    let b  = views[currentProject]===views[ctx.params.project]
-    console.log(b, "equal?")
-
-    // console.log(currentProject);
-    currentProject = ctx.params.project;
-    // view = Projects;
-    view = null
-    view = views[currentProject].view
-    // view = view;
-    config = config;
-
-    // new Projects({
-    //   target: view,
-    //   props: { projectName:
-    // });
+  router("/", async () => {
+    view = Home;
   });
-
-  router.start();
+  router("/projects/:project", ctx => {
+    projectName = ctx.params.project;
+    view = Project;
+  });
 
   onMount(async () => {
-    projectList = await fetchProjectList();
-    workdirStatus = fetchWorkdirStatus();
-
-    for (const pkey of projectList) {
-      views[pkey] = {view:Projects}
-    }
+    router.start();
+    projectListPromise = fetchProjectList();
+    const workdirStatus = await fetchWorkdirStatus();
+    workdirStatsPromise = Promise.resolve(computeWorkdirStatus(workdirStatus));
+    console.log(workdirStatsPromise);
   });
 
-  function handleRangeChange(event) {
-    console.log("handle range");
-    console.log(event.detail);
-    promise = fetchCommits(event.detail);
-    promise.then(cs => (config = getConfig(cs)));
+  async function fetch(event) {
+    const commits = await fetchCommits(event.detail);
+    return Promise.resolve({
+      commits: commits,
+      stats: computeStats(commits)
+    });
   }
 
-  function getConfig(commits) {
-    console.log(currentProject, "@getconfig");
-    return {
-      commits: commits,
-      map: computeStats(commits),
-      projectList: projectList,
-      workdirStatus: workdirStatus,
-      currentProject: currentProject
-    };
+  function handleRangeChange(event) {
+    statsPromise = fetch(event);
   }
 </script>
 
@@ -104,26 +66,26 @@
             All Projects
           </a>
 
-          {#each projectList as project}
-            <a
-              class="block py-1 pl-6 rounded hover:bg-gray-600
-              hover:text-gray-300"
-              href="/projects/{project}">
-              {project}
-            </a>
-          {/each}
+          <Fetch promise={projectListPromise} let:value={projectList}>
+            {#each projectList as project}
+              <a
+                class="block py-1 pl-6 rounded hover:bg-gray-600
+                hover:text-gray-300"
+                href="/projects/{project}">
+                {project}
+              </a>
+            {/each}
+          </Fetch>
         </div>
 
         <div class="flex-1 w-auto flex-col bg-gray-200">
-          {#await promise}
-            <Progress />
-          {:then commits}
-            <div>
-              <svelte:component this={view} {config} />
-            </div>
-          {:catch error}
-            <p style="color: red">{error.message}</p>
-          {/await}
+          <div>
+            <svelte:component
+              this={view}
+              {statsPromise}
+              {workdirStatsPromise}
+              name={projectName} />
+          </div>
         </div>
 
       </div>
