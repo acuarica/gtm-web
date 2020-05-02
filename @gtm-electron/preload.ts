@@ -1,7 +1,8 @@
 
 import * as g from '@gtm/git'
 
-import { App, commits, projects, workdir } from '@gtm/app'
+import { App } from '@gtm/app'
+import { commits, projects, workdir } from '@gtm/mock'
 
 window.addEventListener("DOMContentLoaded", async () => {
   const replaceText = (selector: string, text: string) => {
