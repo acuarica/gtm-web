@@ -1,0 +1,13 @@
+[ver:1,total:960]
+@gtm-electron/preload.ts:280,1588392000:280,m
+@gtm-format/tsconfig.json:200,1588392000:200,r
+.gtm/terminal.app:165,1588392000:165,r
+@gtm-electron/main.ts:80,1588392000:80,r
+@gtm-format/package.json:70,1588392000:70,r
+@gtm-electron/package.json:45,1588392000:45,r
+@gtm-app/package.json:45,1588392000:45,r
+@gtm-format/src/index.ts:30,1588392000:30,r
+@gtm-app/src/Project.svelte:15,1588392000:15,r
+package.json:10,1588392000:10,r
+tsconfig.base.json:10,1588392000:10,r
+@gtm-notes/src/index.ts:10,1588392000:10,r
