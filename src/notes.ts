@@ -38,7 +38,7 @@ export type Commit = {
 export type Project = {
   name: string;
   total: number;
-  commitcount: number;
+  commits: Commit[];
   timeline: {
     [id: string]: {
       [hour: number]: {
@@ -79,10 +79,10 @@ export function computeStats(commits: {
   for (const commit of commits) {
     let project = projects[commit.Project];
     if (project === undefined) {
-      project = { name: commit.Project, total: 0, commitcount: 0, timeline: {}, timelineMatrix: [] };
+      project = { name: commit.Project, total: 0, commits: [], timeline: {}, timelineMatrix: [] };
       projects[commit.Project] = project;
     }
-    project.commitcount++;
+    project.commits.push(commit as Commit);
     if (commit.Note.Files === null) {
       console.warn("gtm check: Commit note files not available:", commit);
       continue;

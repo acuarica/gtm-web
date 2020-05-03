@@ -2,11 +2,11 @@
   import { getDaily } from "../notes";
   import Commit from "./Commit.svelte";
 
-  export let config;
+  export let commits;
 </script>
 
 <div>
-  {#each config.commits as commit}
+  {#each commits as commit}
     <Commit {commit} />
   {/each}
 </div>
