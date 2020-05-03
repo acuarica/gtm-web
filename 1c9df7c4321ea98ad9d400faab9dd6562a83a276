@@ -1,0 +1,10 @@
+[ver:1,total:2175]
+src/app/Project.svelte:794,1588525200:794,m
+src/desktop/preload.ts:520,1588467600:370,1588514400:27,1588518000:50,1588521600:73,r
+.gtm/terminal.app:360,1588521600:75,1588525200:285,r
+src/notes.ts:330,1588521600:135,1588525200:195,m
+src/dev/main.ts:45,1588521600:45,r
+src/app/Commit.svelte:39,1588525200:39,r
+src/format.ts:30,1588521600:30,r
+src/git.ts:30,1588521600:30,r
+src/app/Commits.svelte:27,1588525200:27,m
