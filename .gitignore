@@ -1,3 +1,6 @@
 /.gtm/
+/.cache/
 /node_modules/
+/dist-dev/
+/dist-electron/
 /yarn.lock
