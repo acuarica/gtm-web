@@ -7,7 +7,7 @@
       "noEmitOnError": true,
       "allowJs": true,
       "lib": ["es5", "es6", "dom"],
-      "importHelpers": true,
+    //   "importHelpers": true,
       "moduleResolution": "node",
       "allowSyntheticDefaultImports":true,
       "resolveJsonModule": true,
