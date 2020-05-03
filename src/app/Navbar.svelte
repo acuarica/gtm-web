@@ -4,6 +4,7 @@
   import DateRangePicker from "./DateRangePicker.svelte";
   import ChartPalettePicker from "./ChartPalettePicker.svelte";
 
+  export let title = "";
   export let handleRangeChange;
 
   let isOpen = false;
@@ -29,6 +30,10 @@
         <img class="inline h-8" src="./assets/gtm-logo.png" alt="gtm Logo" />
         <span class="text-white">Dashboard</span>
       </a>
+      <span class="ml-12 font-medium text-white">
+        <i class="fas fa-tasks mr-1" />
+        {title}
+      </span>
     </div>
     <div class="sm:hidden">
       <button

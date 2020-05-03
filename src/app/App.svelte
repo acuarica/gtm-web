@@ -18,13 +18,16 @@
   let projectListPromise = new Promise((_resolve, _reject) => {});
   let workdirStatsPromise = new Promise((_resolve, _reject) => {});
   let projectName;
+  let title;
   let view;
 
   router("/", async () => {
+    title = "All Projects";
     view = Home;
   });
   router("/projects/:project", ctx => {
     projectName = ctx.params.project;
+    title = projectName;
     view = Project;
   });
 
@@ -56,7 +59,7 @@
 <div class="antialiased sans-serif h-screen">
   <div class="flex flex-col h-full">
 
-    <Navbar {handleRangeChange} />
+    <Navbar {title} {handleRangeChange} />
 
     <div class="flex flex-1 w-screen">
       <div class="flex flex-row w-full">
@@ -67,14 +70,16 @@
             hover:text-gray-300"
             href="/">
             <i class="fas fa-tasks" />
-            All Projects
+            <span class={view === Home ? 'font-bold' : ''}>
+              All Projects
+            </span>
           </a>
 
           <Fetch promise={projectListPromise} let:value={projectList}>
             {#each projectList as project}
               <a
                 class="block py-1 pl-6 rounded hover:bg-gray-600
-                hover:text-gray-300"
+                hover:text-gray-300 {view === Project && projectName === project ? 'font-bold' : ''}"
                 href="/projects/{project}">
                 {project}
               </a>
