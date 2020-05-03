@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   };
 
 
-  console.log("Creating app with gtm/git service")
+  console.info("Creating app with gtm/git service")
   console.log("@preload", document.body)
   new App({
     target: document.body,

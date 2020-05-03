@@ -30,7 +30,7 @@ export function delayError<T>(func: () => T, timeout: number): Promise<T> {
   })
 }
 
-console.log("Creating app with mock service")
+console.info("Creating app with mock service")
 
 new App({
   target: document.body,
