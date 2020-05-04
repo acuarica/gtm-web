@@ -26,7 +26,7 @@
   "scripts": {
     "dev": "rollup --config --watch",
     "build": "parcel build src/desktop/* --out-dir dist-electron --target electron --no-source-maps --no-minify --no-cache && cp -v -r assets dist-electron/",
-    "start": "electron --experimental-modules ./src/desktop/main.js",
+    "start": "electron dist-electron/main.js",
     "pack": "electron-builder",
     "demo": "parcel build index.html --no-source-maps --public-url /gtm-web/ && cp -v data-commits.json dist/",
     "test": "mocha test/*-test.js"
