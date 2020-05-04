@@ -1,8 +1,10 @@
 
-import * as g from '../git'
+import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from '../git.js'
+
+import '../../main.pcss'
 
 import App from '../app/App.svelte'
-import { commits, projects, workdir } from '../mock'
+import Settings from './Settings.svelte'
 
 window.addEventListener("DOMContentLoaded", async () => {
   const replaceText = (selector, text) => {
@@ -12,21 +14,21 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-
   console.info("Creating app with gtm/git service")
   console.log("@preload", document.body)
   new App({
     target: document.body,
     props: {
       fetchCommits: async (range) => {
-        return g.fetchCommits(range)
+        return fetchCommits(range)
       },
       fetchProjectList: async () => {
-        return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
+        return (await fetchProjectList()).map(p => p.substring(p.lastIndexOf("/") + 1))
       },
       fetchWorkdirStatus: async () => {
-        return workdir
-      }
+        return fetchWorkdirStatus()
+      },
+      settingsView: Settings,
     }
   })
 

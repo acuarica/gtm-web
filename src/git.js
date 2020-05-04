@@ -9,8 +9,13 @@ export async function fetchCommits(range) {
   return rungtm(args)
 }
 
-export async function fetchProjects() {
+export async function fetchProjectList() {
   const args = ['-data=projects']
+  return rungtm(args)
+}
+
+export async function fetchWorkdirStatus() {
+  const args = ['-data=status']
   return rungtm(args)
 }
 

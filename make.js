@@ -1,5 +1,5 @@
 import sirv from 'sirv';
-import { fetchCommits, fetchProjects } from './src/git';
+import { fetchCommits, fetchProjectList } from './src/git';
 import polka from 'polka';
 import send from '@polka/send-type';
 
@@ -28,7 +28,7 @@ export function startServe(dir, port) {
     })
     .get('/data/projects', async (req, res) => {
       console.info(`Request projects: ${req.path}`)
-      const data = await fetchProjects()
+      const data = await fetchProjectList()
       send(res, 200, data);
     })
     .listen(port, err => {
