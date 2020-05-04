@@ -1,0 +1,7 @@
+[ver:1,total:554]
+make.js:202,1588564800:202,r
+.gtm/terminal.app:150,1588564800:30,1588568400:120,r
+rollup.config.js:132,1588564800:42,1588568400:90,m
+src/desktop/main.js:35,1588568400:35,r
+src/desktop/preload.js:20,1588568400:20,r
+src/desktop/index.html:15,1588568400:15,r
