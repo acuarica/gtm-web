@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import Fetch from "./Fetch.svelte";
   import {
-activityChartConfig ,
+    activityChartConfig,
     timeByFileStatusChartConfig,
     projectTotalsChartConfig
   } from "../charts";
@@ -28,18 +28,19 @@ activityChartConfig ,
     <div class="w-64">
       <Chart config={timeByFileStatusChartConfig(res.stats.status)} />
     </div>
+
+    <div class="w-1/2">
+      <Chart config={projectTotalsChartConfig(res.stats.projects)} />
+    </div>
   </div>
 
-  <div>
-    <Chart config={projectTotalsChartConfig(res.stats.projects)} />
-  </div>
-  <div>
+  <div class="mx-6">
     <Chart config={activityChartConfig(res.stats.projects)} />
   </div>
 </Fetch>
 
 <Fetch promise={workdirStatsPromise} let:value={res}>
-  <div>
+  <div class="mx-6">
     <Chart config={activityChartConfig(res.projects)} />
   </div>
 </Fetch>
