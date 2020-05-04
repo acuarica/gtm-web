@@ -1,10 +1,12 @@
+import moment from "moment"
 import { spawn } from 'child_process'
 
 export async function fetchCommits(range) {
+  range.end = moment(range.end, 'YYYY-MM-DD').add(1, 'day')
   const args = [
     '-data=commits',
     `-from-date=${range.start}`,
-    `-to-date=${range.end}`
+    `-to-date=${range.end.format('YYYY-MM-DD')}`
   ]
   return rungtm(args)
 }
