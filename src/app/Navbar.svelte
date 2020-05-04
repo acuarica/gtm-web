@@ -6,6 +6,7 @@
 
   export let title = "";
   export let handleRangeChange;
+  export let settingsView;
 
   let isOpen = false;
   let toggleSettings = false;
@@ -20,6 +21,7 @@
         <ChartPalettePicker classes="form-control4" />
       </div>
     </form>
+    <svelte:component this={settingsView} />
   </div>
 {/if}
 

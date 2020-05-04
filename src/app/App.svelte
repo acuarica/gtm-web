@@ -13,6 +13,7 @@
   export let fetchCommits;
   export let fetchProjectList;
   export let fetchWorkdirStatus;
+  export let settingsView;
 
   let statsPromise = new Promise((_resolve, _reject) => {});
   let projectListPromise = new Promise((_resolve, _reject) => {});
@@ -59,7 +60,7 @@
 <div class="antialiased sans-serif h-screen">
   <div class="flex flex-col h-full">
 
-    <Navbar {title} {handleRangeChange} />
+    <Navbar {title} {handleRangeChange} {settingsView} />
 
     <div class="flex flex-1 w-screen">
       <div class="flex flex-row w-full">
@@ -70,9 +71,7 @@
             hover:text-gray-300"
             href="/">
             <i class="fas fa-tasks" />
-            <span class={view === Home ? 'font-bold' : ''}>
-              All Projects
-            </span>
+            <span class={view === Home ? 'font-bold' : ''}>All Projects</span>
           </a>
 
           <Fetch promise={projectListPromise} let:value={projectList}>
