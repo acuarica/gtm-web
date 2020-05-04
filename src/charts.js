@@ -24,7 +24,7 @@ export function timeByFileStatusChartConfig(status) {
         text: 'Time by Activity'
       },
       legend: {
-        position: 'bottom',
+        position: 'top',
       },
       scales: {
         xAxes: [{
@@ -54,7 +54,6 @@ export function timeByFileStatusChartConfig(status) {
 export function projectTotalsChartConfig(projects) {
   console.assert(typeof projects === 'object', `Invalid projects:`, projects)
   const datasets = [];
-  const labels = [];
   for (const pname in projects) {
     const p = projects[pname];
     datasets.push({
@@ -62,7 +61,6 @@ export function projectTotalsChartConfig(projects) {
       commitcount: p.commits.length,
       label: pname
     });
-    labels.push(pname);
   }
 
   return {
@@ -70,7 +68,6 @@ export function projectTotalsChartConfig(projects) {
     plugins: [ChartDataLabels],
     data: {
       datasets: datasets,
-      // labels: labels,
     },
     options: {
       maintainAspectRatio: false,
@@ -79,22 +76,10 @@ export function projectTotalsChartConfig(projects) {
         text: 'Time by Project'
       },
       legend: {
-        // display: false,
-        position: 'bottom',
+        position: 'top',
       },
       scales: {
-        xAxes: [{
-          // display: false,
-          // stacked: true,
-        }],
         yAxes: [{
-          // stacked: true,
-          // ticks: {
-          //   callback: function (value, index, values) {
-          //     const _value = values[index].value;
-          //     return hhmm(value);
-          //   }
-          // },
           display: false,
           gridLines: {
             display: false,
@@ -108,15 +93,6 @@ export function projectTotalsChartConfig(projects) {
       },
       tooltips: {
         enabled: false,
-        callbacks: {
-          label: (tooltipItem, data) => {
-            const i = tooltipItem.index;
-            const ds = data.datasets[i];
-            const commitcount = ds.commitcount;
-            const committext = commitcount === 1 ? 'commit' : 'commits';
-            return `${hhmm(ds.data[0])} (${commitcount} ${committext})`;
-          },
-        }
       },
     }
   }
@@ -124,8 +100,9 @@ export function projectTotalsChartConfig(projects) {
 
 ///
 export function activityChartConfig(projects) {
-  console.log(projects)
   const daily = getDaily(projects)
+  const dailyKeys = Object.keys(daily)
+  console.log(projects, daily, dailyKeys)
   return {
     type: 'matrix',
     data: {
@@ -146,7 +123,7 @@ export function activityChartConfig(projects) {
             const levels = 4;
             const alpha = Math.floor(value * levels / 3600) / levels + (1 / levels);
             var a = ctx.chart.chartArea;
-            return alpha * (a.bottom - a.top) / 10;
+            return alpha * (a.bottom - a.top) / dailyKeys.length;
           },
         }
       }),
