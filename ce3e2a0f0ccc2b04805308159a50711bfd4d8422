@@ -1,0 +1,15 @@
+[ver:1,total:1260]
+src/git.js:380,1588611600:380,m
+src/notes.js:220,1588611600:220,r
+src/desktop/Settings.svelte:132,1588611600:132,r
+src/dev/index.html:132,1588611600:132,r
+.gtm/terminal.app:130,1588611600:130,r
+src/desktop/preload.js:77,1588611600:77,r
+src/charts.js:60,1588611600:60,r
+src/desktop/index.html:43,1588611600:43,r
+dist-electron/index.html:40,1588611600:40,r
+dist-dev/index.html:12,1588611600:12,r
+src/app/Navbar.svelte:10,1588611600:10,r
+.gitignore:8,1588611600:8,r
+package.json:8,1588611600:8,r
+rollup.config.js:8,1588611600:8,r
