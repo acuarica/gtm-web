@@ -1,0 +1,9 @@
+[ver:1,total:600]
+src/app/DatePicker.svelte:360,1588615200:300,1588618800:60,m
+src/app/Home.svelte:68,1588615200:8,1588618800:60,r
+.gtm/terminal.app:60,1588615200:60,r
+src/app/Navbar.svelte:37,1588615200:37,r
+src/app/App.svelte:30,1588615200:30,r
+src/app/SearchBox.svelte:20,1588615200:20,r
+src/desktop/preload.js:17,1588615200:17,r
+src/git.js:8,1588615200:8,r
