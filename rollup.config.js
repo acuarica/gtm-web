@@ -14,7 +14,62 @@ import { startServe } from './make'
 
 const production = !process.env.ROLLUP_WATCH;
 
-export default {
+const plugins = (dir) => [
+  svelte({
+    dev: !production,
+    // css: css => {
+    //   css.write('dist-dev/gtm-svelte.css');
+    // }
+  }),
+
+  // If you have external dependencies installed from
+  // npm, you'll most likely need these plugins. In
+  // some cases you'll need additional configuration -
+  // consult the documentation for details:
+  // https://github.com/rollup/plugins/tree/master/packages/commonjs
+  commonjs({
+    exclude: 'node_modules/moment/**/*',
+    sourceMap: false
+  }),
+  json(),
+  url({
+    include: ['svg', 'png', 'woff', 'woff2', 'eot', 'ttf'].map(e => '**/*.' + e),
+    limit: Infinity,
+  }),
+  postcss({
+    modules: true,
+    extract: 'assets/main.css',
+    plugins: [
+      require("postcss-import")(),
+      require("tailwindcss"),
+
+      // const purgecss = require("@fullhuman/postcss-purgecss");
+      // require("autoprefixer"),
+      // Only purge css on production
+      // production &&
+      // purgecss({
+      //   content: ["./**/*.html", "./**/*.svelte"],
+      //   defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
+      // })
+
+    ]
+  }),
+  copy({
+    targets: [
+      { src: "assets/gtm-logo.png", dest: `${dir}/assets` },
+      { src: "assets/css/*", dest: `${dir}/assets/css` },
+      { src: "assets/webfonts/*", dest: `${dir}/assets/webfonts` },
+      { src: "mock/data-*.json", dest: `${dir}/data` },
+    ],
+  }),
+  // production && terser(),
+  progress({
+    // clearLine: false // default: true
+  }),
+  sizes(),
+]
+
+export default [{
   input: 'src/dev/main.js',
   output: {
     dir: 'dist-dev',
@@ -23,72 +78,50 @@ export default {
     name: 'app',
   },
   plugins: [
-    svelte({
-      dev: !production,
-      // css: css => {
-      //   css.write('dist-dev/gtm-svelte.css');
-      // }
-    }),
 
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration -
-    // consult the documentation for details:
-    // https://github.com/rollup/plugins/tree/master/packages/commonjs
     resolve({
       browser: true,
       // dedupe: ['svelte']
     }),
-    commonjs({
-      exclude: 'node_modules/moment/**/*',
-      sourceMap: false
-    }),
-    json(),
-    url({
-      include: ['svg', 'png', 'woff', 'woff2', 'eot', 'ttf'].map(e => '**/*.' + e),
-      limit: Infinity,
-    }),
     html2({
       template: 'src/dev/index.html',
     }),
-    postcss({
-      modules: true,
-      extract: 'assets/main.css',
-      plugins: [
-        require("postcss-import")(),
-        require("tailwindcss"),
-
-        // const purgecss = require("@fullhuman/postcss-purgecss");
-        // require("autoprefixer"),
-        // Only purge css on production
-        // production &&
-        // purgecss({
-        //   content: ["./**/*.html", "./**/*.svelte"],
-        //   defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
-        // })
-
-      ]
-    }),
-    copy({
-      targets: [
-        { src: "assets/gtm-logo.png", dest: "dist-dev/assets" },
-        { src: "assets/css/*", dest: "dist-dev/assets/css" },
-        { src: "assets/webfonts/*", dest: "dist-dev/assets/webfonts" },
-        { src: "mock/data-*.json", dest: "dist-dev/data" },
-      ],
-    }),
+    ...plugins('dist-dev'),
     !production && serve32('dist-dev', 9090),
     !production && livereload('dist-dev'),
-    production && terser(),
-    progress({
-      // clearLine: false // default: true
-    }),
-    sizes(),
   ],
   watch: {
     clearScreen: false
   }
-};
+}, {
+  input: ['main', 'preload'].map(f => `src/desktop/${f}.js`),
+  output: {
+    dir: 'dist-electron',
+    // sourcemap: true,
+    format: 'cjs',
+    // name: 'app',
+  },
+  plugins: [
+    resolve({
+      // browser: false,
+      // dedupe: ['svelte']
+    }),
+    ...plugins('dist-electron'),
+
+    html2({
+      template: 'src/desktop/index.html',
+    }),
+    copy({
+      targets: [
+        // { src: 'src/desktop/index.html', dest: 'dist-electron' },
+      ],
+    }),
+  ],
+  external: ['electron', 'child_process', 'fs', 'path', 'url', 'module', 'os'],
+  watch: {
+    clearScreen: false
+  }
+}];
 
 function serve32(dir, port) {
   console.log(dir)
