@@ -23,7 +23,7 @@ activityChartConfig ,
     <DashboardCard
       title="Total Time"
       body={hhmm(res.stats.totalSecs)}
-      footer="Across {res.commits.length} commit{res.commits.length === 1 ? '' : 's'}" />
+      footer="{res.commits.length} commit{res.commits.length === 1 ? '' : 's'}" />
 
     <div class="w-64">
       <Chart config={timeByFileStatusChartConfig(res.stats.status)} />
