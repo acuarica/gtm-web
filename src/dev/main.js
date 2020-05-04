@@ -38,7 +38,7 @@ new App({
         const commitsDataUrl = "/data/data-commits.json"
         const url = `${commitsDataUrl}?all&from=${range.start}&to=${range.end}`
         return fetchurl(url)
-      }, 3000)
+      }, 10)
     },
     fetchProjectList: async () => {
       return delay(async () => {
