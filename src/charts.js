@@ -3,22 +3,19 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { getDaily } from "./notes";
 import { hhmm } from "./format";
 
-function timeByFileStatusChartDatasets(status) {
+export function timeByFileStatusChartConfig(status) {
   const StatusIndicator = { m: "Modifying", r: "Reading", d: "Deleting" };
-
-  return Object.keys(status).map(s => {
+  const datasets = Object.keys(status).map(s => {
     return {
       data: [status[s]],
       label: `${StatusIndicator[s]}: ${hhmm(status[s])}`
     };
   });
-}
 
-export function timeByFileStatusChartConfig(status) {
   return {
     type: 'horizontalBar',
     data: {
-      datasets: timeByFileStatusChartDatasets(status),
+      datasets: datasets,
     },
     options: {
       maintainAspectRatio: false,
@@ -45,41 +42,45 @@ export function timeByFileStatusChartConfig(status) {
         datalabels: {
           display: false,
         },
+      },
+      tooltips: {
+        enabled: false,
       }
     },
   }
 }
 
-function getds(projects) {
-  // const commitCounts: number[] = []
+///
+export function projectTotalsChartConfig(projects) {
+  console.assert(typeof projects === 'object', `Invalid projects:`, projects)
   const datasets = [];
+  const labels = [];
   for (const pname in projects) {
     const p = projects[pname];
-    // commitCounts.push(p.commitcount);
     datasets.push({
       data: [p.total],
+      commitcount: p.commits.length,
       label: pname
     });
+    labels.push(pname);
   }
-  console.log(datasets);
-  return datasets;
-}
-///
-export function projectTotalsChartConfig(ds) {
+
   return {
     type: 'bar',
     plugins: [ChartDataLabels],
     data: {
-      datasets: getds(ds)
+      datasets: datasets,
+      // labels: labels,
     },
     options: {
-      // maintainAspectRatio: false,
+      maintainAspectRatio: false,
       title: {
         display: true,
         text: 'Time by Project'
       },
       legend: {
-        position: 'top',
+        // display: false,
+        position: 'bottom',
       },
       scales: {
         xAxes: [{
@@ -88,6 +89,13 @@ export function projectTotalsChartConfig(ds) {
         }],
         yAxes: [{
           // stacked: true,
+          // ticks: {
+          //   callback: function (value, index, values) {
+          //     const _value = values[index].value;
+          //     return hhmm(value);
+          //   }
+          // },
+          display: false,
           gridLines: {
             display: false,
           },
@@ -95,18 +103,18 @@ export function projectTotalsChartConfig(ds) {
       },
       plugins: {
         datalabels: {
-          formatter: (value, _context) => hhmm(value),
+          formatter: (value, _ctx) => `\n${hhmm(value)}`,
         },
       },
       tooltips: {
+        enabled: false,
         callbacks: {
-          label: (_tooltipItem, _data) => {
-            return ''
-            // const i = tooltipItem.index!;
-            // const ds = data.datasets![0];
-            // const commitcount = commitCounts[i];
-            // const committext = commitcount == 1 ? 'commit' : 'commits';
-            // return `${data.labels![i]}: ${hhmm(ds.data![i] as number)} (${commitcount} ${committext})`;
+          label: (tooltipItem, data) => {
+            const i = tooltipItem.index;
+            const ds = data.datasets[i];
+            const commitcount = ds.commitcount;
+            const committext = commitcount === 1 ? 'commit' : 'commits';
+            return `${hhmm(ds.data[0])} (${commitcount} ${committext})`;
           },
         }
       },
@@ -150,8 +158,12 @@ export function activityChartConfig(projects) {
         xAxes: [{
           type: 'time',
           offset: true,
-          time: { unit: 'hour', parser: 'HH:mm' },
-          gridLines: { drawOnChartArea: false, },
+          time: {
+            unit: 'hour', parser: 'HH:mm'
+          },
+          gridLines: {
+            drawOnChartArea: false,
+          },
         }],
         yAxes: [{
           type: 'time',
@@ -167,36 +179,25 @@ export function activityChartConfig(projects) {
           type: 'time',
           offset: true,
           position: 'right',
-          time: { unit: 'day', parser: 'YYYY-MM-DD' },
+          time: {
+            unit: 'day', parser: 'YYYY-MM-DD'
+          },
           ticks: {
-            // reverse: true,
             callback: function (_value, index, values) {
               const d = moment(values[index].value).format('YYYY-MM-DD');
               const date = daily[d];
               return date === undefined ? "" : hhmm(date.total);
             }
           },
-          gridLines: { drawOnChartArea: false, },
+          gridLines: {
+            drawOnChartArea: false,
+          },
         }],
       },
       plugins: {
         datalabels: {
           display: false,
         },
-        // zoom: {
-        //   pan: {
-        //     enabled: true,
-        //     mode: "y",
-        //     speed: 100,
-        //     threshold: 10,
-        //   },
-        //   zoom: {
-        //     enabled: true,
-        //     mode: 'y',
-        //     speed: 0.1,
-        //     sensitivity: 3,
-        //   }
-        // },
       }
     }
   }
