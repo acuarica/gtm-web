@@ -12,7 +12,7 @@
     "appId": "gtm-dashboard",
     "files": [
       "dist-electron/**/*",
-      "node_modules/**/*",
+      "node_modules2/**/*",
       "package.json"
     ],
     "directories": {
@@ -25,11 +25,11 @@
   ],
   "scripts": {
     "dev": "rollup --config --watch",
-    "build": "parcel build src/desktop/* --out-dir dist-electron --target electron --no-source-maps --no-minify --no-cache && cp -v -r assets dist-electron/",
+    "build": "rollup --config",
     "start": "electron dist-electron/main.js",
-    "pack": "electron-builder",
-    "demo": "parcel build index.html --no-source-maps --public-url /gtm-web/ && cp -v data-commits.json dist/",
-    "test": "mocha test/*-test.js"
+    "test": "mocha test/*-test.js",
+    "dist": "electron-builder",
+    "demo": "parcel build index.html --no-source-maps --public-url /gtm-web/ && cp -v data-commits.json dist/"
   },
   "dependencies": {
     "chart.js": "^2.9.3",
@@ -48,10 +48,6 @@
     "@rollup/plugin-json": "^4.0.3",
     "@rollup/plugin-node-resolve": "^7.1.3",
     "@rollup/plugin-url": "^4.0.2",
-    "@types/chart.js": "^2.9.19",
-    "@types/mocha": "^7.0.2",
-    "@types/node": "^13.13.1",
-    "@typescript-eslint/parser": "^2.29.0",
     "autoprefixer": "^9.7.6",
     "chokidar": "^3.4.0",
     "electron": "^6.0.8",
