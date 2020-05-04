@@ -1,5 +1,7 @@
-import { app, BrowserWindow } from "electron";
-import * as path from "path";
+// import { app, BrowserWindow } from "electron";
+const { app, BrowserWindow } = require("electron");
+const path = require('path')
+// import * as path from "path";
 
 let mainWindow;
 let win;

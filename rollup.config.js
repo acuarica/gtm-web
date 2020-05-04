@@ -74,6 +74,7 @@ export default {
         { src: "assets/gtm-logo.png", dest: "dist-dev/assets" },
         { src: "assets/css/*", dest: "dist-dev/assets/css" },
         { src: "assets/webfonts/*", dest: "dist-dev/assets/webfonts" },
+        { src: "mock/data-*.json", dest: "dist-dev/data" },
       ],
     }),
     !production && serve32('dist-dev', 9090),

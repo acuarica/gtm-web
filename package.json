@@ -6,6 +6,7 @@
     "name": "Luis Mastrangelo"
   },
   "license": "CC0-1.0",
+  "type": "module",
   "main": "dist-electron/main.js",
   "build": {
     "appId": "gtm-dashboard",
@@ -25,10 +26,10 @@
   "scripts": {
     "dev": "rollup --config --watch",
     "build": "parcel build src/desktop/* --out-dir dist-electron --target electron --no-source-maps --no-minify --no-cache && cp -v -r assets dist-electron/",
-    "start": "electron ./dist-electron/main.js",
+    "start": "electron --experimental-modules ./src/desktop/main.js",
     "pack": "electron-builder",
     "demo": "parcel build index.html --no-source-maps --public-url /gtm-web/ && cp -v data-commits.json dist/",
-    "test": "mocha dist/test/*-test.js"
+    "test": "mocha test/*-test.js"
   },
   "dependencies": {
     "chart.js": "^2.9.3",
