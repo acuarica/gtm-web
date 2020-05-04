@@ -1,0 +1,17 @@
+[ver:1,total:3840]
+src/dev/main.js:1126,1588568400:790,1588572000:336,m
+.gtm/terminal.app:607,1588568400:553,1588572000:54,r
+test/notes-test.js:407,1588568400:407,m
+package.json:382,1588568400:382,m
+src/desktop/main.js:314,1588568400:314,m
+test/format-test.js:288,1588568400:288,m
+test/git-test.js:196,1588568400:196,m
+mock/mock.js:175,1588568400:175,m
+rollup.config.js:170,1588568400:20,1588572000:150,m
+make.js:51,1588568400:51,r
+src/mock.js:45,1588568400:45,d
+src/notes.js:29,1588568400:29,m
+src/desktop/preload.js:15,1588568400:15,r
+test/data-commits.json:12,1588568400:12,d
+mock/data-commits.json:12,1588568400:12,m
+src/desktop/index.html:11,1588568400:11,r
