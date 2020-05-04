@@ -154,11 +154,11 @@
       on:keydown={e => {
         if (e.keyCode === 27) showDatepicker = false;
       }}
-      class="px-3 py-0 leading-none focus:outline-none text-gray-700 "
+      class="px-3 py-0 leading-none focus:outline-none text-gray-700 cursor-pointer"
       placeholder="Select date" />
 
     <svg
-      class="my-1 mx-2 h-6 w-6 text-blue-700"
+      class="my-1 mx-2 h-6 w-6 text-blue-700 cursor-pointer"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -173,7 +173,7 @@
   </div>
 
   {#if showDatepicker}
-    <div class="modal-background" on:click={()=>showDatepicker=false} />
+    <div class="modal-background" on:click={() => (showDatepicker = false)} />
 
     <div
       class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0"
