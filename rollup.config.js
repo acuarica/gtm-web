@@ -9,7 +9,7 @@ import copy from 'rollup-plugin-copy'
 import url from '@rollup/plugin-url';
 import postcss from 'rollup-plugin-postcss'
 import progress from 'rollup-plugin-progress';
-
+import sizes from 'rollup-plugin-sizes';
 import { startServe } from './make'
 
 const production = !process.env.ROLLUP_WATCH;
@@ -81,7 +81,8 @@ export default {
     production && terser(),
     progress({
       // clearLine: false // default: true
-    })
+    }),
+    sizes(),
   ],
   watch: {
     clearScreen: false
