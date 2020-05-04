@@ -64,9 +64,7 @@
   <div class="px-2 pb-1 sm:flex sm:items-center {isOpen ? 'block' : 'hidden'}">
 
     <DatePicker on:change={handleRangeChange} />
-
     <SearchBox />
-
     <button
       class="text-white px-2 py-1 mr-2 hidden sm:block focus:outline-none
       rounded hover:bg-gray-800"

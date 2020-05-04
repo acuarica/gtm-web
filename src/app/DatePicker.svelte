@@ -51,7 +51,6 @@
   let year = "";
   let no_of_days = [];
   let blankdays = [];
-  let container;
 
   function isToday(date) {
     const today = new Date();
@@ -120,17 +119,6 @@
     no_of_days = daysArray;
   }
 
-  function isOutside(target) {
-    let parent = target;
-    while (parent) {
-      if (parent === container) {
-        return false;
-      }
-      parent = parent.parentNode;
-    }
-    return true;
-  }
-
   onMount(() => {
     const today = new Date();
     month = today.getMonth();
@@ -144,27 +132,33 @@
   });
 </script>
 
-<svelte:body
-  on:click={e => {
-    if (isOutside(e.target)) showDatepicker = false;
-  }} />
+<style>
+  .modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+  }
+</style>
 
-<div bind:this={container} class="relative">
-  <input
-    type="text"
-    readonly
-    value={datepickerValue}
-    on:click={() => (showDatepicker = !showDatepicker)}
-    on:keydown={e => {
-      if (e.keyCode === 27) showDatepicker = false;
-    }}
-    class="pl-4 pr-10 py-3 leading-none rounded-lg shadow-sm focus:outline-none
-    focus:shadow-outline text-gray-600 font-medium"
-    placeholder="Select date" />
+<div class="relative">
 
-  <div class="absolute top-0 right-0 px-3 py-2">
+  <div class="bg-white flex items-center rounded-sm shadow-xl m-2">
+    <input
+      type="text"
+      readonly
+      value={datepickerValue}
+      on:click={() => (showDatepicker = !showDatepicker)}
+      on:keydown={e => {
+        if (e.keyCode === 27) showDatepicker = false;
+      }}
+      class="px-3 py-0 leading-none focus:outline-none text-gray-700 "
+      placeholder="Select date" />
+
     <svg
-      class="h-6 w-6 text-gray-400"
+      class="my-1 mx-2 h-6 w-6 text-blue-700"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -179,6 +173,8 @@
   </div>
 
   {#if showDatepicker}
+    <div class="modal-background" on:click={()=>showDatepicker=false} />
+
     <div
       class="bg-white mt-12 rounded-lg shadow p-4 absolute top-0 left-0"
       style="width: 25rem">
@@ -187,7 +183,8 @@
         <div style="width: 7.5rem">
           {#each Object.entries(ranges) as [text, range]}
             <button
-              class="block focus:outline-none hover:bg-blue-200 rounded pt-1 px-2"
+              class="block focus:outline-none hover:bg-blue-200 rounded pt-1
+              px-2"
               type="button"
               on:click={() => selectRange(text, range)}>
               {text}
