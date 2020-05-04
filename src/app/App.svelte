@@ -33,7 +33,7 @@
   });
 
   onMount(async () => {
-    router.start();
+    router.start({ hashbang: true });
     projectListPromise = fetchProjectList();
     const workdirStatus = await fetchWorkdirStatus();
     workdirStatsPromise = Promise.resolve(computeWorkdirStatus(workdirStatus));
