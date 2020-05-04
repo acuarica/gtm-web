@@ -3,4 +3,5 @@
 /node_modules/
 /dist-dev/
 /dist-electron/
+/dist/
 /yarn.lock
