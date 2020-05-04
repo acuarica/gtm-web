@@ -1,9 +1,35 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 
-let mainWindow: Electron.BrowserWindow;
+let mainWindow;
+let win;
 
-function createWindow(): void {
+const mode = process.env.NODE_ENV;
+
+function reloadOnChange(win) {
+  // if (mode !== 'development') return { close: () => {} };
+
+  // console.log(win)
+  // const chokidar = require('chokidar');//.watch(path.join(__dirname, '**'), { ignoreInitial: true });
+
+  // console.log(watcher)
+
+  // chokidar.watch('./src', {ignoreInitial:true}).on('change', (event, path) => {
+  // console.log(event, path);
+  // win.reload();
+  // });
+
+  // watcher.on('all', () => {
+  //   console.log("Change detected, reloading..")
+  //   win.reload();
+  // });
+
+  // return watcher;
+}
+
+
+
+function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     height: 600,
@@ -13,6 +39,9 @@ function createWindow(): void {
     width: 800,
   });
 
+
+  console.log(mainWindow)
+
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "./index.html"));
   // mainWindow.loadFile(path.join(__dirname, "../../@gtm-app/dist/index.html"));
@@ -20,12 +49,16 @@ function createWindow(): void {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
+  // const watcher = 
+  reloadOnChange(mainWindow);
+
   // Emitted when the window is closed.
   mainWindow.on("closed", () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+    // watcher.close()
   });
 }
 

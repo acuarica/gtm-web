@@ -5,7 +5,7 @@ import App from '../app/App.svelte'
 import { commits, projects, workdir } from '../mock'
 
 window.addEventListener("DOMContentLoaded", async () => {
-  const replaceText = (selector: string, text: string) => {
+  const replaceText = (selector, text) => {
     const element = document.getElementById(selector);
     if (element) {
       element.innerText = text;
@@ -18,13 +18,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   new App({
     target: document.body,
     props: {
-      fetchCommits: async (range: any): Promise<typeof commits> => {
+      fetchCommits: async (range) => {
         return g.fetchCommits(range)
       },
-      fetchProjectList: async (): Promise<string[]> => {
+      fetchProjectList: async () => {
         return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
       },
-      fetchWorkdirStatus: async (): Promise<typeof workdir> => {
+      fetchWorkdirStatus: async () => {
         return workdir
       }
     }
@@ -36,6 +36,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   // console.log(m, '@preload')
 
   for (const type of ["chrome", "node", "electron"]) {
-    replaceText(`${type}-version`, (process.versions as any)[type]);
+    replaceText(`${type}-version`, (process.versions)[type]);
   }
 });

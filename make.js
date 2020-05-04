@@ -1,21 +1,38 @@
+import sirv from 'sirv';
+import { fetchCommits, fetchProjects } from './src/git';
+import polka from 'polka';
+import send from '@polka/send-type';
 
+export function startServe(dir, port) {
 
-const fs = require('fs')
-const js = require('./src/data-commits.json')
+  const assets = sirv(dir, {
+    maxAge: 31536000, // 1Y
+    immutable: true,
+    dev: true,
+  });
 
-const cs = []
-for (const c of js) {
-  if (c.Note && c.Note.Files.length > 0) {
-    cs.push(c)
-    if (cs.length === 50) break
-  }
+  polka()
+    .use(assets)
+    .get('/data/commits', async (req, res) => {
+      console.info(`Request: ${req.path}${req.search}`)
+      const range = {
+        start: req.query.from,
+        end: req.query.to
+      };
+      if (range.start && range.end) {
+        const data = await fetchCommits(range)
+        send(res, 200, data);
+      } else {
+        console.warn("Argument to or from not defined:", range)
+      }
+    })
+    .get('/data/projects', async (req, res) => {
+      console.info(`Request projects: ${req.path}`)
+      const data = await fetchProjects()
+      send(res, 200, data);
+    })
+    .listen(port, err => {
+      if (err) throw err;
+      console.log(`✨ Ready on localhost:${port}~ 🚀 !`);
+    });
 }
-
-console.log(js.length)
-console.log(cs.length)
-
-// stringify JSON Object
-var jsonContent = JSON.stringify(cs);
-// console.log(jsonContent);
-
-fs.writeFile("output.json", jsonContent, () => { })

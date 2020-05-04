@@ -1,4 +1,5 @@
 import '@fortawesome/fontawesome-free/css/all.css'
+import '../../main.pcss'
 
 import App from '../app/App.svelte'
 
@@ -14,7 +15,7 @@ import { workdir } from '../mock'
 //   commitsDataUrl = '/gtm-web/data-commits.json'
 // }
 
-function delay<T>(func: () => T, timeout: number): Promise<T> {
+function delay(func, timeout) {
   return new Promise(function (resolve, ) {
     setTimeout(() => {
       resolve(func())
@@ -22,7 +23,7 @@ function delay<T>(func: () => T, timeout: number): Promise<T> {
   })
 }
 
-export function delayError<T>(func: () => T, timeout: number): Promise<T> {
+export function delayError(func, timeout) {
   return new Promise(function (_, reject) {
     setTimeout(() => {
       reject(func())
@@ -34,38 +35,38 @@ console.info("Creating app with mock service")
 
 new App({
   target: document.body,
-  props: true ?
+  props: false ?
     {
-      fetchCommits: async (): Promise<typeof commits> => {
+      fetchCommits: async () => {
         return delay(() => {
           commits.push(commits[0])
           return commits
         }, 3000)
       },
-      fetchProjectList: async (): Promise<string[]> => {
+      fetchProjectList: async () => {
         return delay(() => {
           return projects.map(p => p.substring(p.lastIndexOf("/") + 1))
         }, 3000)
       },
-      fetchWorkdirStatus: async (): Promise<typeof workdir> => {
+      fetchWorkdirStatus: async () => {
         return delay(() => {
           return workdir
         }, 3000)
       }
     } : {
-      fetchCommits: async (range: { start: string; end: string }): Promise<typeof commits> => {
+      fetchCommits: async (range) => {
         const commitsDataUrl = "/data/commits"
         const url = `${commitsDataUrl}?all&from=${range.start}&to=${range.end}`
         const json = await fetch(url).then(r => r.json())
         return json
       },
-      fetchProjectList: async (): Promise<string[]> => {
+      fetchProjectList: async () => {
         const url = "/data/projects";
         const response = await fetch(url);
-        const json: string[] = await response.json();
+        const json = await response.json();
         return json.map(p => p.substring(p.lastIndexOf("/") + 1));
       },
-      fetchWorkdirStatus: async (): Promise<typeof workdir> => {
+      fetchWorkdirStatus: async () => {
         return workdir
       },
     }

@@ -1,7 +1,6 @@
 import moment from 'moment';
-import { ChartConfiguration } from "chart.js";
-import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
-import { ProjectMap, getDaily } from "./notes";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { getDaily } from "./notes";
 import { hhmm } from "./format";
 
 function timeByFileStatusChartDatasets(status) {
@@ -15,7 +14,7 @@ function timeByFileStatusChartDatasets(status) {
   });
 }
 
-export function timeByFileStatusChartConfig(status: any): ChartConfiguration {
+export function timeByFileStatusChartConfig(status) {
   return {
     type: 'horizontalBar',
     data: {
@@ -66,8 +65,7 @@ function getds(projects) {
   return datasets;
 }
 ///
-export function projectTotalsChartConfig(ds): ChartConfiguration {
-
+export function projectTotalsChartConfig(ds) {
   return {
     type: 'bar',
     plugins: [ChartDataLabels],
@@ -97,7 +95,7 @@ export function projectTotalsChartConfig(ds): ChartConfiguration {
       },
       plugins: {
         datalabels: {
-          formatter: (value: number, _context: Context) => hhmm(value),
+          formatter: (value, _context) => hhmm(value),
         },
       },
       tooltips: {
@@ -117,7 +115,7 @@ export function projectTotalsChartConfig(ds): ChartConfiguration {
 }
 
 ///
-export function activityChartConfig(projects: ProjectMap): ChartConfiguration {
+export function activityChartConfig(projects) {
   console.log(projects)
   const daily = getDaily(projects)
   return {
@@ -128,15 +126,15 @@ export function activityChartConfig(projects: ProjectMap): ChartConfiguration {
           label: projects[p].name,
           data: projects[p].timelineMatrix,
           borderWidth: 1,
-          width: function (ctx: Context) {
+          width: function (ctx) {
             // const value = (<{ v: number }>ctx.dataset.data![ctx.dataIndex]!).v;
             // const levels = 10;
             // const alpha = Math.floor(value * levels / 3600) / levels + (1 / levels);
             var a = ctx.chart.chartArea;
             return (a.right - a.left) / 25;
           },
-          height: function (ctx: Context) {
-            const value = (ctx.dataset.data![ctx.dataIndex]! as { v: number }).v;
+          height: function (ctx) {
+            const value = (ctx.dataset.data[ctx.dataIndex]).v;
             const levels = 4;
             const alpha = Math.floor(value * levels / 3600) / levels + (1 / levels);
             var a = ctx.chart.chartArea;
@@ -172,8 +170,8 @@ export function activityChartConfig(projects: ProjectMap): ChartConfiguration {
           time: { unit: 'day', parser: 'YYYY-MM-DD' },
           ticks: {
             // reverse: true,
-            callback: function (_value, index, values: any) {
-              const d = moment((values as { value: any }[])[index].value).format('YYYY-MM-DD');
+            callback: function (_value, index, values) {
+              const d = moment(values[index].value).format('YYYY-MM-DD');
               const date = daily[d];
               return date === undefined ? "" : hhmm(date.total);
             }

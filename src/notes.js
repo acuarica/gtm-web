@@ -2,79 +2,10 @@ import moment from "moment"
 import { pad0 } from "./format"
 
 ///
-export type Seconds = number
-
-///
-export type WorkdirStatus = {
-  Total: Seconds;
-  Label: string;
-  CommitNote: CommitNote;
-}
-
-///
-export type CommitNote = {
-  Files: {
-    SourceFile: string;
-    TimeSpent: Seconds;
-    Timeline: { [id: string]: Seconds };
-    Status: string;
-  }[];
-}
-
-/// 
-export type Commit = {
-  Author: string;
-  Date: string;
-  When: string;
-  Hash: string;
-  Subject: string;
-  Project: string;
-  Message: string;
-  Note: CommitNote;
-  timeSpent?: Seconds;
-}
-
-///
-export type Project = {
-  name: string;
-  total: number;
-  commits: Commit[];
-  timeline: {
-    [id: string]: {
-      [hour: number]: {
-        total: number;
-      };
-    };
-  };
-  timelineMatrix: {
-    x: string;
-    y: string;
-    v: number;
-  }[];
-}
-
-///
-export type ProjectMap = { [id: string]: Project }
-
-///
-export type FileStatus<T> = { [s: string]: T }
-
-/// Hours is expressed by the total field in seconds.
-export type DailyHours = { [date: string]: { total: number } }
-
-///
-export function computeStats(commits: {
-  Project: string;
-  Note: CommitNote;
-  timeSpent: Seconds;
-}[]): {
-  projects: ProjectMap;
-  totalSecs: Seconds;
-  status: FileStatus<Seconds>;
-} {
-  const projects: ProjectMap = {};
-  const status: FileStatus<Seconds> = { 'm': 0, 'r': 0, 'd': 0 }
-  let totalSecs: Seconds = 0
+export function computeStats(commits) {
+  const projects = [];
+  const status = {'m': 0, 'r': 0, 'd': 0};
+  let totalSecs = 0;
 
   for (const commit of commits) {
     let project = projects[commit.Project];
@@ -82,7 +13,7 @@ export function computeStats(commits: {
       project = { name: commit.Project, total: 0, commits: [], timeline: {}, timelineMatrix: [] };
       projects[commit.Project] = project;
     }
-    project.commits.push(commit as Commit);
+    project.commits.push(commit);
     if (commit.Note.Files === null) {
       console.warn("gtm check: Commit note files not available:", commit);
       continue;
@@ -91,7 +22,7 @@ export function computeStats(commits: {
     for (const file of commit.Note.Files) {
       commitTimeSpent += file.TimeSpent
 
-      let fileSecs: Seconds = 0;
+      let fileSecs = 0;
       for (const timestamp2 in file.Timeline) {
         const timestamp = Number(timestamp2)
         const secs = file.Timeline[timestamp];
@@ -126,8 +57,8 @@ export function computeStats(commits: {
 }
 
 ///
-export function getDaily(projects: ProjectMap): DailyHours {
-  const daily: DailyHours = {};
+export function getDaily(projects) {
+  const daily = {};
   for (const pkey in projects) {
     const p = projects[pkey]
     const data = [];
@@ -152,7 +83,7 @@ export function getDaily(projects: ProjectMap): DailyHours {
   return daily
 }
 
-export function computeWorkdirStatus(wds: { [p: string]: WorkdirStatus }): ReturnType<typeof computeStats> {
+export function computeWorkdirStatus(wds) {
   const commits = []
   for (const p in wds) {
     const cn = wds[p]
