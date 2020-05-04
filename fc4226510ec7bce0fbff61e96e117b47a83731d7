@@ -1,0 +1,12 @@
+[ver:1,total:1620]
+src/charts.js:850,1588626000:620,1588629600:180,1588633200:50,m
+dist-dev/main.js:380,1588633200:380,r
+.gtm/terminal.app:137,1588633200:137,r
+rollup.config.js:97,1588633200:97,r
+dist-dev/index.html:30,1588633200:30,r
+package.json:30,1588633200:30,r
+dist-dev/assets/main.css:28,1588633200:28,r
+dist-dev/assets/css/all.css:20,1588633200:20,r
+src/app/Home.svelte:20,1588626000:20,r
+src/dev/main.js:20,1588626000:20,r
+src/app/Navbar.svelte:8,1588633200:8,r
