@@ -108,12 +108,9 @@ export default [{
     }),
     ...plugins('dist-electron'),
 
-    html2({
-      template: 'src/desktop/index.html',
-    }),
     copy({
       targets: [
-        // { src: 'src/desktop/index.html', dest: 'dist-electron' },
+        { src: 'src/desktop/index.html', dest: 'dist-electron' },
       ],
     }),
   ],
