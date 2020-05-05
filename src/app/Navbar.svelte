@@ -4,6 +4,7 @@
   import DateRangePicker from "./DateRangePicker.svelte";
   import ChartPalettePicker from "./ChartPalettePicker.svelte";
 
+  import logo from "../../assets/gtm-logo.png";
   export let title = "";
   export let handleRangeChange;
   export let settingsView;
@@ -29,7 +30,7 @@
   <div class="flex items-center justify-between px-4 py-1">
     <div>
       <a href="/">
-        <img class="inline h-8" src="./assets/gtm-logo.png" alt="gtm Logo" />
+        <img class="inline h-8" src={logo} alt="gtm Logo" />
         <span class="text-white">Dashboard</span>
       </a>
       <span class="ml-12 font-medium text-white">

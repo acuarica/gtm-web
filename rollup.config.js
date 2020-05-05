@@ -9,6 +9,7 @@ import copy from 'rollup-plugin-copy'
 import url from '@rollup/plugin-url';
 import postcss from 'rollup-plugin-postcss'
 import progress from 'rollup-plugin-progress';
+import image from '@rollup/plugin-image';
 import sizes from 'rollup-plugin-sizes';
 import { startServe } from './make'
 
@@ -32,6 +33,7 @@ const plugins = (dir) => [
     sourceMap: false
   }),
   json(),
+  image(),
   url({
     include: ['svg', 'png', 'woff', 'woff2', 'eot', 'ttf'].map(e => '**/*.' + e),
     limit: Infinity,
@@ -56,10 +58,10 @@ const plugins = (dir) => [
   }),
   copy({
     targets: [
-      { src: "assets/gtm-logo.png", dest: `${dir}/assets` },
+      // { src: "assets/gtm-logo.png", dest: `${dir}/assets` },
       { src: "assets/css/*", dest: `${dir}/assets/css` },
       { src: "assets/webfonts/*", dest: `${dir}/assets/webfonts` },
-      { src: "mock/data-*.json", dest: `${dir}/data` },
+      // { src: "mock/data-*.json", dest: `${dir}/data` },
     ],
   }),
   // production && terser(),
@@ -73,7 +75,7 @@ export default [{
   input: 'src/dev/main.js',
   output: {
     dir: 'dist-dev',
-    sourcemap: true,
+    // sourcemap: true,
     format: 'iife',
     name: 'app',
   },
@@ -118,7 +120,7 @@ export default [{
   watch: {
     clearScreen: false
   }
-}];
+}][0];
 
 function serve32(dir, port) {
   console.log(dir)
