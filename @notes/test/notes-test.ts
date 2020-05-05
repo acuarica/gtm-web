@@ -1,7 +1,7 @@
 
 import assert from 'assert';
 import { commits } from '@gtm/mock';
-import { computeStats } from '@gtm/notes';
+import { computeStats, getDaily } from '@gtm/notes';
 
 describe('compute', () => {
 
@@ -24,4 +24,10 @@ describe('compute', () => {
       assert.equal(stats.totalSecs, total)
     })
   })
+
+  it('Checks daily of empty projects is empty', () => {
+    const daily = getDaily({})
+    assert.equal(Object.keys(daily), 0)
+  })
+
 })
