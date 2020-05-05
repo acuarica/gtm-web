@@ -1,6 +1,6 @@
 {
   "name": "@gtm/notes",
-  "main": "src/notes.js",
+  "version": "0.0.1",
   "type": "module",
-  "version": "0.0.1"
+  "main": "src/notes.js"
 }

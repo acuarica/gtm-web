@@ -59,6 +59,7 @@
     "@rollup/plugin-url": "^4.0.2",
     "@types/mocha": "^7.0.2",
     "autoprefixer": "^9.7.6",
+    "chalk": "^4.0.0",
     "chokidar": "^3.4.0",
     "electron": "^6.0.8",
     "electron-builder": "^22.6.0",
