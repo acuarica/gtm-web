@@ -1,10 +1,16 @@
+#!/usr/bin/env node
+
+import chalk from 'chalk';
+import { spawn } from 'child_process'
 import sirv from 'sirv';
 import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from './src/git.js';
 import polka from 'polka';
 import send from '@polka/send-type';
 
-export function startServe(dir, port) {
+const log = (buffer) => process.stdout.write(buffer);
+const logln = (buffer) => process.stdout.write(buffer + '\n');
 
+export function servegtm(dir, port) {
   const assets = sirv(dir, {
     maxAge: 31536000, // 1Y
     immutable: true,
@@ -42,4 +48,38 @@ export function startServe(dir, port) {
     });
 }
 
-startServe('dist-dev', 9090)
+export async function tswatch() {
+  const child = spawn('yarn', ['tsc', '--watch', '--preserveWatchOutput', '--noEmitOnError'], {
+    env: {
+      FORCE_COLOR: 1,
+      ...process.env
+    }
+  });
+
+  for await (const data of child.stdout) {
+    process.stdout.write(data)
+    const line = Buffer.from(data, 'utf8').toString()
+    const emitComplete = line.includes('Found 0 errors')
+    if (emitComplete) {
+      console.info("Initial compilation complete 🚀 !")
+    }
+  }
+}
+
+async function main(argv) {
+  const cmds = {
+    servegtm: servegtm,
+    tswatch: tswatch,
+  }
+  logln(chalk.gray(`gtm Make`))
+  const cmd = cmds[argv[0]]
+  if (!cmd) {
+    logln(chalk.red.bold(`Command '${argv[0]}' is undefined.`))
+    process.exit(code)
+  }
+  cmd(...argv.slice(1))
+}
+
+if (process.argv.length > 2) {
+  main(process.argv.slice(2))
+}
