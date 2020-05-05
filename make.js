@@ -1,5 +1,5 @@
 import sirv from 'sirv';
-import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from './src/git';
+import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from './src/git.js';
 import polka from 'polka';
 import send from '@polka/send-type';
 
@@ -41,3 +41,5 @@ export function startServe(dir, port) {
       console.log(`✨ Ready on localhost:${port}~ 🚀 !`);
     });
 }
+
+startServe('dist-dev', 9090)
