@@ -1,6 +1,7 @@
 {
   "name": "@gtm/mock",
-  "main": "src/mock.js",
+  "version": "0.0.1",
   "type": "module",
-  "version": "0.0.1"
+  "main": "src/mock.js",
+  "types": "src/mock.ts"
 }
