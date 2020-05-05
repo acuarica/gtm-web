@@ -1,0 +1,7 @@
+[ver:1,total:399]
+package.json:105,1588705200:75,1588708800:30,m
+@notes/package.json:94,1588708800:94,m
+tsconfig.json:70,1588705200:50,1588708800:20,m
+.gitignore:60,1588708800:60,m
+.eslintrc.js:50,1588705200:50,m
+@notes/test/notes-test.ts:20,1588708800:20,r
