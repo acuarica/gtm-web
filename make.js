@@ -1,5 +1,5 @@
 import sirv from 'sirv';
-import { fetchCommits, fetchProjectList } from './src/git';
+import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from './src/git';
 import polka from 'polka';
 import send from '@polka/send-type';
 
@@ -29,6 +29,11 @@ export function startServe(dir, port) {
     .get('/data/projects', async (req, res) => {
       console.info(`Request projects: ${req.path}`)
       const data = await fetchProjectList()
+      send(res, 200, data);
+    })
+    .get('/data/status', async (req, res) => {
+      console.info(`Request workdir status: ${req.path}`)
+      const data = await fetchWorkdirStatus()
       send(res, 200, data);
     })
     .listen(port, err => {
