@@ -1,7 +1,7 @@
 
 import assert from 'assert';
-import { commits } from '../mock/mock.js';
-import { computeStats } from '../src/notes.js';
+import { commits } from '@gtm/mock';
+import { computeStats } from '@gtm/notes';
 
 describe('compute', () => {
 

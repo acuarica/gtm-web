@@ -1,6 +1,8 @@
 <script>
+  import Icon from "./Icon.svelte";
+  import { faTasks } from "@fortawesome/free-solid-svg-icons/faTasks";
   import { onMount } from "svelte";
-  import { computeStats, computeWorkdirStatus } from "../notes";
+  import { computeStats, computeWorkdirStatus } from "@gtm/notes";
   import router from "page";
   import Fetch from "./Fetch.svelte";
   import Navbar from "./Navbar.svelte";
@@ -53,10 +55,6 @@
   }
 </script>
 
-<svelte:head>
-  <link rel="stylesheet" href="./assets/main.css" />
-</svelte:head>
-
 <div class="antialiased sans-serif h-screen">
   <div class="flex flex-col h-full">
 
@@ -70,7 +68,7 @@
             class="block py-1 pl-1 text-lg rounded hover:bg-gray-600
             hover:text-gray-300"
             href="/">
-            <i class="fas fa-tasks" />
+            <Icon class="mb-1 h-4" icon={faTasks} />
             <span class={view === Home ? 'font-bold' : ''}>All Projects</span>
           </a>
 

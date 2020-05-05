@@ -1,7 +1,7 @@
 import moment from 'moment';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { getDaily } from "./notes";
-import { hhmm } from "./format";
+import { getDaily } from "@gtm/notes";
+import { hhmm } from "@gtm/format";
 
 export function timeByFileStatusChartConfig(status) {
   const StatusIndicator = { m: "Modifying", r: "Reading", d: "Deleting" };

@@ -6,10 +6,10 @@
     timeByFileStatusChartConfig,
     projectTotalsChartConfig
   } from "../charts";
-  import { hhmm } from "../format";
   import Chart from "./Chart.svelte";
   import DashboardCard from "./DashboardCard.svelte";
-  import { computeWorkdirStatus } from "../notes";
+  import { hhmm } from "@gtm/format";
+  import { computeWorkdirStatus } from "@gtm/notes";
   import "chartjs-chart-matrix";
 
   export let statsPromise;

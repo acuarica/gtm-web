@@ -1,4 +1,7 @@
 <script>
+  import Icon from "./Icon.svelte";
+  import { faTasks } from "@fortawesome/free-solid-svg-icons/faTasks";
+  import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
   import SearchBox from "./SearchBox.svelte";
   import DatePicker from "./DatePicker.svelte";
   import DateRangePicker from "./DateRangePicker.svelte";
@@ -34,7 +37,7 @@
         <span class="text-white">Dashboard</span>
       </a>
       <span class="ml-12 font-medium text-white">
-        <i class="fas fa-tasks mr-1" />
+        <Icon class="mr-1 mb-1 h-4" icon={faTasks} />
         {title}
       </span>
     </div>
@@ -71,7 +74,7 @@
       rounded hover:bg-gray-800"
       on:click={() => (toggleSettings = !toggleSettings)}
       type="button">
-      <i class="fas fa-cog" />
+      <Icon class="mb-1 h-4" icon={faCog} />
     </button>
 
   </div>

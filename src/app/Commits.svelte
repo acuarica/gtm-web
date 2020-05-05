@@ -1,5 +1,5 @@
 <script>
-  import { getDaily } from "../notes";
+  import { getDaily } from "@gtm/notes";
   import Commit from "./Commit.svelte";
 
   export let commits;

@@ -1,6 +1,4 @@
-import '@fortawesome/fontawesome-free/css/all.css'
 import '../../main.pcss'
-
 import App from '../app/App.svelte'
 
 // let commitsDataUrl: string

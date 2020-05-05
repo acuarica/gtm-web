@@ -12,6 +12,7 @@ import progress from 'rollup-plugin-progress';
 import image from '@rollup/plugin-image';
 import sizes from 'rollup-plugin-sizes';
 import { startServe } from './make'
+const purgecss = require("@fullhuman/postcss-purgecss");
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -38,33 +39,31 @@ const plugins = (dir) => [
     include: ['svg', 'png', 'woff', 'woff2', 'eot', 'ttf'].map(e => '**/*.' + e),
     limit: Infinity,
   }),
+
   postcss({
     modules: true,
-    extract: 'assets/main.css',
+    // extract: 'assets/main.css',
     plugins: [
       require("postcss-import")(),
       require("tailwindcss"),
-
-      // const purgecss = require("@fullhuman/postcss-purgecss");
       // require("autoprefixer"),
       // Only purge css on production
-      // production &&
-      // purgecss({
-      //   content: ["./**/*.html", "./**/*.svelte"],
-      //   defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
-      // })
+      production && purgecss({
+        content: ["./**/*.html", "./**/*.svelte"],
+        defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
+      })
 
     ]
   }),
   copy({
     targets: [
       // { src: "assets/gtm-logo.png", dest: `${dir}/assets` },
-      { src: "assets/css/*", dest: `${dir}/assets/css` },
-      { src: "assets/webfonts/*", dest: `${dir}/assets/webfonts` },
+      // { src: "assets/css/*", dest: `${dir}/assets/css` },
+      // { src: "assets/webfonts/*", dest: `${dir}/assets/webfonts` },
       // { src: "mock/data-*.json", dest: `${dir}/data` },
     ],
   }),
-  // production && terser(),
+  production && terser(),
   progress({
     // clearLine: false // default: true
   }),
@@ -87,6 +86,7 @@ export default [{
     }),
     html2({
       template: 'src/dev/index.html',
+      inject: true,
     }),
     ...plugins('dist-dev'),
     !production && serve32('dist-dev', 9090),

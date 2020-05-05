@@ -1,5 +1,4 @@
 <script>
-  import { hhmm } from "../format";
   import { onMount } from "svelte";
   import Fetch from "./Fetch.svelte";
   import {
@@ -10,7 +9,8 @@
   import Chart from "./Chart.svelte";
   import Commits from "./Commits.svelte";
   import DashboardCard from "./DashboardCard.svelte";
-  import { computeWorkdirStatus } from "../notes";
+  import { hhmm } from "@gtm/format";
+  import { computeWorkdirStatus } from "@gtm/notes";
   import "chartjs-chart-matrix";
 
   export let name;

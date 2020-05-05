@@ -1,5 +1,5 @@
 <script>
-  import { hhmm } from "../format";
+  import { hhmm } from "@gtm/format";
 
   export let commit;
 

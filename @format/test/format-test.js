@@ -1,4 +1,4 @@
-import { hhmm, pad0 } from '../src/format.js'
+import { hhmm, pad0 } from '@gtm/format'
 import assert from 'assert';
 
 describe('format', () => {
