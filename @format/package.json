@@ -1,6 +1,7 @@
 {
   "name": "@gtm/format",
-  "main": "src/format.js",
+  "version": "0.0.1",
   "type": "module",
-  "version": "0.0.1"
+  "main": "src/format.js",
+  "types": "src/format.ts"
 }
