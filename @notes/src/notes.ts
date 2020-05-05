@@ -2,9 +2,70 @@ import moment from "moment"
 import { pad0 } from "@gtm/format"
 
 ///
-export function computeStats(commits) {
-  const projects = [];
-  const status = {'m': 0, 'r': 0, 'd': 0};
+export type Seconds = number
+
+///
+export type WorkdirStatus = {
+  Total: Seconds;
+  Label: string;
+  CommitNote: CommitNote;
+}
+
+///
+export type CommitNote = {
+  Files: {
+    SourceFile: string;
+    TimeSpent: Seconds;
+    Timeline: { [id: string]: Seconds };
+    Status: string;
+  }[];
+}
+
+/// 
+export type Commit = {
+  Author: string;
+  Date: string;
+  When: string;
+  Hash: string;
+  Subject: string;
+  Project: string;
+  Message: string;
+  Note: CommitNote;
+  timeSpent?: Seconds;
+}
+
+///
+export type Project = {
+  name: string;
+  total: number;
+  commits: Commit[];
+  timeline: {
+    [id: string]: {
+      [hour: number]: {
+        total: number;
+      };
+    };
+  };
+  timelineMatrix: {
+    x: string;
+    y: string;
+    v: number;
+  }[];
+}
+
+///
+export type ProjectList = { [id: string]: Project }
+
+///
+export type FileStatus<T> = { [s: string]: T }
+
+/// Hours is expressed by the total field in seconds.
+export type DailyHours = { [date: string]: { total: number } }
+
+///
+export function computeStats(commits: Commit[]) {
+  const projects: ProjectList = {};
+  const status: { [id: string]: number } = { 'm': 0, 'r': 0, 'd': 0 };
   let totalSecs = 0;
 
   for (const commit of commits) {
@@ -57,8 +118,8 @@ export function computeStats(commits) {
 }
 
 ///
-export function getDaily(projects) {
-  const daily = {};
+export function getDaily(projects: ProjectList): DailyHours {
+  const daily: DailyHours = {};
   for (const pkey in projects) {
     const p = projects[pkey]
     const data = [];
@@ -83,12 +144,12 @@ export function getDaily(projects) {
   return daily
 }
 
-export function computeWorkdirStatus(wds) {
+export function computeWorkdirStatus(wds: any) {
   const commits = []
   for (const p in wds) {
     const cn = wds[p]
     commits.push({ Project: p, Note: cn.CommitNote, timeSpent: 0 })
   }
 
-  return computeStats(commits)
+  return computeStats(commits as any)
 }
