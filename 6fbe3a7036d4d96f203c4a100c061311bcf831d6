@@ -1,0 +1,11 @@
+[ver:1,total:960]
+@notes/test/notes-test.ts:370,1588726800:370,m
+.gtm/terminal.app:280,1588726800:280,r
+@mock/src/mock.ts:105,1588726800:105,m
+src/app/FileNotes.svelte:80,1588726800:80,r
+@notes/src/notes.ts:40,1588726800:40,r
+@mock/data/commits.json:30,1588726800:30,m
+@mock/data/data-commits.json:20,1588726800:20,d
+@mock/data/workdir.json:15,1588726800:15,m
+src/app/Commit.svelte:10,1588726800:10,r
+src/app/App.svelte:10,1588726800:10,r
