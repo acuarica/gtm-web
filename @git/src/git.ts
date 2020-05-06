@@ -7,8 +7,12 @@ async function rungtm(args: string[]): Promise<ReturnType<JSON['parse']>> {
   args = ['export', ...args]
   const child = spawn(gtmexec, args);
 
-  child.on('exit', code => {
-    console.log(`Exit code is: ${code}, ${args}`);
+  const exitCode = new Promise<number>((resolve, reject) => {
+    child.on('exit', code => {
+      console.log(`Exit code is: ${code}, ${args}`);
+      if (code === 0) resolve(0)
+      else reject(1)
+    });
   });
 
   let buf = ""
@@ -16,7 +20,11 @@ async function rungtm(args: string[]): Promise<ReturnType<JSON['parse']>> {
     buf += data
   };
 
-  return JSON.parse(buf)
+  if (await exitCode === 0) {
+    return JSON.parse(buf)
+  } else {
+    return { err: exitCode, message: buf }
+  }
 }
 
 export async function fetchCommits(range: { start: string; end: string }): Promise<Commit[]> {

@@ -31,11 +31,12 @@
     "last 1 chrome versions"
   ],
   "scripts": {
+    "compile": "tsc",
+    "lint": "eslint '@*/**/*.ts'",
+    "test": "tsc && mocha @*/test/*.js",
     "dev": "rollup --config --watch",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "build": "rollup --config",
     "start": "electron dist-electron/main.js",
-    "test": "mocha @*/test/*.js",
     "dist": "electron-builder",
     "demo": "parcel build src/dev/main.js --no-source-maps"
   },
