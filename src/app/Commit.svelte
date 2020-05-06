@@ -1,5 +1,8 @@
 <script>
   import { hhmm } from "@gtm/format";
+  import Icon from "./Icon.svelte";
+  import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
+  import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
   import FileNotes from "./FileNotes.svelte";
 
   export let commit;
@@ -17,7 +20,7 @@
     </div>
     <div>
       <small class="mb-2">
-        <i class="fas fa-clock" />
+        <Icon class="mb-1 h-4" icon={faClock} />
         {hhmm(commit.timeSpent)}
       </small>
       <small class="text-muted">
@@ -33,7 +36,7 @@
     class="btn btn-outline-secondary btn-sm"
     on:click={() => (toggleVisible = !toggleVisible)}
     type="button">
-    <i class="fas fa-cog" />
+    <Icon class="mb-1 h-4" icon={faCog} />
   </button>
   <div>
     {#if toggleVisible}
