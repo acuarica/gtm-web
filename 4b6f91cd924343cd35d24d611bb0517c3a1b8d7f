@@ -1,0 +1,14 @@
+[ver:1,total:2123]
+.gtm/terminal.app:925,1588741200:360,1588744800:385,1588748400:180,r
+.eslintrc.cjs:655,1588741200:134,1588744800:521,m
+src/dev/main.js:156,1588741200:124,1588744800:32,r
+src/app/FileNotes.svelte:120,1588741200:120,r
+rollup.config.js:59,1588744800:29,1588748400:30,r
+tsconfig.json:55,1588741200:40,1588744800:15,r
+@notes/src/notes.ts:37,1588741200:29,1588744800:8,r
+src/desktop/main.js:30,1588744800:30,r
+@format/test/format-test.ts:26,1588741200:16,1588744800:10,r
+dist-dev/main.js:20,1588744800:20,r
+@mock/src/mock.ts:19,1588741200:9,1588744800:10,r
+@format/test/format-test.js:12,1588741200:12,r
+@notes/test/notes-test.ts:9,1588741200:9,r
