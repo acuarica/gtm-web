@@ -28,8 +28,9 @@ import tw from "tailwindcss"
 
 import yargs from 'yargs'
 
+const ind = chalk.gray(`gtm Make`)
 const log = (buffer) => process.stdout.write(buffer);
-const logln = (buffer) => process.stdout.write(buffer + '\n');
+const logln = (buffer) => process.stdout.write(`${ind} - ${buffer}\n`);
 
 const production = !process.argv.includes('tsc')
 
@@ -77,7 +78,7 @@ const rollupConfig = {
     progress({
       // clearLine: false // default: true
     }),
-    sizes(),
+    production && sizes(),
   ]
 }
 
@@ -104,7 +105,7 @@ function serveGtm(dir, port) {
   polka()
     .use(assets)
     .get('/data/commits', async (req, res) => {
-      console.info(`Request: ${req.path}${req.search}`)
+      logln(`Request: ${req.path}${req.search}`)
       const range = {
         start: req.query.from,
         end: req.query.to
@@ -117,18 +118,18 @@ function serveGtm(dir, port) {
       }
     })
     .get('/data/projects', async (req, res) => {
-      console.info(`Request projects: ${req.path}`)
+      logln(`Request projects: ${req.path}`)
       const data = await fetchProjectList()
       send(res, 200, data);
     })
     .get('/data/status', async (req, res) => {
-      console.info(`Request workdir status: ${req.path}`)
+      logln(`Request workdir status: ${req.path}`)
       const data = await fetchWorkdirStatus()
       send(res, 200, data);
     })
     .listen(port, err => {
       if (err) throw err;
-      console.log(`✨ Ready on localhost:${port}~ 🚀 !`);
+      logln(`✨ Ready on localhost:${port}~ 🚀 !`);
     });
 }
 
@@ -177,6 +178,15 @@ async function rollupWatch() {
 }
 
 async function main() {
+  const usage = () => {
+    logln(chalk.bold('Available commands:'))
+    for (const cmd in cmds) {
+      logln(chalk(`    ${cmd}`))
+    }
+    logln('')
+    process.exit(1)
+  }
+
   logln(chalk.gray(`gtm Make`))
 
   const cmds = {
@@ -188,12 +198,7 @@ async function main() {
   let argv = process.argv
   if (argv.length <= 2) {
     logln(chalk.red.bold('No command provided for make.mjs'))
-    logln(chalk.bold('Available commands:'))
-    for (const cmd in cmds) {
-      logln(chalk(`    ${cmd}`))
-    }
-    logln('')
-    process.exit(1)
+    usage()
   }
 
   argv = argv.slice(2)
@@ -202,6 +207,7 @@ async function main() {
     const cmd = cmds[argv[arg]]
     if (!cmd) {
       logln(chalk.red.bold(`Command '${argv[arg]}' is undefined.`))
+      usage()
       process.exit(1)
     }
   }
