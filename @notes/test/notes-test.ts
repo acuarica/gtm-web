@@ -2,6 +2,7 @@
 import assert from 'assert';
 import { commits } from '@gtm/mock';
 import { computeStats, getDaily } from '@gtm/notes';
+import { hhmm } from '@gtm/format';
 
 describe('compute', () => {
 
@@ -10,6 +11,12 @@ describe('compute', () => {
     it('Checks empty commits stats has 0 total time', () => {
       const stats = computeStats([])
       assert.equal(stats.totalSecs, 0)
+    })
+
+    it('Checks total by project', () => {
+      const stats = computeStats(commits)
+      const check = (p: string, expected: string): void => assert.equal(hhmm(stats.projects[p].total), expected)
+      check('web', '79h 22m')
     })
 
     it('Checks total time must be sum of time of projects', () => {
