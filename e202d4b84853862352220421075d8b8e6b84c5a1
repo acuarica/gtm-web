@@ -1,0 +1,10 @@
+[ver:1,total:3660]
+@notes/src/notes.ts:3095,1588723200:1790,1588726800:1305,m
+src/app/Commit.svelte:171,1588726800:171,m
+src/app/Project.svelte:165,1588726800:165,m
+src/app/FileNotes.svelte:119,1588726800:119,m
+test/git-test.js:30,1588723200:30,r
+src/app/App.svelte:20,1588726800:20,r
+package.json:20,1588723200:20,r
+.eslintrc.js:20,1588723200:20,r
+.gtm/terminal.app:20,1588726800:20,r
