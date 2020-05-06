@@ -1,5 +1,6 @@
 <script>
   import { hhmm } from "@gtm/format";
+  import FileNotes from "./FileNotes.svelte";
 
   export let commit;
 
@@ -36,15 +37,7 @@
   </button>
   <div>
     {#if toggleVisible}
-      <ul>
-        {#each commit.Note.Files as file}
-          <li class="small">
-            {file.SourceFile} &nbsp;
-            <i class="fas fa-clock" />
-            {hhmm(file.TimeSpent)}
-          </li>
-        {/each}
-      </ul>
+      <FileNotes files={commit.Note.Files} />
     {/if}
   </div>
 </div>

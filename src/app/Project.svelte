@@ -9,6 +9,7 @@
   import Chart from "./Chart.svelte";
   import Commits from "./Commits.svelte";
   import DashboardCard from "./DashboardCard.svelte";
+  import FileNotes from "./FileNotes.svelte";
   import { hhmm } from "@gtm/format";
   import { computeWorkdirStatus } from "@gtm/notes";
   import "chartjs-chart-matrix";
@@ -41,6 +42,9 @@
 
         <div>
           <Chart config={activityChartConfig([res.stats.projects[name]])} />
+        </div>
+        <div>
+          <FileNotes files={res.stats.projects[name].files} />
         </div>
 
       </span>

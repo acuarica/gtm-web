@@ -8,30 +8,31 @@ export type Seconds = number
 export type WorkdirStatus = {
   Total: Seconds;
   Label: string;
-  CommitNote: CommitNote;
+  CommitNote: FileNote[];
 }
 
 ///
-export type CommitNote = {
-  Files: {
-    SourceFile: string;
-    TimeSpent: Seconds;
-    Timeline: { [id: string]: Seconds };
-    Status: string;
-  }[];
+class FileNote {
+  TimeSpent: Seconds = 0;
+  readonly Timeline: { [id: string]: Seconds } = {};
+  Status = "";
+  constructor(readonly SourceFile: string, timeSpent: Seconds) {
+    this.TimeSpent = timeSpent;
+  }
 }
 
 /// 
-export type Commit = {
-  Author: string;
-  Date: string;
-  When: string;
-  Hash: string;
-  Subject: string;
-  Project: string;
-  Message: string;
-  Note: CommitNote;
+class Commit {
+  Author = "";
+  Date = "";
+  When = "";
+  Hash = "";
+  Subject = "";
+  Message = "";
   timeSpent?: Seconds;
+  constructor(readonly Project: string, readonly Note: { Files: FileNote[] }, timeSpent: Seconds) {
+    this.timeSpent = timeSpent
+  }
 }
 
 ///
@@ -39,6 +40,7 @@ export type Project = {
   name: string;
   total: number;
   commits: Commit[];
+  files: FileNote[];
   timeline: {
     [id: string]: {
       [hour: number]: {
@@ -63,15 +65,27 @@ export type FileStatus<T> = { [s: string]: T }
 export type DailyHours = { [date: string]: { total: number } }
 
 ///
-export function computeStats(commits: Commit[]) {
+export type Stats = {
+  projects: ProjectList;
+  totalSecs: Seconds;
+  status: FileStatus<number>;
+}
+
+///
+export function computeStats(commits: Commit[]): Stats {
   const projects: ProjectList = {};
-  const status: { [id: string]: number } = { 'm': 0, 'r': 0, 'd': 0 };
-  let totalSecs = 0;
+  const status: FileStatus<number> = { 'm': 0, 'r': 0, 'd': 0 };
+  let totalSecs: Seconds = 0;
 
   for (const commit of commits) {
     let project = projects[commit.Project];
     if (project === undefined) {
-      project = { name: commit.Project, total: 0, commits: [], timeline: {}, timelineMatrix: [] };
+      project = {
+        name: commit.Project,
+        total: 0,
+        commits: [], timeline: {}, timelineMatrix: [],
+        files: []
+      };
       projects[commit.Project] = project;
     }
     project.commits.push(commit);
@@ -80,6 +94,7 @@ export function computeStats(commits: Commit[]) {
       continue;
     }
     let commitTimeSpent = 0;
+    const files: { [fileName: string]: FileNote } = {}
     for (const file of commit.Note.Files) {
       commitTimeSpent += file.TimeSpent
 
@@ -109,7 +124,15 @@ export function computeStats(commits: Commit[]) {
         status[file.Status] += secs
       }
       if (fileSecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
+
+      const fileNote = files[file.SourceFile]
+      if (!fileNote) {
+        files[file.SourceFile] = new FileNote(file.SourceFile, file.TimeSpent)
+      } else {
+        fileNote.TimeSpent += file.TimeSpent
+      }
     }
+    project.files = Object.values(files)
 
     commit.timeSpent = commitTimeSpent
   }
@@ -144,12 +167,12 @@ export function getDaily(projects: ProjectList): DailyHours {
   return daily
 }
 
-export function computeWorkdirStatus(wds: any) {
-  const commits = []
-  for (const p in wds) {
-    const cn = wds[p]
-    commits.push({ Project: p, Note: cn.CommitNote, timeSpent: 0 })
+export function computeWorkdirStatus(workdirStatus: { [p: string]: { CommitNote: { Files: FileNote[] } } }): Stats {
+  const commits: Commit[] = []
+  for (const p in workdirStatus) {
+    const cn = workdirStatus[p]
+    commits.push(new Commit(p, cn.CommitNote, 0))
   }
 
-  return computeStats(commits as any)
+  return computeStats(commits)
 }
