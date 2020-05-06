@@ -12,7 +12,6 @@ describe('@gtm/git', () => {
     it('test git', async () => {
       const range = { start: '2020-04-01', end: '2020-04-30' }
       await fetchCommits(range)
-      // console.log(c)
     })
 
   })

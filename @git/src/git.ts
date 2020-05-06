@@ -14,6 +14,7 @@ async function rungtm(args: string[]): Promise<ReturnType<JSON['parse']>> {
     });
   });
 
+
   let buf = ''
   for await (const data of child.stdout) {
     buf += data
@@ -31,7 +32,7 @@ export async function fetchCommits(range: { start: string; end: string }): Promi
   const args = [
     '-data=commits',
     `-from-date=${range.start}`,
-    `-to-date=${end.format('YYYY-MM-DD')}`
+    `-to-date=${end.format('YYYY-MM-DD')}`,
   ]
   return rungtm(args)
 }
