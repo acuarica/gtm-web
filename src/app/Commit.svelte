@@ -6,11 +6,11 @@
   let toggleVisible;
 </script>
 
-<div class="group">
+<div class="shadow-md">
   <div class="flex justify-between">
     <div class="mb-2">
       <span class="badge badge-pill badge-primary">{commit.Project}</span>
-      <span class="badge badge-pill badge-light text-muted">
+      <span class="badge badge-pill abadge-light text-muted">
         {commit.Author}
       </span>
     </div>
