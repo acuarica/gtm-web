@@ -1,0 +1,11 @@
+[ver:1,total:389]
+@git/src/git.ts:165,1588737600:165,m
+.gtm/terminal.app:152,1588737600:152,r
+src/desktop/main.js:24,1588737600:24,r
+@git/test/git-test.ts:12,1588737600:12,r
+@git/package.json:6,1588737600:6,r
+src/charts.js:6,1588737600:6,r
+src/app/FileNotes.svelte:6,1588737600:6,r
+@format/package.json:6,1588737600:6,r
+package.json:6,1588737600:6,r
+src/dev/main.js:6,1588737600:6,r
