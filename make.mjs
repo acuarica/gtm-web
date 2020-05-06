@@ -172,6 +172,9 @@ async function rollupWatch() {
     //   BUNDLE_END   — finished building a bundle
     //   END          — finished building all bundles
     //   ERROR        — encountered an error while bundling
+    if (event.code === 'ERROR') {
+      console.log(event)
+    }
   });
 
   // console.log(bundle.watchFiles);
