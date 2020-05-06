@@ -1,0 +1,6 @@
+{
+  "name": "@gtm/git",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "src/git.js"
+}

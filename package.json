@@ -10,7 +10,8 @@
   "workspaces": [
     "@format",
     "@mock",
-    "@notes"
+    "@notes",
+    "@git"
   ],
   "type": "module",
   "main": "dist-electron/main.js",
@@ -34,7 +35,7 @@
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "build": "rollup --config",
     "start": "electron dist-electron/main.js",
-    "test": "mocha @*/test/*-test.js test/*-test.js",
+    "test": "mocha @*/test/*.js",
     "dist": "electron-builder",
     "demo": "parcel build src/dev/main.js --no-source-maps"
   },

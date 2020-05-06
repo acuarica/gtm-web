@@ -12,7 +12,7 @@ export type WorkdirStatus = {
 }
 
 ///
-class FileNote {
+export class FileNote {
   TimeSpent: Seconds = 0;
   readonly Timeline: { [id: string]: Seconds } = {};
   Status = "";
@@ -22,7 +22,7 @@ class FileNote {
 }
 
 /// 
-class Commit {
+export class Commit {
   Author = "";
   Date = "";
   When = "";

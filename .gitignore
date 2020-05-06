@@ -1,6 +1,6 @@
 /.gtm/
 /@*/src/*.js
-/@*/test/*-test.js
+/@*/test/*.js
 /node_modules/
 /dist-dev/
 /dist-electron/

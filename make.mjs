@@ -3,7 +3,7 @@
 import chalk from 'chalk';
 import { spawn } from 'child_process'
 import sirv from 'sirv';
-import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from './src/git.js';
+import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from '@gtm/git';
 import polka from 'polka';
 import send from '@polka/send-type';
 import * as rollup from 'rollup';
