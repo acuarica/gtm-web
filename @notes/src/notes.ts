@@ -1,5 +1,5 @@
-import moment from "moment"
-import { pad0 } from "@gtm/format"
+import moment from 'moment'
+import { pad0 } from '@gtm/format'
 
 ///
 export type Seconds = number
@@ -15,7 +15,7 @@ export type WorkdirStatus = {
 export class FileNote {
   TimeSpent: Seconds = 0;
   readonly Timeline: { [id: string]: Seconds } = {};
-  Status = "";
+  Status = '';
   constructor(readonly SourceFile: string, timeSpent: Seconds) {
     this.TimeSpent = timeSpent;
   }
@@ -23,12 +23,12 @@ export class FileNote {
 
 /// 
 export class Commit {
-  Author = "";
-  Date = "";
-  When = "";
-  Hash = "";
-  Subject = "";
-  Message = "";
+  Author = '';
+  Date = '';
+  When = '';
+  Hash = '';
+  Subject = '';
+  Message = '';
   timeSpent?: Seconds;
   constructor(readonly Project: string, readonly Note: { Files: FileNote[] }, timeSpent: Seconds) {
     this.timeSpent = timeSpent
@@ -40,7 +40,7 @@ export type Project = {
   name: string;
   total: number;
   commits: Commit[];
-  files: FileNote[];
+  files: { [fileName: string]: FileNote };
   timeline: {
     [id: string]: {
       [hour: number]: {
@@ -84,17 +84,16 @@ export function computeStats(commits: Commit[]): Stats {
         name: commit.Project,
         total: 0,
         commits: [], timeline: {}, timelineMatrix: [],
-        files: []
+        files: {},
       };
       projects[commit.Project] = project;
     }
     project.commits.push(commit);
     if (commit.Note.Files === null) {
-      console.warn("gtm check: Commit note files not available:", commit);
+      console.warn('gtm check: Commit note files not available:', commit);
       continue;
     }
     let commitTimeSpent = 0;
-    const files: { [fileName: string]: FileNote } = {}
     for (const file of commit.Note.Files) {
       commitTimeSpent += file.TimeSpent
 
@@ -102,8 +101,8 @@ export function computeStats(commits: Commit[]): Stats {
       for (const timestamp2 in file.Timeline) {
         const timestamp = Number(timestamp2)
         const secs = file.Timeline[timestamp];
-        if (secs > 3600) console.warn("gtm check: Duration (in seconds) should be less than 3600:", secs);
-        if (timestamp % 3600 !== 0) console.warn("gtm check: Timestamp (unix time) should be by the hour:", timestamp);
+        if (secs > 3600) console.warn('gtm check: Duration (in seconds) should be less than 3600:', secs);
+        if (timestamp % 3600 !== 0) console.warn('gtm check: Timestamp (unix time) should be by the hour:', timestamp);
         project.total += secs;
         const date = moment.unix(timestamp).startOf('day').format('YYYY-MM-DD');
         const hour = moment.unix(timestamp).hour();
@@ -123,16 +122,15 @@ export function computeStats(commits: Commit[]): Stats {
         // console.assert(Object.keys(status).includes(file.Status), `Unexpected status '${file.Status}' for file ${file.SourceFile}`)
         status[file.Status] += secs
       }
-      if (fileSecs !== file.TimeSpent) console.warn("gtm check: Timeline seconds does not add up to duration in file.");
+      if (fileSecs !== file.TimeSpent) console.warn('gtm check: Timeline seconds does not add up to duration in file.');
 
-      const fileNote = files[file.SourceFile]
+      const fileNote = project.files[file.SourceFile]
       if (!fileNote) {
-        files[file.SourceFile] = new FileNote(file.SourceFile, file.TimeSpent)
+        project.files[file.SourceFile] = new FileNote(file.SourceFile, file.TimeSpent)
       } else {
         fileNote.TimeSpent += file.TimeSpent
       }
     }
-    project.files = Object.values(files)
 
     commit.timeSpent = commitTimeSpent
   }
