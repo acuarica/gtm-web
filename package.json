@@ -32,8 +32,9 @@
   ],
   "scripts": {
     "compile": "tsc",
-    "lint": "eslint '@*/**/*.ts'",
-    "test": "tsc && mocha @*/test/*.js",
+    "lint": "eslint **/*.ts **/*.mjs",
+    "test": "mocha @*/test/*.js",
+
     "dev": "rollup --config --watch",
     "build": "rollup --config",
     "start": "electron dist-electron/main.js",
@@ -57,9 +58,7 @@
     "@rollup/plugin-commonjs": "^11.1.0",
     "@rollup/plugin-html": "^0.1.1",
     "@rollup/plugin-image": "^2.0.4",
-    "@rollup/plugin-json": "^4.0.3",
     "@rollup/plugin-node-resolve": "^7.1.3",
-    "@rollup/plugin-url": "^4.0.2",
     "@types/mocha": "^7.0.2",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",

@@ -12,11 +12,9 @@ import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
-import json from '@rollup/plugin-json';
 import terser from 'rollup-plugin-terser';
 import html2 from 'rollup-plugin-html2'
 import copy from 'rollup-plugin-copy'
-import url from '@rollup/plugin-url';
 import postcss from 'rollup-plugin-postcss'
 import progress from 'rollup-plugin-progress';
 import image from '@rollup/plugin-image';
@@ -26,77 +24,79 @@ import purgecss from "@fullhuman/postcss-purgecss";
 import pcssimport from "postcss-import"
 import tw from "tailwindcss"
 
-import yargs from 'yargs'
+const DIST = 'dist-dev'
+const PORT = 9090
 
 const ind = chalk.gray(`gtm Make`)
-const log = (buffer) => process.stdout.write(buffer);
-const logln = (buffer) => process.stdout.write(`${ind} - ${buffer}\n`);
+const logln = (buffer) => process.stdout.write(`${ind} ${buffer}\n`);
 
-const production = !process.argv.includes('tsc')
+function rollupConfig(opts) {
+  opts = opts || {}
 
-const rollupConfig = {
-  input: 'src/dev/main.js',
-  output: {
-    dir: 'dist-dev',
-    sourcemap: !production,
-    format: 'iife',
-    name: 'app',
-  },
-  plugins: [
-    svelte({
-      dev: !production,
-    }),
-    resolve({
-      // browser: true,
-      // dedupe: ['svelte']
-    }),
-    commonjs({
-      exclude: 'node_modules/moment/**/*',
-      sourceMap: false
-    }),
-    image(),
-    postcss({
-      modules: true,
-      // extract: 'assets/main.css',
-      plugins: [
-        pcssimport(),
-        tw,
-        // require("autoprefixer"),
-        production && purgecss({
-          content: ["./**/*.html", "./**/*.svelte"],
-          defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
-        })
-      ]
-    }),
-    html2({
-      template: 'src/dev/index.html',
-      // inject: true,
-    }),
-    !production && startServe('dist-dev', 9090),
-    !production && livereload('dist-dev'),
-    // production && terser(),
-    progress({
-      // clearLine: false // default: true
-    }),
-    production && sizes(),
-  ]
+  return {
+    input: 'src/dev/main.js',
+    output: {
+      dir: 'dist-dev',
+      sourcemap: !opts.production,
+      format: 'iife',
+      name: 'app',
+    },
+    plugins: [
+      svelte({
+        dev: !opts.production,
+      }),
+      resolve({
+        // browser: true,
+        // dedupe: ['svelte']
+      }),
+      commonjs({
+        exclude: 'node_modules/moment/**/*',
+        sourceMap: false
+      }),
+      image(),
+      postcss({
+        modules: true,
+        // extract: 'assets/main.css',
+        plugins: [
+          pcssimport(),
+          tw,
+          // require("autoprefixer"),
+          opts.production && purgecss({
+            content: ["./**/*.html", "./**/*.svelte"],
+            defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
+          })
+        ]
+      }),
+      html2({
+        template: 'src/dev/index.html',
+        // inject: true,
+      }),
+      !opts.production && startServe(DIST, PORT),
+      !opts.production && livereload(DIST),
+      // production && terser(),
+      progress({
+        // clearLine: false // default: true
+      }),
+      opts.production && sizes(),
+    ]
+  }
 }
 
-function startServe(dir, port) {
+function startServe() {
   let started = false;
 
   return {
     writeBundle() {
       if (!started) {
         started = true;
-        serveGtm(dir, port)
+        serveGtm()
       }
     }
   };
 }
 
-function serveGtm(dir, port) {
-  const assets = sirv(dir, {
+function serveGtm() {
+  const assets = sirv(DIST, {
     maxAge: 31536000, // 1Y
     immutable: true,
     dev: true,
@@ -127,43 +127,46 @@ function serveGtm(dir, port) {
       const data = await fetchWorkdirStatus()
       send(res, 200, data);
     })
-    .listen(port, err => {
+    .listen(PORT, err => {
       if (err) throw err;
-      logln(`✨ Ready on localhost:${port}~ 🚀 !`);
+      logln(`✨ Ready on localhost:${PORT}~ 🚀 !`);
     });
 }
 
-export async function tsWatch() {
-  const child = spawn('yarn', ['tsc', '--watch', '--preserveWatchOutput', '--noEmitOnError'], {
+function spawnAnsi(command, args, opts) {
+  return spawn(command, args, {
     env: {
       FORCE_COLOR: 1,
       ...process.env
-    }
+    },
+    ...opts
   });
+}
 
-  let rollupStarted = false
+async function tsWatch(func) {
+  const child = spawnAnsi('yarn', ['tsc', '--watch', '--preserveWatchOutput', '--noEmitOnError']);
+
   for await (const data of child.stdout) {
     process.stdout.write(data)
     const line = Buffer.from(data, 'utf8').toString()
     const emitComplete = line.includes('Found 0 errors')
     if (emitComplete) {
       console.info("TypeScript emit code complete 🚀 !")
-      if (!rollupStarted) {
-        rollupStarted = true
-        rollupWatch()
+      if (func) {
+        func()
       }
     }
   }
 }
 
-async function rollupWatch() {
-  // const inputOptions = {
-  //   input: rollupConfig.input,
-  //   plugins: rollupConfig.plugins,
-  // }
-  // const bundle = await rollup.rollup(inputOptions);
+async function mocha() {
+  spawnAnsi('yarn', ['mocha', '@*/test/*.js'], {
+    stdio: ['ignore', 'inherit', 'inherit']
+  });
+}
 
-  const watcher = rollup.watch(rollupConfig);
+async function rollupWatch(opts) {
+  const watcher = rollup.watch(rollupConfig(opts));
   watcher.on('event', event => {
     logln(chalk.magenta(event.code))
     // event.code can be one of:
@@ -176,8 +179,27 @@ async function rollupWatch() {
       console.log(event)
     }
   });
+}
 
-  // console.log(bundle.watchFiles);
+function dev() {
+  let started = false
+  tsWatch(() => {
+    if (!started) {
+      started = true
+      rollupWatch({
+        production: false
+      })
+    }
+  })
+}
+
+function devtest() {
+  let started = false
+  tsWatch(() => {
+    if (!started) {
+      mocha()
+    }
+  })
 }
 
 async function main() {
@@ -186,32 +208,29 @@ async function main() {
     for (const cmd in cmds) {
       logln(chalk(`    ${cmd}`))
     }
-    logln('')
     process.exit(1)
   }
-
-  logln(chalk.gray(`gtm Make`))
 
   const cmds = {
     tsc: tsWatch,
     rollup: rollupWatch,
     serve: serveGtm,
+    dev: dev,
+    devtest: devtest,
   }
 
   let argv = process.argv
   if (argv.length <= 2) {
-    logln(chalk.red.bold('No command provided for make.mjs'))
+    logln(chalk.red.bold('No command provided for make.mjs.'))
     usage()
   }
 
   argv = argv.slice(2)
-
   for (const arg in argv) {
     const cmd = cmds[argv[arg]]
     if (!cmd) {
       logln(chalk.red.bold(`Command '${argv[arg]}' is undefined.`))
       usage()
-      process.exit(1)
     }
   }
 
