@@ -11,8 +11,8 @@ import postcss from 'rollup-plugin-postcss'
 import progress from 'rollup-plugin-progress';
 import image from '@rollup/plugin-image';
 import sizes from 'rollup-plugin-sizes';
-import { startServe } from './make'
 const purgecss = require("@fullhuman/postcss-purgecss");
+import { servegtm } from './make.mjs';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -130,12 +130,7 @@ function serve32(dir, port) {
     writeBundle() {
       if (!started) {
         started = true;
-        startServe(dir, port)
-
-        // require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
-        //   stdio: ['ignore', 'inherit', 'inherit'],
-        //   shell: true
-        // });
+        servegtm(dir, port)
       }
     }
   };
