@@ -11,10 +11,9 @@ import postcss from 'rollup-plugin-postcss'
 import progress from 'rollup-plugin-progress';
 import image from '@rollup/plugin-image';
 import sizes from 'rollup-plugin-sizes';
-const purgecss = require("@fullhuman/postcss-purgecss");
-import { servegtm } from './make.mjs';
+import purgecss from "@fullhuman/postcss-purgecss";
 
-const production = !process.env.ROLLUP_WATCH;
+const production = process.env.ROLLUP_WATCH;
 
 const plugins = (dir) => [
   svelte({
@@ -42,7 +41,7 @@ const plugins = (dir) => [
 
   postcss({
     modules: true,
-    // extract: 'assets/main.css',
+    extract: true,//'assets/main.css',
     plugins: [
       require("postcss-import")(),
       require("tailwindcss"),
@@ -67,11 +66,12 @@ const plugins = (dir) => [
   progress({
     // clearLine: false // default: true
   }),
-  sizes(),
+  // sizes(),
 ]
 
 export default [{
-  input: 'src/dev/main.js',
+  // input: 'src/dev/main.js',
+  input: ['App', 'Navbar'].map(f=>`src/app/${f}.svelte`),
   output: {
     dir: 'dist-dev',
     // sourcemap: true,
@@ -89,8 +89,7 @@ export default [{
       inject: true,
     }),
     ...plugins('dist-dev'),
-    !production && serve32('dist-dev', 9090),
-    !production && livereload('dist-dev'),
+    // !production && livereload('dist-dev'),
   ],
   watch: {
     clearScreen: false
@@ -121,21 +120,3 @@ export default [{
     clearScreen: false
   }
 }][0];
-
-function serve32(dir, port) {
-  console.log(dir)
-  let started = false;
-
-  return {
-    writeBundle() {
-      if (!started) {
-        started = true;
-        servegtm(dir, port)
-      }
-    }
-  };
-}
-
-
-
-

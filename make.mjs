@@ -14,7 +14,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import terser from 'rollup-plugin-terser';
 import html2 from 'rollup-plugin-html2'
-import copy from 'rollup-plugin-copy'
 import postcss from 'rollup-plugin-postcss'
 import progress from 'rollup-plugin-progress';
 import image from '@rollup/plugin-image';
@@ -32,6 +31,7 @@ const logln = (buffer) => process.stdout.write(`${ind} ${buffer}\n`);
 
 function rollupConfig(opts) {
   opts = opts || {}
+  opts.production = opts.production || !opts.watch
 
   return {
     input: 'src/dev/main.js',
@@ -44,7 +44,13 @@ function rollupConfig(opts) {
     plugins: [
       svelte({
         dev: !opts.production,
-      }),
+        ...(!opts.production ? {} : {
+          // css: css => {
+          //   css.write('dist-dev/gtm-svelte.css')
+          // }
+        })
+      }
+      ),
       resolve({
         // browser: true,
         // dedupe: ['svelte']
@@ -56,7 +62,7 @@ function rollupConfig(opts) {
       image(),
       postcss({
         modules: true,
-        // extract: 'assets/main.css',
+        // extract: !opts.production,
         plugins: [
           pcssimport(),
           tw,
@@ -69,14 +75,13 @@ function rollupConfig(opts) {
       }),
       html2({
         template: 'src/dev/index.html',
+        // modules: true,
         // inject: true,
       }),
-      !opts.production && startServe(DIST, PORT),
-      !opts.production && livereload(DIST),
-      // production && terser(),
-      progress({
-        // clearLine: false // default: true
-      }),
+      progress({}),
+      opts.watch && startServe(DIST, PORT),
+      opts.watch && livereload(DIST),
+      opts.production && terser.terser(),
       opts.production && sizes(),
     ]
   }
@@ -153,7 +158,7 @@ async function tsWatch(func) {
     if (emitComplete) {
       console.info("TypeScript emit code complete 🚀 !")
       if (func) {
-        func()
+        func({ watch: true })
       }
     }
   }
@@ -166,6 +171,7 @@ async function mocha() {
 }
 
 async function rollupWatch(opts) {
+  logln(chalk.cyanBright(`Starting rollup, options: ${JSON.stringify(opts)}`))
   const watcher = rollup.watch(rollupConfig(opts));
   watcher.on('event', event => {
     logln(chalk.magenta(event.code))
@@ -177,17 +183,22 @@ async function rollupWatch(opts) {
     //   ERROR        — encountered an error while bundling
     if (event.code === 'ERROR') {
       console.log(event)
+    } else if (event.code === 'END') {
+      if (!opts || !opts.watch) {
+        watcher.close()
+      }
     }
   });
 }
 
 function dev() {
   let started = false
-  tsWatch(() => {
+  tsWatch(opts => {
     if (!started) {
       started = true
       rollupWatch({
-        production: false
+        production: false,
+        ...opts,
       })
     }
   })
@@ -235,7 +246,7 @@ async function main() {
   }
 
   for (const arg in argv) {
-    logln(chalk.blue.bold(`Running '${argv[arg]}' ...`))
+    logln(chalk.blue.bold(`Running '${argv[arg]}' command ...`))
     const cmd = cmds[argv[arg]]
     cmd()
   }
