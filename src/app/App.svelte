@@ -1,4 +1,5 @@
 <script>
+  import Box from "./Box.svelte";
   import Icon from "./Icon.svelte";
   import { faTasks } from "@fortawesome/free-solid-svg-icons/faTasks";
   import { onMount } from "svelte";
@@ -55,43 +56,43 @@
   }
 </script>
 
-<div class="antialiased sans-serif h-screen">
+<div class="container antialiased serif h-screen">
   <div class="flex flex-col h-full">
 
     <Navbar {title} {handleRangeChange} {settingsView} />
 
-    <div class="flex flex-1 w-screen">
-      <div class="flex flex-row w-full">
-        <div class="w-56 flex-shrink-0 bg-gray-500 p-3">
+    <div class="flex flex-1 ">
+      <div class="flex flex-row w-full divide-x divide-divide-color">
+        <div class="bg-sidebar p-3">
 
-          <a
-            class="block py-1 pl-1 text-lg rounded hover:bg-gray-600
-            hover:text-gray-300"
-            href="/">
-            <Icon class="mb-1 h-4" icon={faTasks} />
-            <span class={view === Home ? 'font-bold' : ''}>All Projects</span>
-          </a>
+          <Box class="w-56 flex-shrink-0 p-3 h-full">
+            <a
+              class="block py-1 pl-1 text-lg rounded hover:bg-gray-600
+              hover:text-gray-300"
+              href="/">
+              <Icon class="mb-1 h-4" icon={faTasks} />
+              <span class={view === Home ? 'font-bold' : ''}>All Projects</span>
+            </a>
 
-          <Fetch promise={projectListPromise} let:value={projectList}>
-            {#each projectList as project}
-              <a
-                class="block py-1 pl-6 rounded hover:bg-gray-600
-                hover:text-gray-300 {view === Project && projectName === project ? 'font-bold' : ''}"
-                href="/projects/{project}">
-                {project}
-              </a>
-            {/each}
-          </Fetch>
+            <Fetch promise={projectListPromise} let:value={projectList}>
+              {#each projectList as project}
+                <a
+                  class="block py-1 pl-6 rounded hover:bg-gray-600
+                  hover:text-gray-300 {view === Project && projectName === project ? 'font-bold' : ''}"
+                  href="/projects/{project}">
+                  {project}
+                </a>
+              {/each}
+            </Fetch>
+          </Box>
+
         </div>
-
-        <div class="flex-1 w-auto flex-col bg-gray-200">
-          <div>
-            <svelte:component
-              this={view}
-              {statsPromise}
-              {workdirStatsPromise}
-              name={projectName} />
-          </div>
+        <div class="bg-view p-3 flex-1 w-auto flex-col">
+          <svelte:component
+            this={view}
+            {statsPromise}
+            {workdirStatsPromise}
+            name={projectName} />
         </div>
 
       </div>

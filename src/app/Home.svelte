@@ -1,4 +1,5 @@
 <script>
+  import Box from "./Box.svelte";
   import { onMount } from "svelte";
   import Fetch from "./Fetch.svelte";
   import {
@@ -19,28 +20,40 @@
 </script>
 
 <Fetch promise={statsPromise} let:value={res}>
-  <div class="flex justify-around items-center">
-    <DashboardCard
-      title="Total Time"
-      body={hhmm(res.stats.totalSecs)}
-      footer="{res.commits.length} commit{res.commits.length === 1 ? '' : 's'}" />
-
-    <div class="w-64">
-      <Chart config={timeByFileStatusChartConfig(res.stats.status)} />
+  <div class="lg:flex">
+    <div class="flex">
+      <DashboardCard
+        class="w-48 h-40 mr-3"
+        title="Total Time"
+        body={hhmm(res.stats.totalSecs)}
+        footer="{res.commits.length} commit{res.commits.length === 1 ? '' : 's'}" />
+      <Box class="flex-1 lg:w-64 h-40 pt-2 lg:mr-3">
+        <Chart
+          class="w-64"
+          config={timeByFileStatusChartConfig(res.stats.status)} />
+      </Box>
     </div>
-
-    <div class="w-1/2">
-      <Chart config={projectTotalsChartConfig(res.stats.projects)} />
-    </div>
+    <Box class="flex justify-center mt-3 lg:mt-0 lg:flex-1 h-40">
+      <Chart
+        class="xxl:flex-1"
+        style="width2: 620px"
+        config={projectTotalsChartConfig(res.stats.projects)} />
+    </Box>
   </div>
 
-  <div class="mx-6">
-    <Chart config={activityChartConfig(res.stats.projects)} />
+  <div class="my-3">
+    <Box class="flex justify-center py-2">
+      <Chart
+        style="width: 94%; height: 400px"
+        config={activityChartConfig(res.stats.projects)} />
+    </Box>
   </div>
 </Fetch>
 
 <Fetch promise={workdirStatsPromise} let:value={res}>
-  <div class="mx-6">
-    <Chart config={activityChartConfig(res.projects)} />
-  </div>
+  <Box class="flex justify-center py-2">
+    <Chart
+      style="width: 94%; height: 400px"
+      config={activityChartConfig(res.projects)} />
+  </Box>
 </Fetch>

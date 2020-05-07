@@ -29,7 +29,7 @@
   </div>
 {/if}
 
-<header class="bg-gray-700 sm:flex sm:justify-between">
+<header class="bg-navbar sm:flex sm:justify-between">
   <div class="flex items-center justify-between px-4 py-1">
     <div>
       <a href="/">
