@@ -18,7 +18,7 @@ export function timeByFileStatusChartConfig(status) {
       datasets: datasets,
     },
     options: {
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
       title: {
         display: true,
         text: 'Time by Activity'
@@ -129,7 +129,7 @@ export function activityChartConfig(projects) {
       }),
     },
     options: {
-      // maintainAspectRatio: false,
+      maintainAspectRatio: false,
       title: { display: true, text: 'Reported timeline by Project' },
       scales: {
         xAxes: [{
