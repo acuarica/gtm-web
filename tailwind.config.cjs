@@ -1,7 +1,7 @@
-
 const theme = require('tailwindcss/defaultTheme')
 
 console.log(theme.screens)
+
 module.exports = {
   theme: {
     container: {
@@ -9,7 +9,6 @@ module.exports = {
     },
     extend: {
       screens: {
-        // 'xxl': { min: '1440px', max: '1440px' },
         'xxl': '1440px',
       },
       colors: {
@@ -42,5 +41,3 @@ module.exports = {
   variants: {},
   plugins: [],
 }
-
-
