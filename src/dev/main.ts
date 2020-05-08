@@ -8,7 +8,7 @@ import App from '../app/App.svelte'
 //   commitsDataUrl = '/gtm-web/data-commits.json'
 // }
 
-function delay(func, timeout) {
+function delay(func: any, timeout: number) {
   return new Promise(function (resolve, ) {
     setTimeout(() => {
       resolve(func())
@@ -16,7 +16,7 @@ function delay(func, timeout) {
   })
 }
 
-export function delayError(func, timeout) {
+export function delayError(func: any, timeout: number) {
   return new Promise(function (_, reject) {
     setTimeout(() => {
       reject(func())
@@ -24,29 +24,29 @@ export function delayError(func, timeout) {
   })
 }
 
-console.info("Creating app with mock service")
+console.info('Creating app with mock service')
 
-const fetchurl = async (url) => await fetch(url).then(r => r.json())
+const fetchurl = async (url: string) => await fetch(url).then(r => r.json())
 
 new App({
   target: document.body,
   props: {
-    fetchCommits: async (range) => {
+    fetchCommits: async (range: any) => {
       return delay(() => {
-        const commitsDataUrl = "/data/commits"
+        const commitsDataUrl = '/data/commits'
         const url = `${commitsDataUrl}?all&from=${range.start}&to=${range.end}`
         return fetchurl(url)
       }, 10)
     },
     fetchProjectList: async () => {
       return delay(async () => {
-        const url = "/data/projects";
-        return (await fetchurl(url)).map(p => p.substring(p.lastIndexOf("/") + 1));
+        const url = '/data/projects';
+        return (await fetchurl(url)).map((p: string) => p.substring(p.lastIndexOf('/') + 1));
       }, 3000)
     },
     fetchWorkdirStatus: async () => {
       return delay(async () => {
-        const url = "/data/status";
+        const url = '/data/status';
         return await fetchurl(url)
       }, 3000)
     }
