@@ -1,5 +1,5 @@
 
-import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from '../git.js'
+import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from '../../@git/src/git.js'
 
 import '../../main.pcss'
 
