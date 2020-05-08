@@ -8,135 +8,27 @@ import polka from 'polka';
 import send from '@polka/send-type';
 import * as rollup from 'rollup';
 
-import svelte from 'rollup-plugin-svelte';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import livereload from 'rollup-plugin-livereload';
-import terser from 'rollup-plugin-terser';
-import html2 from 'rollup-plugin-html2'
-import postcss from 'rollup-plugin-postcss'
-import progress from 'rollup-plugin-progress';
-import image from '@rollup/plugin-image';
-import sizes from 'rollup-plugin-sizes';
-import purgecss from "@fullhuman/postcss-purgecss";
-
-import pcssimport from "postcss-import"
-import tw from "tailwindcss"
+import { configs } from './rollup.config.mjs'
 
 const DIST = 'dist-dev'
 const PORT = 9090
 
-const ind = chalk.gray(`gtm Make`)
-const logln = (buffer) => process.stdout.write(`${ind} ${buffer}\n`);
-
-function rollupConfig(opts) {
-  opts = opts || {}
-  opts.production = opts.production || !opts.watch
+const ui = (() => {
+  const ind = chalk.gray(`gtm Make `)
+  let prefix = ind
 
   return {
-    input: 'src/dev/main.js',
-    output: {
-      dir: 'dist-dev',
-      sourcemap: !opts.production,
-      format: 'iife',
-      name: 'app',
+    log: (text) => {
+      process.stdout.write(`${prefix}${text}`)
+      prefix = ""
     },
-    plugins: [
-      svelte({
-        dev: !opts.production,
-        ...(!opts.production ? {} : {
-          // css: css => {
-          //   css.write('dist-dev/gtm-svelte.css')
-          // }
-        })
-      }
-      ),
-      resolve({
-        // browser: true,
-        // dedupe: ['svelte']
-      }),
-      commonjs({
-        exclude: 'node_modules/moment/**/*',
-        sourceMap: false
-      }),
-      image(),
-      postcss({
-        modules: true,
-        // extract: !opts.production,
-        plugins: [
-          pcssimport(),
-          tw,
-          // require("autoprefixer"),
-          opts.production && purgecss({
-            content: ["./**/*.html", "./**/*.svelte"],
-            defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
-          })
-        ]
-      }),
-      html2({
-        template: 'src/dev/index.html',
-        // modules: true,
-        // inject: true,
-      }),
-      progress({}),
-      opts.watch && startServe(DIST, PORT),
-      opts.watch && livereload(DIST),
-      opts.production && terser.terser(),
-      opts.production && sizes(),
-    ]
-  }
-}
 
-function startServe() {
-  let started = false;
-
-  return {
-    writeBundle() {
-      if (!started) {
-        started = true;
-        serveGtm()
-      }
+    logln: (text) => {
+      process.stdout.write(`${prefix}${text}\n`)
+      prefix = ind
     }
-  };
-}
-
-function serveGtm() {
-  const assets = sirv(DIST, {
-    maxAge: 31536000, // 1Y
-    immutable: true,
-    dev: true,
-  });
-
-  polka()
-    .use(assets)
-    .get('/data/commits', async (req, res) => {
-      logln(`Request: ${req.path}${req.search}`)
-      const range = {
-        start: req.query.from,
-        end: req.query.to
-      };
-      if (range.start && range.end) {
-        const data = await fetchCommits(range)
-        send(res, 200, data);
-      } else {
-        console.warn("Argument to or from not defined:", range)
-      }
-    })
-    .get('/data/projects', async (req, res) => {
-      logln(`Request projects: ${req.path}`)
-      const data = await fetchProjectList()
-      send(res, 200, data);
-    })
-    .get('/data/status', async (req, res) => {
-      logln(`Request workdir status: ${req.path}`)
-      const data = await fetchWorkdirStatus()
-      send(res, 200, data);
-    })
-    .listen(PORT, err => {
-      if (err) throw err;
-      logln(`✨ Ready on localhost:${PORT}~ 🚀 !`);
-    });
-}
+  }
+})()
 
 function spawnAnsi(command, args, opts) {
   return spawn(command, args, {
@@ -164,17 +56,11 @@ async function tsWatch(func) {
   }
 }
 
-async function mocha() {
-  spawnAnsi('yarn', ['mocha', '@*/test/*.js'], {
-    stdio: ['ignore', 'inherit', 'inherit']
-  });
-}
-
 async function rollupWatch(opts) {
-  logln(chalk.cyanBright(`Starting rollup, options: ${JSON.stringify(opts)}`))
-  const watcher = rollup.watch(rollupConfig(opts));
+  ui.logln(chalk.cyanBright(`Starting rollup, options: ${JSON.stringify(opts)}`))
+  const watcher = rollup.watch(configs.dev);
   watcher.on('event', event => {
-    logln(chalk.magenta(event.code))
+    ui.logln(chalk.magenta(event.code))
     // event.code can be one of:
     //   START        — the watcher is (re)starting
     //   BUNDLE_START — building an individual bundle
@@ -185,71 +71,120 @@ async function rollupWatch(opts) {
       console.log(event)
     } else if (event.code === 'END') {
       if (!opts || !opts.watch) {
-        watcher.close()
+        // watcher.close()
       }
     }
   });
 }
 
-function dev() {
-  let started = false
-  tsWatch(opts => {
-    if (!started) {
-      started = true
-      rollupWatch({
-        production: false,
-        ...opts,
+const commands = {
+
+  dev: {
+    desc: `Starts ${chalk.bold('tsc')} in watch mode, then runs rollup`,
+    fn: () => {
+      let started = false
+      commands.serve.fn()
+      tsWatch(opts => {
+        if (!started) {
+          started = true
+          rollupWatch({
+            production: false,
+            ...opts,
+          })
+        }
       })
     }
-  })
-}
+  },
 
-function devtest() {
-  let started = false
-  tsWatch(() => {
-    if (!started) {
-      mocha()
+  test: {
+    desc: `Starts tests ${chalk.bold('tsc')} in watch mode, then runs tests`,
+    fn: () => {
+      const mocha = async () => {
+        spawnAnsi('yarn', ['mocha', '@*/test/*.js'], {
+          stdio: ['ignore', 'inherit', 'inherit']
+        });
+      }
+      let started = false
+      tsWatch(() => {
+        if (!started) {
+          mocha()
+        }
+      })
     }
-  })
+  },
+
+  serve: {
+    desc: "Starts local http server dist folder",
+    fn: () => {
+      const assets = sirv('dist', {
+        maxAge: 31536000, // 1Y
+        immutable: true,
+        dev: true,
+      });
+      polka()
+        .use(assets)
+        .get('/data/commits', async (req, res) => {
+          ui.logln(`Request: ${req.path}${req.search}`)
+          const range = {
+            start: req.query.from,
+            end: req.query.to
+          };
+          if (range.start && range.end) {
+            const data = await fetchCommits(range)
+            send(res, 200, data);
+          } else {
+            console.warn("Argument to or from not defined:", range)
+          }
+        })
+        .get('/data/projects', async (req, res) => {
+          ui.logln(`Request projects: ${req.path}`)
+          const data = await fetchProjectList()
+          send(res, 200, data);
+        })
+        .get('/data/status', async (req, res) => {
+          ui.logln(`Request workdir status: ${req.path}`)
+          const data = await fetchWorkdirStatus()
+          send(res, 200, data);
+        })
+        .listen(PORT, err => {
+          if (err) throw err;
+          ui.logln(`✨ Ready on localhost:${PORT}~ 🚀 !`);
+        });
+    }
+  },
 }
 
-async function main() {
+async function main(argv) {
   const usage = () => {
-    logln(chalk.bold('Available commands:'))
-    for (const cmd in cmds) {
-      logln(chalk(`    ${cmd}`))
+    ui.logln(chalk.bold('Available commands:'))
+    for (const cmd in commands) {
+      const pad = " ".repeat(12 - cmd.length)
+      ui.logln(chalk(`    ${cmd}${pad} ${commands[cmd].desc}`))
     }
     process.exit(1)
   }
 
-  const cmds = {
-    tsc: tsWatch,
-    rollup: rollupWatch,
-    serve: serveGtm,
-    dev: dev,
-    devtest: devtest,
-  }
-
-  let argv = process.argv
   if (argv.length <= 2) {
-    logln(chalk.red.bold('No command provided for make.mjs.'))
+    ui.logln(chalk.red.bold('No command provided for make.mjs.'))
     usage()
   }
 
   argv = argv.slice(2)
-  for (const arg in argv) {
-    const cmd = cmds[argv[arg]]
+  for (const arg of argv) {
+    const cmd = commands[arg]
     if (!cmd) {
-      logln(chalk.red.bold(`Command '${argv[arg]}' is undefined.`))
+      ui.logln(chalk.red.bold(`Unrecognized command '${arg}'.`))
       usage()
     }
   }
 
-  for (const arg in argv) {
-    logln(chalk.blue.bold(`Running '${argv[arg]}' command ...`))
-    const cmd = cmds[argv[arg]]
-    cmd()
+  // const cfgs = []
+  for (const arg of argv) {
+    ui.log(chalk.blue.bold(`Running '${arg}' command ... `))
+    const cmd = commands[arg]
+    // cfgs.push(configs[argv[arg]])
+    cmd.fn()
   }
 }
 
-main()
+main(process.argv)
