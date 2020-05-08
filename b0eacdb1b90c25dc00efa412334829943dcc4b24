@@ -1,0 +1,17 @@
+[ver:1,total:1239]
+.gtm/terminal.app:448,1588968000:361,1588971600:87,r
+src/test/test.ts:200,1588971600:200,m
+src/test/Commit-test.ts:180,1588971600:180,m
+src/test/index.html:98,1588971600:98,m
+src/dev/index.html:76,1588968000:36,1588971600:40,m
+src/test/test.js:50,1588968000:30,1588971600:20,d
+tailwind.config.js:31,1588968000:31,r
+dist/dev/main.c39d6dcf.js:30,1588968000:30,d
+dist/main.c39d6dcf.js:28,1588968000:18,1588971600:10,d
+dist/index.html:24,1588968000:24,d
+dist/main.c39d6dcf.css:23,1588968000:13,1588971600:10,d
+src/test/dev.js:15,1588971600:15,d
+dist/dev/index.html:12,1588968000:12,d
+src/test/Commit-test.svelte:10,1588971600:10,d
+postcss.config.cjs:8,1588968000:8,d
+rollup.config.mjs:6,1588968000:6,r
