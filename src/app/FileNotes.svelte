@@ -12,22 +12,18 @@
   }
 
   $: values = Object.values(files).sort(lt);
-
-  let asc = true;
 </script>
 
 <button
-  on:click={() => (asc = !asc)}
   type="button"
   class="block text-gray-400 hover:text-white focus:text-white
-  focus:outline-none" />
-Button
+  focus:outline-none">
+</button>
 <ul>
   {#each values as file}
     <li class="small">
-      {file.SourceFile} &nbsp;
-      <Icon class="mb-1 h-4" icon={faClock} />
-      {hhmm(file.TimeSpent)}
+      <Icon class="mb-1 h-3" icon={faClock} />
+      {hhmm(file.TimeSpent)} {file.SourceFile} &nbsp;
     </li>
   {/each}
 </ul>

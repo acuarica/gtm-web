@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import Box from "./Box.svelte";
   import Fetch from "./Fetch.svelte";
   import {
     activityChartConfig,
@@ -36,29 +37,50 @@
             footer={cardFooterText(res.stats.projects[name].commits)} />
 
           <div class="w-64">
-            <!-- <Chart config={timeByFileStatusChartConfig(res.stats.status)} /> -->
+            <Box>
+              <Chart
+                config={timeByFileStatusChartConfig(res.stats.projects[name].status)} />
+            </Box>
           </div>
         </div>
 
+
         <div>
-          <Chart config={activityChartConfig([res.stats.projects[name]])} />
+          <Box class="p-3">
+            <Chart
+              style="height: 400px"
+              config={activityChartConfig([res.stats.projects[name]])} />
+          </Box>
+
+          <Fetch promise={workdirStatsPromise} let:value={res}>
+            <Box class="mt-3 p-3">
+              <Chart config={activityChartConfig([res.projects[name]])} />
+            </Box>
+          </Fetch>
+
         </div>
         <div>
-          <FileNotes files={res.stats.projects[name].files} />
+          <Box class="p-3">
+            <div class="font-bold">Files</div>
+            <FileNotes files={res.stats.projects[name].files} />
+          </Box>
+          <span>
+            <Commits commits={res.stats.projects[name].commits} />
+          </span>
         </div>
 
-      </span>
-      <span>
-        <Commits commits={res.stats.projects[name].commits} />
       </span>
     </div>
   {:else}
-    <p>No time data in this period for project {name}.</p>
+    <Box class="p-8">
+      <div class="text-lg">
+        No time data was found in this period for project
+        <span class="text-highlight font-bold">{name}</span>
+        .
+      </div>
+      <div class="text-sm text-muted mt-3">
+        There are no commits during this time period. Try another date range.
+      </div>
+    </Box>
   {/if}
-</Fetch>
-
-<Fetch promise={workdirStatsPromise} let:value={res}>
-  <div>
-    <Chart config={activityChartConfig([res.projects[name]])} />
-  </div>
 </Fetch>

@@ -1,4 +1,5 @@
 <script>
+  import Box from "./Box.svelte";
   import Icon from "./Icon.svelte";
   import { faTasks } from "@fortawesome/free-solid-svg-icons/faTasks";
   import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
@@ -29,7 +30,8 @@
   </div>
 {/if}
 
-<header class="bg-navbar sm:flex sm:justify-between">
+<div class="bg-sidebar">
+<Box class="sm:flex sm:justify-between mx-3">
   <div class="flex items-center justify-between px-4 py-1">
     <div>
       <a href="/">
@@ -66,7 +68,7 @@
     </div>
   </div>
   <div class="px-2 pb-1 sm:flex sm:items-center {isOpen ? 'block' : 'hidden'}">
-
+    <div class="mr-2">Commit Filters</div>
     <DatePicker on:change={handleRangeChange} />
     <SearchBox />
     <button
@@ -78,4 +80,6 @@
     </button>
 
   </div>
-</header>
+</Box>
+
+</div>
