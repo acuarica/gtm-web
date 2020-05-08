@@ -4,11 +4,11 @@ module.exports = {
     'eslint:recommended'
   ],
   "env": {
-    "es6": true,
+    "es2020": true,
+    "browser": true,
     "node": true
   },
   "parserOptions": {
-    "ecmaVersion": 2018,
     "sourceType": "module",
   },
   "overrides": [
