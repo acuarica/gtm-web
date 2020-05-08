@@ -35,24 +35,28 @@ export class Commit {
   }
 }
 
+// total: 0,
+// commits: [], timeline: {}, timelineMatrix: [],
+// files: {},
 ///
-export type Project = {
-  name: string;
-  total: number;
-  commits: Commit[];
-  files: { [fileName: string]: FileNote };
+export class Project {
+  total = 0;
+  commits: Commit[] = [];
+  files: { [fileName: string]: FileNote } = {};
+  status: FileStatus<number> = { 'm': 0, 'r': 0, 'd': 0 };
   timeline: {
     [id: string]: {
       [hour: number]: {
         total: number;
       };
     };
-  };
+  } = {};
   timelineMatrix: {
     x: string;
     y: string;
     v: number;
-  }[];
+  }[] = [];
+  constructor(readonly name: string) { }
 }
 
 ///
@@ -80,12 +84,7 @@ export function computeStats(commits: Commit[]): Stats {
   for (const commit of commits) {
     let project = projects[commit.Project];
     if (project === undefined) {
-      project = {
-        name: commit.Project,
-        total: 0,
-        commits: [], timeline: {}, timelineMatrix: [],
-        files: {},
-      };
+      project = new Project(commit.Project);
       projects[commit.Project] = project;
     }
     project.commits.push(commit);
@@ -121,6 +120,7 @@ export function computeStats(commits: Commit[]): Stats {
         totalSecs += secs
         // console.assert(Object.keys(status).includes(file.Status), `Unexpected status '${file.Status}' for file ${file.SourceFile}`)
         status[file.Status] += secs
+        project.status[file.Status] += secs
       }
       if (fileSecs !== file.TimeSpent) console.warn('gtm check: Timeline seconds does not add up to duration in file.');
 
