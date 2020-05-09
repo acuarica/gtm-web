@@ -8,7 +8,7 @@ import polka from 'polka';
 import send from '@polka/send-type';
 import * as rollup from 'rollup';
 
-const DIST = 'dist/dev'
+const DIST = 'dist'
 const PORT = 9090
 
 const ui = (() => {
