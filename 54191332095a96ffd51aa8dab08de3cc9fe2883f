@@ -1,0 +1,10 @@
+[ver:1,total:3544]
+src/app/Home.svelte:3176,1589032800:180,1589036400:2384,1589043600:612,m
+src/app/App.svelte:144,1589043600:144,r
+package.json:90,1589036400:90,r
+src/app/Chart.svelte:30,1589036400:30,r
+src/app/Navbar.svelte:24,1589043600:24,r
+src/app/DashboardCard.svelte:20,1589036400:20,r
+src/app/Project.svelte:20,1589036400:20,r
+src/dev/main.ts:20,1589036400:20,r
+src/app/Fetch.svelte:20,1589036400:20,r
