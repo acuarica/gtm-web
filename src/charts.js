@@ -99,7 +99,10 @@ export function projectTotalsChartConfig(projects) {
 }
 
 ///
-export function activityChartConfig(projects) {
+export function activityChartConfig(projects, status = false) {
+  const title = status
+    ? 'Uncommited timeline by Project (status)'
+    : 'Committed timeline by Project (report)'
   const daily = getDaily(projects)
   const dailyKeys = Object.keys(daily)
   console.log(projects, daily, dailyKeys)
@@ -130,7 +133,7 @@ export function activityChartConfig(projects) {
     },
     options: {
       maintainAspectRatio: false,
-      title: { display: true, text: 'Reported timeline by Project' },
+      title: { display: true, text: title },
       scales: {
         xAxes: [{
           type: 'time',
