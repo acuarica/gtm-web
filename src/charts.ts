@@ -22,7 +22,7 @@ export function timeByFileStatusChartConfig(status: FileStatus<number>): ChartCo
       }),
     },
     options: {
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       title: {
         display: true,
         text: 'Time by Activity',
