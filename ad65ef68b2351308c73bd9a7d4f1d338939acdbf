@@ -1,0 +1,9 @@
+[ver:1,total:480]
+src/desktop/main.ts:152,1589029200:152,m
+src/desktop/preload.ts:150,1589029200:150,m
+@git/src/git.ts:70,1589029200:70,m
+src/charts.ts:32,1589029200:32,r
+.gtm/terminal.app:27,1589029200:27,r
+@notes/src/notes.ts:25,1589029200:25,r
+.gitignore:12,1589029200:12,r
+src/charts.js:12,1589029200:12,r
