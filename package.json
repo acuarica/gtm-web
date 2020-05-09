@@ -36,7 +36,7 @@
     "lint": "eslint **/*.ts *.js",
     "test": "mocha @*/test/*.js",
     "prepare": "yarn build",
-    "start": "electron dist-electron/main.js",
+    "start": "electron dist/electron/main.js",
     "dist": "electron-builder"
   },
   "dependencies": {
