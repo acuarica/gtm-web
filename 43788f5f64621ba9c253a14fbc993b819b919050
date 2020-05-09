@@ -1,0 +1,12 @@
+[ver:1,total:2250]
+@mock/src/mock.ts:1047,1589058000:30,1589061600:1017,m
+@notes/src/service.ts:409,1589058000:160,1589061600:249,m
+@notes/src/notes.ts:315,1589058000:30,1589061600:285,r
+.gtm/terminal.app:89,1589061600:89,r
+@notes/package.json:77,1589061600:77,m
+@notes/index.ts:75,1589061600:75,m
+@notes/src/index.ts:74,1589061600:74,d
+src/app/Project.svelte:60,1589058000:60,r
+@notes/src/index.js:54,1589061600:54,r
+src/dev/main.ts:35,1589058000:20,1589061600:15,r
+tsconfig.json:15,1589061600:15,r
