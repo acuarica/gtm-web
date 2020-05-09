@@ -19,41 +19,30 @@
   onMount(() => {});
 </script>
 
-<Fetch promise={statsPromise} let:value={res}>
-  <div class="lg:flex">
-    <div class="flex">
-      <DashboardCard
-        class="w-48 h-40 mr-3"
-        title="Total Time"
-        body={hhmm(res.stats.totalSecs)}
-        footer="{res.commits.length} commit{res.commits.length === 1 ? '' : 's'}" />
-      <Box class="flex-1 lg:w-64 h-40 pt-2 lg:mr-3">
-        <Chart
-          class="w-64"
-          config={timeByFileStatusChartConfig(res.stats.status)} />
-      </Box>
-    </div>
-    <Box class="flex justify-center mt-3 lg:mt-0 lg:flex-1 h-40">
-      <Chart
-        class="xxl:flex-1"
-        style="width: 700px"
-        config={projectTotalsChartConfig(res.stats.projects)} />
+<div class="grid grid-cols-12 gap-3">
+  <Fetch promise={statsPromise} let:value={res}>
+    <DashboardCard
+      class="col-span-12 md:col-span-5 lg:col-span-3 xl:col-span-2"
+      title="Total Time"
+      body={hhmm(res.stats.totalSecs)}
+      footer="{res.commits.length} commit{res.commits.length === 1 ? '' : 's'}" />
+    <Box class="col-span-12 md:col-span-7 lg:col-span-4 xl:col-span-3">
+      <Chart config={timeByFileStatusChartConfig(res.stats.status)} />
     </Box>
-  </div>
-
-  <!-- <div class="my-3"> -->
-    <Box class="flex justify-center py-2 my-3">
+    <Box class="col-span-12 lg:col-span-5 xl:col-span-7">
+      <Chart config={projectTotalsChartConfig(res.stats.projects)} />
+    </Box>
+    <Box class="col-span-12">
       <Chart
-        style="width: 94%; height: 400px"
+        style="height: 400px"
         config={activityChartConfig(res.stats.projects)} />
     </Box>
-  <!-- </div> -->
-</Fetch>
-
-<Fetch promise={workdirStatsPromise} let:value={res}>
-  <Box class="flex justify-center py-2">
-    <Chart
-      style="width: 94%; height: 400px"
-      config={activityChartConfig(res.projects, true)} />
-  </Box>
-</Fetch>
+  </Fetch>
+  <Fetch promise={workdirStatsPromise} let:value={res}>
+    <Box class="col-span-12">
+      <Chart
+        style="height: 400px"
+        config={activityChartConfig(res.projects, true)} />
+    </Box>
+  </Fetch>
+</div>
