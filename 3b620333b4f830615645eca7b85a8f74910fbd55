@@ -1,0 +1,10 @@
+[ver:1,total:676]
+rollup.config.mjs:431,1588971600:50,1588975200:381,d
+tailwind.config.cjs:72,1588975200:42,1588989600:30,m
+postcss.config.js:68,1588968000:68,d
+rollup.config.js:30,1588989600:30,m
+rollup.config-electron.js:15,1588975200:15,d
+src/test/Commit-test.ts:15,1588989600:15,r
+src/test/test.js:15,1588989600:15,r
+src/test/test.ts:15,1588989600:15,r
+src/test/test.html:15,1588989600:15,r
