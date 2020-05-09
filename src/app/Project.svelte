@@ -28,40 +28,29 @@
 
 <Fetch promise={statsPromise} let:value={res}>
   {#if res.stats.projects[name]}
-    <div class="flex justify-around items-center">
+    <div class="grid grid-cols-12 gap-3">
       <DashboardCard
+        class="col-span-6"
         title="Total Time"
         body={hhmm(res.stats.projects[name].total)}
         footer={cardFooterText(res.stats.projects[name].commits)} />
-
-      <div class="w-64">
-        <Box>
-          <Chart
-            config={timeByFileStatusChartConfig(res.stats.projects[name].status)} />
-        </Box>
-      </div>
-    </div>
-
-    <div class="my-3">
-      <Box class="flex justify-center py-2">
+      <Box class="col-span-6">
         <Chart
-          style="width: 94%; height: 400px"
-          config={activityChartConfig([res.stats.projects[name]])} />
+          config={timeByFileStatusChartConfig(res.stats.projects[name].status)} />
       </Box>
-
-      <Fetch promise={workdirStatsPromise} let:value={res}>
-        <Box class="mt-3 p-3">
+      <Box class="col-span-12 px-6 py-3">
+        <Chart config={activityChartConfig([res.stats.projects[name]])} />
+      </Box>
+      <Box class="col-span-12 px-6 py-3">
+        <Fetch promise={workdirStatsPromise} let:value={res}>
           <Chart config={activityChartConfig([res.projects[name]], true)} />
-        </Box>
-      </Fetch>
-
-    </div>
-    <div class="grid grid-cols-2 col-gap-2">
-      <Box class="p-3" >
+        </Fetch>
+      </Box>
+      <Box class="col-span-12 lg:col-span-6 p-4">
         <div class="font-bold">Files</div>
         <FileNotes files={res.stats.projects[name].files} />
       </Box>
-      <Commits class="" commits={res.stats.projects[name].commits} />
+      <Commits class="col-span-12 lg:col-span-6" commits={res.stats.projects[name].commits} />
     </div>
   {:else}
     <Box class="p-8">

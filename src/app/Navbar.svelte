@@ -32,7 +32,7 @@
 {/if}
 
 <div class="bg-sidebar text-sm">
-  <Box class="sm:flex sm:justify-between mx-3">
+  <Box class="md:flex md:justify-between mx-3">
     <div class="flex items-center justify-between px-4 py-1">
       <div>
         <a href="./">
@@ -44,7 +44,7 @@
           {title}
         </span>
       </div>
-      <div class="sm:hidden">
+      <div class="md:hidden">
         <button
           on:click={() => (isOpen = !isOpen)}
           type="button"
@@ -69,8 +69,8 @@
       </div>
     </div>
     <div
-      class="px-2 pb-1 sm:flex sm:items-center {isOpen ? 'block' : 'hidden'}">
-      <div class="mr-2">Commit Filters</div>
+      class="px-2 pb-1 md:flex md:items-center {isOpen ? 'block' : 'hidden'}">
+      <div class="mr-2 hidden lg:block text-xs">Commit Filters</div>
       <DatePicker on:change={handleRangeChange} />
       <SearchBox />
       <button
