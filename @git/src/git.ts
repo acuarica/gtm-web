@@ -7,13 +7,11 @@ async function rungtm(args: string[]): Promise<ReturnType<JSON['parse']>> {
   args = ['export', ...args]
   const child = spawn(gtmexec, args);
 
-  const exitCode = new Promise<number>((resolve, reject) => {
+  const exitCode = new Promise<number | null>(resolve => {
     child.on('exit', code => {
-      if (code === 0) resolve(0)
-      else reject(1)
+      resolve(code)
     });
   });
-
 
   let buf = ''
   for await (const data of child.stdout) {
