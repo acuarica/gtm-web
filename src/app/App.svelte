@@ -25,7 +25,22 @@
   let title;
   let view;
 
-  router("/", async () => {
+  function getBase() {
+    const pathname = window.location.pathname;
+    const parts = pathname.split("/");
+    console.assert(parts.length >= 2, "not / found");
+    console.assert(parts[0] === "", "trailing string before /");
+    parts.shift();
+    if (parts[parts.length - 1] === "") {
+      parts.pop();
+    }
+    const base = "/" + parts.join("/");
+    console.info("Using base path:", base);
+    return base;
+  }
+
+  router.base(getBase());
+  router("/", () => {
     title = "All Projects";
     view = Home;
   });
@@ -36,7 +51,7 @@
   });
 
   onMount(async () => {
-    router.start({ hashbang: true });
+    router({ hashbang: true });
     projectListPromise = fetchProjectList();
     const workdirStatus = await fetchWorkdirStatus();
     workdirStatsPromise = Promise.resolve(computeWorkdirStatus(workdirStatus));
@@ -63,13 +78,13 @@
 
     <div class="flex flex-1 ">
       <div class="flex flex-row w-full divide-x divide-divide-color">
-        <div class="bg-sidebar p-3">
+        <div class="hidden sm:block bg-sidebar p-3">
 
           <Box class="w-56 flex-shrink-0 p-3 h-full">
             <a
               class="block py-1 pl-1 text-lg rounded hover:bg-gray-600
               hover:text-gray-300"
-              href="/">
+              href="./">
               <Icon class="mb-1 h-4" icon={faTasks} />
               <span class={view === Home ? 'font-bold' : ''}>All Projects</span>
             </a>
@@ -79,7 +94,7 @@
                 <a
                   class="block py-1 pl-6 rounded hover:bg-gray-600
                   hover:text-gray-300 {view === Project && projectName === project ? 'font-bold' : ''}"
-                  href="/projects/{project}">
+                  href="./projects/{project}">
                   {project}
                 </a>
               {/each}
