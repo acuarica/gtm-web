@@ -1,4 +1,5 @@
 /.gtm/
+/src/**/*.js
 /@*/src/*.js
 /@*/test/*.js
 /node_modules/
