@@ -1,8 +1,9 @@
 /.gtm/
+/node_modules/
 /src/**/*.js
+/@*/index.js
 /@*/src/*.js
 /@*/test/*.js
-/node_modules/
 /dist/dev/
 /dist/gtm/
 /dist/electron/
