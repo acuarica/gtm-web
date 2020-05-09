@@ -11,3 +11,8 @@ Reporting application to visualize [Git Time Metric](https://github.com/git-time
 *Work in progress. More of a proof of concept.*
 
 Feel free to open issues or pull requests if you would like to add any feature.
+
+![Home-main](docs/Home-main.gif)
+![Home-search](docs/Home-search.gif)
+![Project-main](docs/Project-main.gif)
+![Project-commits](docs/Project-commits.gif)
