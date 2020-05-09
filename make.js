@@ -8,8 +8,6 @@ import polka from 'polka';
 import send from '@polka/send-type';
 import * as rollup from 'rollup';
 
-import { configs } from './rollup.config.mjs'
-
 const DIST = 'dist-dev'
 const PORT = 9090
 
@@ -58,6 +56,8 @@ async function tsWatch(func) {
 
 async function rollupWatch(opts) {
   ui.logln(chalk.cyanBright(`Starting rollup, options: ${JSON.stringify(opts)}`))
+  process.env.ROLLUP_WATCH = true
+  const { configs } = await import('./rollup.config.js')
   const watcher = rollup.watch(configs.dev);
   watcher.on('event', event => {
     ui.logln(chalk.magenta(event.code))
@@ -83,7 +83,6 @@ const commands = {
     desc: `Starts ${chalk.bold('tsc')} in watch mode, then runs rollup`,
     fn: () => {
       let started = false
-      commands.serve.fn()
       tsWatch(opts => {
         if (!started) {
           started = true
@@ -116,7 +115,7 @@ const commands = {
   serve: {
     desc: "Starts local http server dist folder",
     fn: () => {
-      const assets = sirv('dist', {
+      const assets = sirv('dist/dev', {
         maxAge: 31536000, // 1Y
         immutable: true,
         dev: true,

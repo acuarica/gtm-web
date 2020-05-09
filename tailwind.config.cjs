@@ -1,7 +1,5 @@
 const theme = require('tailwindcss/defaultTheme')
 
-console.log(theme.screens)
-
 module.exports = {
   theme: {
     container: {

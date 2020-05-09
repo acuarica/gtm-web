@@ -7,9 +7,7 @@ import copy from 'rollup-plugin-copy'
 import postcss from 'rollup-plugin-postcss'
 import progress from 'rollup-plugin-progress';
 import image from '@rollup/plugin-image';
-import sizes from 'rollup-plugin-sizes';
 import purgecss from "@fullhuman/postcss-purgecss";
-// const html = require('@rollup/plugin-html');
 import html from '@open-wc/rollup-plugin-html';
 import tailwindcss from 'tailwindcss'
 
@@ -27,15 +25,9 @@ const plugins = [
     dev: !production,
   }),
   postcss({
-    // modules: true,
-    // extract: true,//'assets/main.css',
     plugins: [
-      // require("postcss-import")(),
       tailwindcss('./tailwind.config.cjs'),
-      // require("tailwindcss"),
-      // require("autoprefixer"),
-      // Only purge css on production
-      purgecss({
+      production && purgecss({
         content: ["./**/*.html", "./**/*.svelte"],
         defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
       })
@@ -55,7 +47,7 @@ export const configs = {
       format: 'es',
       plugins: [
 
-      !production && livereload('dist/dev'),
+        !production && livereload('dist/dev'),
       ]
     },
     preserveModules: true,
@@ -105,4 +97,5 @@ export const configs = {
 
 }
 
-export default Object.values(configs)
+// export default Object.values(configs)
+export default configs.dev
