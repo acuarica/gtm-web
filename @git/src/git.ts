@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { spawn } from 'child_process'
-import { Commit, FileNote } from '@gtm/notes'
+import { Commit, WorkdirStatusList } from '@gtm/notes'
 
 async function rungtm(args: string[]): Promise<ReturnType<JSON['parse']>> {
   const gtmexec = '/Users/luigi/work/#forks/gtm/bin/gtm'
@@ -40,7 +40,7 @@ export async function fetchProjectList(): Promise<string[]> {
   return rungtm(args)
 }
 
-export async function fetchWorkdirStatus(): Promise<{ [p: string]: { CommitNote: { Files: FileNote[] } } }> {
+export async function fetchWorkdirStatus(): Promise<WorkdirStatusList> {
   const args = ['-data=status']
   return rungtm(args)
 }
