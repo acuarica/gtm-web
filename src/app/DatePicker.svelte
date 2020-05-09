@@ -183,7 +183,7 @@
         <div style="width: 7.5rem">
           {#each Object.entries(ranges) as [text, range]}
             <button
-              class="block focus:outline-none hover:bg-blue-200 rounded pt-1
+              class="block text-gray-800 focus:outline-none hover:bg-blue-200 rounded pt-1
               px-2"
               type="button"
               on:click={() => selectRange(text, range)}>

@@ -36,24 +36,24 @@
     <Box class="flex justify-center mt-3 lg:mt-0 lg:flex-1 h-40">
       <Chart
         class="xxl:flex-1"
-        style="width2: 620px"
+        style="width: 700px"
         config={projectTotalsChartConfig(res.stats.projects)} />
     </Box>
   </div>
 
-  <div class="my-3">
-    <Box class="flex justify-center py-2">
+  <!-- <div class="my-3"> -->
+    <Box class="flex justify-center py-2 my-3">
       <Chart
         style="width: 94%; height: 400px"
         config={activityChartConfig(res.stats.projects)} />
     </Box>
-  </div>
+  <!-- </div> -->
 </Fetch>
 
 <Fetch promise={workdirStatsPromise} let:value={res}>
   <Box class="flex justify-center py-2">
     <Chart
       style="width: 94%; height: 400px"
-      config={activityChartConfig(res.projects)} />
+      config={activityChartConfig(res.projects, true)} />
   </Box>
 </Fetch>

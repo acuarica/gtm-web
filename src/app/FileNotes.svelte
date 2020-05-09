@@ -21,7 +21,7 @@
 </button>
 <ul>
   {#each values as file}
-    <li class="small">
+    <li class="small truncate">
       <Icon class="mb-1 h-3" icon={faClock} />
       {hhmm(file.TimeSpent)} {file.SourceFile} &nbsp;
     </li>
