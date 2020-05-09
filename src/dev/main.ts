@@ -33,23 +33,17 @@ new App({
   target: document.body,
   props: {
     fetchCommits: async (range: { start: string; end: string }): Promise<Commit[]> => {
-      // return delay(() => {
-        const commitsDataUrl = '/data/commits'
-        const url = `${commitsDataUrl}?all&from=${range.start}&to=${range.end}`
-        return fetchurl(url)
-      // }, 10)
+      const commitsDataUrl = '/data/commits'
+      const url = `${commitsDataUrl}?all&from=${range.start}&to=${range.end}`
+      return fetchurl(url)
     },
     fetchProjectList: async (): Promise<string[]> => {
-      // return delay(async () => {
-        const url = '/data/projects';
-        return (await fetchurl<string[]>(url)).map((p: string) => p.substring(p.lastIndexOf('/') + 1));
-      // }, 3000)
+      const url = '/data/projects';
+      return (await fetchurl<string[]>(url)).map((p: string) => p.substring(p.lastIndexOf('/') + 1));
     },
     fetchWorkdirStatus: async (): Promise<{ [p: string]: Commit }> => {
-      // return delay(async () => {
-        const url = '/data/status';
-        return await fetchurl(url)
-      // }, 3000)
+      const url = '/data/status';
+      return await fetchurl(url)
     },
   },
 });
