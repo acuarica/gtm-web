@@ -1,0 +1,14 @@
+[ver:1,total:1298]
+.gtm/terminal.app:477,1588989600:325,1588993200:152,r
+@git/src/git.ts:214,1588993200:214,m
+@format/package.json:150,1588989600:150,r
+src/desktop/Settings.svelte:120,1588989600:120,r
+.gitignore:72,1588989600:72,r
+src/charts.js:60,1588989600:60,r
+.eslintrc.js:52,1588989600:52,d
+@git/test/git-test.ts:42,1588993200:42,r
+@git/package.json:32,1588993200:32,r
+node_modules/eslint/lib/cli-engine/config-array-factory.js:30,1588989600:30,r
+node_modules/@types/node/child_process.d.ts:20,1588993200:20,r
+yarn.lock:20,1588989600:20,r
+tsconfig.json:9,1588989600:9,r
