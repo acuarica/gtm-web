@@ -1,0 +1,10 @@
+[ver:1,total:6845]
+src/app/App.svelte:5022,1589043600:450,1589047200:1020,1589050800:1620,1589054400:1692,1589058000:240,m
+src/dev/main.ts:727,1589054400:727,r
+src/app/Project.svelte:390,1589047200:390,r
+.gtm/terminal.app:320,1589054400:320,r
+node_modules/@types/page/index.d.ts:174,1589054400:174,r
+src/app/Home.svelte:130,1589043600:40,1589047200:90,r
+package.json:35,1589054400:15,1589058000:20,m
+src/app/DatePicker.svelte:35,1589047200:35,r
+src/dev/main.js:12,1589054400:12,r
