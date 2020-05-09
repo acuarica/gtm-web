@@ -46,7 +46,6 @@ export const configs = {
       sourcemap: true,
       format: 'es',
       plugins: [
-
         !production && livereload('dist/dev'),
       ]
     },
@@ -97,5 +96,4 @@ export const configs = {
 
 }
 
-// export default Object.values(configs)
-export default configs.dev
+export default Object.values(configs)

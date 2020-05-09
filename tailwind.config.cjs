@@ -18,9 +18,7 @@ module.exports = {
       backgroundColor: {
         'body': '#444',
         'navbar': theme.colors.gray[800],
-        // 'sidebar': '#202020',//theme.colors.gray[900],
         'sidebar': theme.colors.gray[900],
-        // 'view': '#202020',//theme.colors.gray[900],
         'view': theme.colors.gray[900],
         'box': theme.colors.gray[800],
       },
