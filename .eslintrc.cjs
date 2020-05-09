@@ -36,11 +36,11 @@ module.exports = {
       },
       "plugins": ["@typescript-eslint"],
       "rules": {
-        "indent": ["error", 2, { "SwitchCase": 1 }],
-        "linebreak-style": ["error", "unix"],
-        "quotes": ["error", "single"],
-        "comma-dangle": ["error", "always-multiline"],
-        "@typescript-eslint/no-explicit-any": 0
+        "indent": ["warn", 2, { "SwitchCase": 1 }],
+        "linebreak-style": ["warn", "unix"],
+        "quotes": ["warn", "single"],
+        "comma-dangle": ["warn", "always-multiline"],
+        "@typescript-eslint/no-explicit-any": "warn"
       }
     }
   ]
