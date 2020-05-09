@@ -1,27 +1,31 @@
 import moment from 'moment';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { getDaily } from "@gtm/notes";
-import { hhmm } from "@gtm/format";
+import { getDaily, FileStatus, ProjectList } from '@gtm/notes';
+import { hhmm } from '@gtm/format';
+import { ChartConfiguration } from 'chart.js'
 
-export function timeByFileStatusChartConfig(status) {
-  const StatusIndicator = { m: "Modifying", r: "Reading", d: "Deleting" };
-  const datasets = Object.keys(status).map(s => {
-    return {
-      data: [status[s]],
-      label: `${StatusIndicator[s]}: ${hhmm(status[s])}`
-    };
-  });
+export function timeByFileStatusChartConfig(status: FileStatus<number>): ChartConfiguration {
+  const StatusIndicator: FileStatus<string> = {
+    m: 'Modifying',
+    r: 'Reading',
+    d: 'Deleting',
+  };
 
   return {
     type: 'horizontalBar',
     data: {
-      datasets: datasets,
+      datasets: Object.keys(status).map(s => {
+        return {
+          data: [status[s]],
+          label: `${StatusIndicator[s]}: ${hhmm(status[s])}`,
+        };
+      }),
     },
     options: {
       maintainAspectRatio: true,
       title: {
         display: true,
-        text: 'Time by Activity'
+        text: 'Time by Activity',
       },
       legend: {
         position: 'top',
@@ -36,7 +40,7 @@ export function timeByFileStatusChartConfig(status) {
           gridLines: {
             display: false,
           },
-        }]
+        }],
       },
       plugins: {
         datalabels: {
@@ -45,22 +49,22 @@ export function timeByFileStatusChartConfig(status) {
       },
       tooltips: {
         enabled: false,
-      }
+      },
     },
   }
 }
 
 ///
-export function projectTotalsChartConfig(projects) {
-  console.assert(typeof projects === 'object', `Invalid projects:`, projects)
+export function projectTotalsChartConfig(projects: ProjectList): ChartConfiguration {
+  console.assert(typeof projects === 'object', 'Invalid projects:', projects)
   const datasets = [];
   for (const pname in projects) {
     const p = projects[pname];
     datasets.push({
       data: [p.total],
       commitcount: p.commits.length,
-      label: pname
-    });
+      label: pname,
+    } as any);
   }
 
   return {
@@ -73,7 +77,7 @@ export function projectTotalsChartConfig(projects) {
       maintainAspectRatio: false,
       title: {
         display: true,
-        text: 'Time by Project'
+        text: 'Time by Project',
       },
       legend: {
         position: 'top',
@@ -84,22 +88,22 @@ export function projectTotalsChartConfig(projects) {
           gridLines: {
             display: false,
           },
-        }]
+        }],
       },
       plugins: {
         datalabels: {
-          formatter: (value, _ctx) => `\n${hhmm(value)}`,
+          formatter: (value): string => `\n${hhmm(value)}`,
         },
       },
       tooltips: {
         enabled: false,
       },
-    }
+    },
   }
 }
 
 ///
-export function activityChartConfig(projects, status = false) {
+export function activityChartConfig(projects: ProjectList, status = false): ChartConfiguration {
   const title = status
     ? 'Uncommited timeline by Project (status)'
     : 'Committed timeline by Project (report)'
@@ -114,18 +118,18 @@ export function activityChartConfig(projects, status = false) {
           label: projects[p].name,
           data: projects[p].timelineMatrix,
           borderWidth: 1,
-          width: function (ctx) {
+          width: function (ctx: any): number {
             // const value = (<{ v: number }>ctx.dataset.data![ctx.dataIndex]!).v;
             // const levels = 10;
             // const alpha = Math.floor(value * levels / 3600) / levels + (1 / levels);
-            var a = ctx.chart.chartArea;
+            const a = ctx.chart.chartArea;
             return (a.right - a.left) / 25;
           },
-          height: function (ctx) {
+          height: function (ctx: any): number {
             const value = (ctx.dataset.data[ctx.dataIndex]).v;
             const levels = 4;
             const alpha = Math.floor(value * levels / 3600) / levels + (1 / levels);
-            var a = ctx.chart.chartArea;
+            const a = ctx.chart.chartArea;
             return alpha * (a.bottom - a.top) / dailyKeys.length;
           },
         }
@@ -139,7 +143,7 @@ export function activityChartConfig(projects, status = false) {
           type: 'time',
           offset: true,
           time: {
-            unit: 'hour', parser: 'HH:mm'
+            unit: 'hour', parser: 'HH:mm',
           },
           gridLines: {
             drawOnChartArea: false,
@@ -154,20 +158,20 @@ export function activityChartConfig(projects, status = false) {
             // min: min.format('X'),
             // max: max.format('X'),
           },
-          gridLines: { drawOnChartArea: false, },
+          gridLines: { drawOnChartArea: false },
         }, {
           type: 'time',
           offset: true,
           position: 'right',
           time: {
-            unit: 'day', parser: 'YYYY-MM-DD'
+            unit: 'day', parser: 'YYYY-MM-DD',
           },
           ticks: {
-            callback: function (_value, index, values) {
-              const d = moment(values[index].value).format('YYYY-MM-DD');
+            callback: function (_value, index, values): string {
+              const d = moment((values[index] as any).value).format('YYYY-MM-DD');
               const date = daily[d];
-              return date === undefined ? "" : hhmm(date.total);
-            }
+              return date === undefined ? '' : hhmm(date.total);
+            },
           },
           gridLines: {
             drawOnChartArea: false,
@@ -178,8 +182,8 @@ export function activityChartConfig(projects, status = false) {
         datalabels: {
           display: false,
         },
-      }
-    }
+      },
+    },
   }
 }
 

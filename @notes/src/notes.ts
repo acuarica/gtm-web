@@ -5,13 +5,6 @@ import { pad0 } from '@gtm/format'
 export type Seconds = number
 
 ///
-export type WorkdirStatus = {
-  Total: Seconds;
-  Label: string;
-  CommitNote: FileNote[];
-}
-
-///
 export class FileNote {
   TimeSpent: Seconds = 0;
   readonly Timeline: { [id: string]: Seconds } = {};
@@ -20,6 +13,16 @@ export class FileNote {
     this.TimeSpent = timeSpent;
   }
 }
+
+///
+export type WorkdirStatus = {
+  Total: Seconds;
+  Label: string;
+  CommitNote: { Files: FileNote[] };
+}
+
+///
+export type WorkdirStatusList = { [projectName: string]: WorkdirStatus }
 
 /// 
 export class Commit {
@@ -35,10 +38,6 @@ export class Commit {
   }
 }
 
-// total: 0,
-// commits: [], timeline: {}, timelineMatrix: [],
-// files: {},
-///
 export class Project {
   total = 0;
   commits: Commit[] = [];
@@ -165,7 +164,7 @@ export function getDaily(projects: ProjectList): DailyHours {
   return daily
 }
 
-export function computeWorkdirStatus(workdirStatus: { [p: string]: { CommitNote: { Files: FileNote[] } } }): Stats {
+export function computeWorkdirStatus(workdirStatus: WorkdirStatusList): Stats {
   const commits: Commit[] = []
   for (const p in workdirStatus) {
     const cn = workdirStatus[p]
