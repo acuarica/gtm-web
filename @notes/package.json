@@ -2,6 +2,6 @@
   "name": "@gtm/notes",
   "version": "0.0.1",
   "type": "module",
-  "main": "src/notes.js",
-  "types": "src/notes.ts"
+  "main": "index.js",
+  "types": "index.ts"
 }
