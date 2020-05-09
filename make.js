@@ -8,7 +8,7 @@ import polka from 'polka';
 import send from '@polka/send-type';
 import * as rollup from 'rollup';
 
-const DIST = 'dist-dev'
+const DIST = 'dist/dev'
 const PORT = 9090
 
 const ui = (() => {
@@ -115,7 +115,7 @@ const commands = {
   serve: {
     desc: "Starts local http server dist folder",
     fn: () => {
-      const assets = sirv('dist/dev', {
+      const assets = sirv(DIST, {
         maxAge: 31536000, // 1Y
         immutable: true,
         dev: true,
