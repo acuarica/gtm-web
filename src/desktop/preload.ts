@@ -8,7 +8,8 @@ import '../../main.pcss'
 
 window.addEventListener('DOMContentLoaded', async () => {
 
-  const service = new GitService((args: string[]) => spawn('gtm', args))
+  // const service = new GitService((args: string[]) => spawn('gtm', args))
+  const service = new GitService(args => spawn('yarn', ['--silent', 'gtm', ...args]))
 
   console.info('Creating app with gtm/git service')
   console.log('@preload', document.body)
