@@ -50,8 +50,6 @@
     "page": "^1.11.6"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0",
-    "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fullhuman/postcss-purgecss": "^2.1.2",
     "@open-wc/rollup-plugin-html": "^1.0.3",
@@ -80,7 +78,6 @@
     "rollup-plugin-progress": "^1.1.1",
     "rollup-plugin-svelte": "^5.2.1",
     "rollup-plugin-terser": "^5.3.0",
-    "sass": "^1.26.5",
     "sirv": "^0.4.2",
     "svelte": "^3.19.0",
     "svelte-preprocess": "^3.7.4",
