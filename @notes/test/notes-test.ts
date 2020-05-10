@@ -1,8 +1,13 @@
-
+import fs from 'fs'
 import assert from 'assert';
-import { commits } from '@gtm/mock';
 import { computeStats, getDaily } from '@gtm/notes';
 import { hhmm } from '@gtm/format';
+
+const [commits, ,] = ['commits', 'projects', 'workdir']
+  .map(name => {
+    const bytes = fs.readFileSync(`assets/data/${name}.json`);
+    return JSON.parse(bytes.toString());
+  })
 
 describe('compute', () => {
 

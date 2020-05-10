@@ -1,4 +1,10 @@
+import fs from 'fs'
 import { MockService } from '@gtm/mock'
+
+function readFile<T>(name: string): T {
+  const bytes = fs.readFileSync(`assets/data/${name}.json`);
+  return JSON.parse(bytes.toString());
+}
 
 async function writeJSON<T>(result: Promise<T>): Promise<void> {
   const json = JSON.stringify(await result)
@@ -19,7 +25,7 @@ async function writeJSON<T>(result: Promise<T>): Promise<void> {
     process.exit(4)
   } else {
     const command = argv[3]
-    const service = new MockService()
+    const service = await MockService.create(readFile)
     try {
       switch (command) {
         case '-data=commits':
