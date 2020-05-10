@@ -1,4 +1,4 @@
-import { hhmm, pad0 } from '@gtm/format'
+import { hhmm, pad0, parseWhen, parseDate } from '@gtm/format'
 import assert from 'assert';
 
 describe('format', () => {
@@ -49,6 +49,40 @@ describe('format', () => {
     it('formats more than two digits in the hour', () => {
       assert.equal(hhmm(456 * 60 * 60 + 5 * 60), '456h 05m')
     })
+  })
+
+  describe('parseDate', () => {
+
+    it('parses a date correctly', () => {
+      const m = parseDate('2020-05-06')
+      assert(m)
+      assert.equal(m.year(), 2020, 'Years are not equal')
+      assert.equal(m.month(), 4, 'Months are not equal')
+      assert.equal(m.date(), 6, 'Days are not equal')
+    })
+
+    it('returns null when date is not valid', () => {
+      assert(!parseDate('not valid date'), 'invalid text')
+      assert(!parseDate('-from-date=1asdf'), 'date with dash')
+    })
+
+  })
+
+  describe('parseWhen', () => {
+
+    it('parses a date with timezone offset correctly', () => {
+      const m = parseWhen('2020-05-06T03:30:09+02:00')
+      assert(m)
+      assert.equal(m.year(), 2020, 'Years are not equal')
+      assert.equal(m.month(), 4, 'Months are not equal')
+      assert.equal(m.date(), 6, 'Days are not equal')
+    })
+
+    it('returns null when date is not valid', () => {
+      const m = parseWhen('not valid date')
+      assert(!m)
+    })
+
   })
 
 })
