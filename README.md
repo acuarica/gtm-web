@@ -11,7 +11,9 @@ or you have early feedback.
 
 ## Demo
 
-*To be added.*
+You can see gtm Dashboard in action:
+
+[https://acuarica.github.io/gtm-web/](https://acuarica.github.io/gtm-web/)
 
 ## Previews
 
