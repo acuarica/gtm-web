@@ -39,7 +39,7 @@ module.exports = {
         "indent": ["warn", 2, { "SwitchCase": 1 }],
         "linebreak-style": ["warn", "unix"],
         "quotes": ["warn", "single"],
-        "comma-dangle": ["warn", "always-multiline"],
+        "comma-dangle": ["off", "always-multiline"],
         "@typescript-eslint/no-explicit-any": "warn"
       }
     }
