@@ -1,0 +1,14 @@
+[ver:1,total:960]
+package.json:209,1589148000:209,m
+@git/src/git.js:185,1589148000:185,r
+@git/src/git.ts:166,1589148000:166,r
+.gtm/terminal.app:110,1589148000:110,r
+@git/test/git-test.ts:61,1589148000:61,r
+yarn.lock:43,1589148000:43,m
+src/dev/main.ts:35,1589148000:35,r
+make.js:30,1589148000:30,r
+dist/dev/assets/gtm-logo.png.js:30,1589148000:30,r
+dist/dev/assets/gtm-logo.png.js.map:30,1589148000:30,r
+src/dev/main.js:21,1589148000:21,r
+tsconfig.json:20,1589148000:20,r
+dist/dev/node_modules/svelte/internal/index.mjs.js:20,1589148000:20,r
