@@ -6,5 +6,6 @@
 /@*/test/*.js
 /dist/dev/
 /dist/gtm/
+/dist/demo/
 /dist/electron/
 /yarn.lock

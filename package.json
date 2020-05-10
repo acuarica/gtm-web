@@ -38,7 +38,7 @@
     "prepare": "yarn build",
     "start": "electron dist/electron/main.js",
     "dist": "electron-builder",
-    "clean": "rm -v -f @*/index.js @*/src/*.js @*/test/*.js",
+    "clean": "rm -v -f @*/index.js @*/src/*.js @*/test/*.js dist/",
     "gtm": "/Users/luigi/work/#forks/gtm/bin/gtm"
   },
   "dependencies": {

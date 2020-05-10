@@ -2,13 +2,6 @@ import '../../main.pcss'
 import App from '../app/App.svelte'
 import { Commit } from '@gtm/notes';
 
-// let commitsDataUrl: string
-// if (true || process.env.NODE_ENV === 'development') {
-//   commitsDataUrl = '/data/commits'
-// } else {
-//   commitsDataUrl = '/gtm-web/data-commits.json'
-// }
-
 export function delay<T>(func: any, timeout: number): Promise<T> {
   return new Promise(function (resolve) {
     setTimeout(() => {
@@ -25,7 +18,7 @@ export function delayError<T>(func: () => T, timeout: number): Promise<T> {
   })
 }
 
-console.info('Creating app with mock service')
+console.debug('Creating main app with web service')
 
 const fetchurl = async <T>(url: string): Promise<T> => await fetch(url).then(r => r.json())
 

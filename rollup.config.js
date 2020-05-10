@@ -73,6 +73,25 @@ export const configs = {
     ]
   },
 
+  demo: {
+    input: 'src/demo/index.html',
+    output: {
+      dir: 'dist/demo',
+      format: 'iife',
+      name: 'app',
+    },
+    plugins: [
+      ...plugins,
+      production && terser.terser(),
+      html(),
+      copy({
+        targets: [
+          { src: 'assets/data/', dest: 'dist/demo' },
+        ],
+      }),
+    ]
+  },
+
   electron: {
     input: ['main', 'preload'].map(f => `src/desktop/${f}.js`),
     output: {
