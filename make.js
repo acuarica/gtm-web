@@ -47,18 +47,24 @@ async function tsWatch(func) {
     const emitComplete = line.includes('Found 0 errors')
     if (emitComplete) {
       console.info("TypeScript emit code complete 🚀 !")
-      if (func) {
-        func({ watch: true })
-      }
+      func()
     }
   }
 }
 
-async function rollupWatch(opts) {
-  ui.logln(chalk.cyanBright(`Starting rollup, options: ${JSON.stringify(opts)}`))
+async function rollupWatch(targets) {
+  ui.log(chalk.cyanBright(`Rolling up ... `))
   process.env.ROLLUP_WATCH = true
   const { configs } = await import('./rollup.config.js')
-  const watcher = rollup.watch(configs.dev);
+  if (targets.length === 0) {
+    targets = Object.keys(configs)
+  } else if (!targets.every(t => configs[t])) {
+    ui.logln(chalk.redBright(`Target(s) not found in rollup.config.js: ${JSON.stringify(targets)}`))
+    process.exit(2)
+  }
+  ui.logln(chalk.cyanBright(`executing targets: ${JSON.stringify(targets)}`))
+  const queue = targets.map(t => configs[t])
+  const watcher = rollup.watch(queue);
   watcher.on('event', event => {
     ui.logln(chalk.magenta(event.code))
     // event.code can be one of:
@@ -70,9 +76,9 @@ async function rollupWatch(opts) {
     if (event.code === 'ERROR') {
       console.log(event)
     } else if (event.code === 'END') {
-      if (!opts || !opts.watch) {
+      // if (!opts || !opts.watch) {
         // watcher.close()
-      }
+      // }
     }
   });
 }
@@ -81,15 +87,12 @@ const commands = {
 
   dev: {
     desc: `Starts ${chalk.bold('tsc')} in watch mode, then runs rollup`,
-    fn: () => {
+    fn: (targets) => {
       let started = false
-      tsWatch(opts => {
+      tsWatch(() => {
         if (!started) {
           started = true
-          rollupWatch({
-            production: false,
-            ...opts,
-          })
+          rollupWatch(targets)
         }
       })
     }
@@ -171,20 +174,26 @@ async function main(argv) {
   }
 
   argv = argv.slice(2)
+  const commandQueue = []
   for (const arg of argv) {
-    const cmd = commands[arg]
+    const [command, ...targets] = arg.split(':')
+    const cmd = commands[command]
     if (!cmd) {
-      ui.logln(chalk.red.bold(`Unrecognized command '${arg}'.`))
+      ui.logln(chalk.red.bold(`Unrecognized command/targets '${arg}'.`))
       usage()
     }
+    commandQueue.push({
+      name: command,
+      targets: targets,
+      exec: () => {
+        cmd.fn(targets)
+      }
+    })
   }
 
-  // const cfgs = []
-  for (const arg of argv) {
-    ui.log(chalk.blue.bold(`Running '${arg}' command ... `))
-    const cmd = commands[arg]
-    // cfgs.push(configs[argv[arg]])
-    cmd.fn()
+  for (const cmd of commandQueue) {
+    ui.log(chalk.blue.bold(`Running ${cmd.name} -> ${cmd.targets} command ... `))
+    cmd.exec()
   }
 }
 
