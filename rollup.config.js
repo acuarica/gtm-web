@@ -13,7 +13,7 @@ import tailwindcss from 'tailwindcss'
 
 const production = !process.env.ROLLUP_WATCH;
 
-const plugins = [
+const plugins = (extract) => [
   resolve({
     browser: true,
   }),
@@ -25,6 +25,7 @@ const plugins = [
     dev: !production,
   }),
   postcss({
+    extract: extract,
     plugins: [
       tailwindcss('./tailwind.config.cjs'),
       production && purgecss({
@@ -51,7 +52,7 @@ export const configs = {
     },
     preserveModules: true,
     plugins: [
-      ...plugins,
+      ...plugins(false),
       ...['dev/index', 'test/test'].map(f => html({ inputPath: `src/${f}.html` })),
     ],
     watch: {
@@ -67,7 +68,7 @@ export const configs = {
       name: 'app',
     },
     plugins: [
-      ...plugins,
+      ...plugins(false),
       production && terser.terser(),
       html(),
     ]
@@ -81,7 +82,7 @@ export const configs = {
       name: 'app',
     },
     plugins: [
-      ...plugins,
+      ...plugins(false),
       production && terser.terser(),
       html(),
       copy({
@@ -100,7 +101,7 @@ export const configs = {
       format: 'cjs',
     },
     plugins: [
-      ...plugins,
+      ...plugins(true),
       copy({
         targets: [
           { src: 'src/desktop/index.html', dest: 'dist/electron' },
