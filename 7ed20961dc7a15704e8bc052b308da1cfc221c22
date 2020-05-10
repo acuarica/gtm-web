@@ -1,0 +1,16 @@
+[ver:1,total:1860]
+.gtm/terminal.app:1010,1589097600:240,1589101200:30,1589130000:490,1589133600:250,r
+@mock/src/mock.ts:180,1589101200:180,r
+src/desktop/preload.ts:140,1589101200:140,r
+src/desktop/index.html:128,1589101200:120,1589133600:8,r
+package.json:95,1589133600:95,m
+@format/src/format.ts:41,1589101200:30,1589133600:11,r
+src/demo/demo.ts:40,1589133600:40,r
+@format/test/format-test.ts:38,1589101200:30,1589133600:8,r
+README.md:30,1589101200:30,r
+@notes/src/service.ts:30,1589101200:30,r
+dist/gtm/app/settings.json:30,1589130000:30,d
+rollup.config.js:30,1589101200:30,r
+@git/src/git.ts:28,1589101200:20,1589133600:8,r
+src/desktop/preload.js:20,1589101200:20,d
+dist/gtm/app/index.html:20,1589130000:20,d
