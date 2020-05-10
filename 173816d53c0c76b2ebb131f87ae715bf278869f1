@@ -1,0 +1,14 @@
+[ver:1,total:2140]
+.gtm/terminal.app:971,1589133600:105,1589137200:646,1589148000:220,r
+src/desktop/preload.ts:427,1589137200:427,m
+src/app/App.svelte:306,1589137200:216,1589148000:90,r
+package.json:153,1589133600:93,1589148000:60,r
+dist/electron/preload.js:62,1589133600:6,1589137200:56,r
+src/desktop/main.ts:48,1589133600:6,1589137200:42,r
+dist/electron/main.js:43,1589133600:13,1589137200:30,r
+src/dev/index.html:36,1589137200:36,r
+src/desktop/preload.js:32,1589137200:32,r
+src/dev/main.ts:21,1589137200:21,r
+dist/electron/index.html:19,1589133600:13,1589137200:6,r
+src/test/test.html:12,1589137200:12,r
+dist/electron/main.css:10,1589137200:10,r
