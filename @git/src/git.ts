@@ -1,11 +1,12 @@
-import moment from 'moment'
-import { spawn } from 'child_process'
-import { Commit, WorkdirStatusList } from '@gtm/notes'
+import { ChildProcessWithoutNullStreams } from 'child_process'
+import { Commit, WorkdirStatusList, GtmService, CommitsFilter, GtmErr } from '@gtm/notes'
+import { parseDate } from '@gtm/format'
 
-async function rungtm(args: string[]): Promise<ReturnType<JSON['parse']>> {
-  const gtmexec = '/Users/luigi/work/#forks/gtm/bin/gtm'
+export type GtmSpawn = (args: string[]) => ChildProcessWithoutNullStreams
+
+async function runGtm<T>(gtm: GtmSpawn, args: string[]): Promise<T> {
   args = ['export', ...args]
-  const child = spawn(gtmexec, args);
+  const child = gtm(args);
 
   const exitCode = new Promise<number | null>(resolve => {
     child.on('exit', code => {
@@ -13,34 +14,55 @@ async function rungtm(args: string[]): Promise<ReturnType<JSON['parse']>> {
     });
   });
 
-  let buf = ''
+  let outBuf = ''
   for await (const data of child.stdout) {
-    buf += data
+    outBuf += data
+  }
+
+  let errBuf = ''
+  for await (const data of child.stderr) {
+    errBuf += data
   }
 
   if (await exitCode === 0) {
-    return JSON.parse(buf)
+    try {
+      const json = JSON.parse(outBuf)
+      return json
+    } catch (err) {
+      throw new GtmErr(outBuf + errBuf, 0)
+    }
   } else {
-    return { err: exitCode, message: buf }
+    throw new GtmErr(outBuf, await exitCode ?? undefined)
   }
 }
 
-export async function fetchCommits(range: { start: string; end: string }): Promise<Commit[]> {
-  const end = moment(range.end, 'YYYY-MM-DD').add(1, 'day')
-  const args = [
-    '-data=commits',
-    `-from-date=${range.start}`,
-    `-to-date=${end.format('YYYY-MM-DD')}`,
-  ]
-  return rungtm(args)
-}
+export class GitService implements GtmService {
 
-export async function fetchProjectList(): Promise<string[]> {
-  const args = ['-data=projects']
-  return rungtm(args)
-}
+  constructor(readonly gtm: GtmSpawn) { }
 
-export async function fetchWorkdirStatus(): Promise<WorkdirStatusList> {
-  const args = ['-data=status']
-  return rungtm(args)
+  fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
+    const start = parseDate(filter.start)
+    if (!start) throw new GtmErr(`Invalid start date: ${start}`)
+
+    const end = parseDate(filter.end)
+    if (!end) throw new GtmErr(`Invalid end date: ${end}`)
+
+    const args = [
+      '-data=commits',
+      `-from-date=${start.format('YYYY-MM-DD')}`,
+      `-to-date=${end.add(1, 'day').format('YYYY-MM-DD')}`,
+    ]
+    return runGtm(this.gtm, args)
+  }
+
+  fetchProjectList(): Promise<string[]> {
+    const args = ['-data=projects']
+    return runGtm(this.gtm, args)
+  }
+
+  fetchWorkdirStatus(): Promise<WorkdirStatusList> {
+    const args = ['-data=status']
+    return runGtm(this.gtm, args)
+  }
+
 }

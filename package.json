@@ -34,11 +34,12 @@
     "dev": "rollup --config --watch",
     "build": "tsc && rollup --config",
     "lint": "eslint **/*.ts *.js",
-    "test": "mocha @*/test/*.js",
+    "test": "mocha @*/test/*-test.js",
     "prepare": "yarn build",
     "start": "electron dist/electron/main.js",
     "dist": "electron-builder",
-    "clean": "rm -v -f @*/index.js @*/src/*.js @*/test/*.js"
+    "clean": "rm -v -f @*/index.js @*/src/*.js @*/test/*.js",
+    "gtm": "/Users/luigi/work/#forks/gtm/bin/gtm"
   },
   "dependencies": {
     "chart.js": "^2.9.3",

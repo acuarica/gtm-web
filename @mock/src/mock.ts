@@ -1,5 +1,6 @@
 import fs from 'fs'
-import { GtmService, CommitsFilter, Commit, WorkdirStatusList } from '@gtm/notes';
+import { GtmService, CommitsFilter, Commit, WorkdirStatusList, GtmErr } from '@gtm/notes';
+import { parseDate, parseWhen } from '@gtm/format';
 
 const [commits, projects, workdir] = ['commits', 'projects', 'workdir']
   .map(name => {
@@ -10,11 +11,22 @@ const [commits, projects, workdir] = ['commits', 'projects', 'workdir']
 export class MockService implements GtmService {
 
   fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
-    // for (const commit of commits) {
-    //   if (commit.When)
-    // }
-    console.log(filter)
-    return commits
+    const start = parseDate(filter.start)
+    const end = parseDate(filter.end)
+
+    if (!start) throw new GtmErr('Invalid start date')
+    if (!end) throw new GtmErr('Invalid end date')
+
+    const result = []
+
+    for (const commit of commits) {
+      const when = parseWhen((commit as Commit).When)
+      if (start.isBefore(when) && end.isAfter(when)) {
+        result.push(commit)
+      }
+    }
+
+    return Promise.resolve(result)
   }
 
   fetchProjectList(): Promise<string[]> {

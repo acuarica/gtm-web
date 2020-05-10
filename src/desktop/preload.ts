@@ -1,13 +1,14 @@
-
-import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from '../../@git/src/git.js'
-
-import '../../main.pcss'
-
+import { GitService } from '../../@git/src/git.js'
 import App from '../app/App.svelte'
 import Settings from './Settings.svelte'
 import { Commit, WorkdirStatusList } from '@gtm/notes';
+import { spawn } from 'child_process';
+
+import '../../main.pcss'
 
 window.addEventListener('DOMContentLoaded', async () => {
+
+  const service = new GitService((args: string[]) => spawn('gtm', args))
 
   console.info('Creating app with gtm/git service')
   console.log('@preload', document.body)
@@ -15,13 +16,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     target: document.body,
     props: {
       fetchCommits: async (range: { start: string; end: string }): Promise<Commit[]> => {
-        return fetchCommits(range)
+        return service.fetchCommits(range)
       },
       fetchProjectList: async (): Promise<string[]> => {
-        return (await fetchProjectList()).map(p => p.substring(p.lastIndexOf('/') + 1))
+        const ps = await service.fetchProjectList()
+        return ps.map(p => p.substring(p.lastIndexOf('/') + 1))
       },
       fetchWorkdirStatus: async (): Promise<WorkdirStatusList> => {
-        return fetchWorkdirStatus()
+        return service.fetchWorkdirStatus()
       },
       settingsView: Settings,
     },

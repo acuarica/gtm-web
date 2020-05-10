@@ -3,7 +3,7 @@
 import chalk from 'chalk';
 import { spawn } from 'child_process'
 import sirv from 'sirv';
-import { fetchCommits, fetchProjectList, fetchWorkdirStatus } from '@gtm/git';
+import { GitService } from '@gtm/git';
 import polka from 'polka';
 import send from '@polka/send-type';
 import * as rollup from 'rollup';
@@ -99,7 +99,7 @@ const commands = {
     desc: `Starts tests ${chalk.bold('tsc')} in watch mode, then runs tests`,
     fn: () => {
       const mocha = async () => {
-        spawnAnsi('yarn', ['mocha', '@*/test/*.js'], {
+        spawnAnsi('yarn', ['test'], {
           stdio: ['ignore', 'inherit', 'inherit']
         });
       }
@@ -120,6 +120,8 @@ const commands = {
         immutable: true,
         dev: true,
       });
+
+      const service = new GitService(args => spawn('yarn', ['--silent', 'gtm', ...args]))
       polka()
         .use(assets)
         .get('/data/commits', async (req, res) => {
@@ -129,7 +131,7 @@ const commands = {
             end: req.query.to
           };
           if (range.start && range.end) {
-            const data = await fetchCommits(range)
+            const data = await service.fetchCommits(range)
             send(res, 200, data);
           } else {
             console.warn("Argument to or from not defined:", range)
@@ -137,12 +139,12 @@ const commands = {
         })
         .get('/data/projects', async (req, res) => {
           ui.logln(`Request projects: ${req.path}`)
-          const data = await fetchProjectList()
+          const data = await service.fetchProjectList()
           send(res, 200, data);
         })
         .get('/data/status', async (req, res) => {
           ui.logln(`Request workdir status: ${req.path}`)
-          const data = await fetchWorkdirStatus()
+          const data = await service.fetchWorkdirStatus()
           send(res, 200, data);
         })
         .listen(PORT, err => {
