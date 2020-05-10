@@ -8,7 +8,6 @@
   "license": "CC0-1.0",
   "private": true,
   "workspaces": [
-    "@format",
     "@mock",
     "@notes",
     "@git"

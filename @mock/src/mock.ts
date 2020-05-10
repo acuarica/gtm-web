@@ -1,6 +1,6 @@
 // import fs from 'fs'
 import { GtmService, CommitsFilter, Commit, WorkdirStatusList, GtmErr } from '@gtm/notes';
-import { parseDate, parseWhen } from '@gtm/format';
+import { parseDate, parseWhen } from '@gtm/notes';
 
 export type Loader = (name: string) => Promise<unknown>
 

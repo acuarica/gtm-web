@@ -9,8 +9,7 @@
   } from "../charts";
   import Chart from "./Chart.svelte";
   import DashboardCard from "./DashboardCard.svelte";
-  import { hhmm } from "@gtm/format";
-  import { computeWorkdirStatus } from "@gtm/notes";
+  import { computeWorkdirStatus, hhmm } from "@gtm/notes";
   import "chartjs-chart-matrix";
 
   export let statsPromise;

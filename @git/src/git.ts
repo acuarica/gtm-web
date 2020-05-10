@@ -1,6 +1,6 @@
 import { ChildProcessWithoutNullStreams } from 'child_process'
 import { Commit, WorkdirStatusList, GtmService, CommitsFilter, GtmErr } from '@gtm/notes'
-import { parseDate } from '@gtm/format'
+import { parseDate } from '@gtm/notes'
 
 export type GtmSpawn = (args: string[]) => ChildProcessWithoutNullStreams
 

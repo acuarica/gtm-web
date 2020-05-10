@@ -1,5 +1,5 @@
 <script>
-  import { hhmm } from "@gtm/format";
+  import { hhmm } from "@gtm/notes";
   import Icon from "./Icon.svelte";
   import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
   import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";

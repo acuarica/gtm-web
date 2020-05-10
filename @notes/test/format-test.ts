@@ -1,4 +1,4 @@
-import { hhmm, pad0, parseWhen, parseDate } from '@gtm/format'
+import { hhmm, pad0, parseWhen, parseDate } from '@gtm/notes'
 import assert from 'assert';
 
 describe('format', () => {

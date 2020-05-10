@@ -1,7 +1,7 @@
 import fs from 'fs'
 import assert from 'assert';
 import { computeStats, getDaily } from '@gtm/notes';
-import { hhmm } from '@gtm/format';
+import { hhmm } from '@gtm/notes';
 
 const [commits, ,] = ['commits', 'projects', 'workdir']
   .map(name => {

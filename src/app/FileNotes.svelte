@@ -1,7 +1,7 @@
 <script>
   import Icon from "./Icon.svelte";
   import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
-  import { hhmm } from "@gtm/format";
+  import { hhmm } from "@gtm/notes";
 
   export let files;
 

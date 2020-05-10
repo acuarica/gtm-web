@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { pad0 } from '@gtm/format'
+import { pad0 } from './format.js'
 
 ///
 export type Seconds = number

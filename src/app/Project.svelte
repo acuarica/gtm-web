@@ -11,8 +11,7 @@
   import Commits from "./Commits.svelte";
   import DashboardCard from "./DashboardCard.svelte";
   import FileNotes from "./FileNotes.svelte";
-  import { hhmm } from "@gtm/format";
-  import { computeWorkdirStatus } from "@gtm/notes";
+  import { computeWorkdirStatus, hhmm } from "@gtm/notes";
   import "chartjs-chart-matrix";
 
   export let name;
@@ -50,7 +49,9 @@
         <div class="font-bold">Files</div>
         <FileNotes files={res.stats.projects[name].files} />
       </Box>
-      <Commits class="col-span-12 lg:col-span-6" commits={res.stats.projects[name].commits} />
+      <Commits
+        class="col-span-12 lg:col-span-6"
+        commits={res.stats.projects[name].commits} />
     </div>
   {:else}
     <Box class="p-8">
