@@ -1,4 +1,4 @@
 
-export * from './src/notes'
+export * from './src/notes.js'
 
-export * from './src/service'
+export * from './src/service.js'
