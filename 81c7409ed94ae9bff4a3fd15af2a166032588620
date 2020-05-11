@@ -1,0 +1,9 @@
+[ver:1,total:818]
+@git/test/git-test.ts:250,1589220000:250,m
+.gtm/terminal.app:212,1589216400:32,1589220000:180,r
+@notes/src/notes.ts:200,1589220000:200,m
+src/desktop/Settings.svelte:60,1589216400:60,r
+package.json:42,1589155200:30,1589216400:12,r
+@notes/test/notes-test.ts:30,1589220000:30,m
+assets/data/commits.json:12,1589216400:12,r
+gtm.ts:12,1589216400:12,d
