@@ -302,6 +302,11 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-0.5.0.tgz#b21510597fd601e5d7c95008b76bf0d254ebfd31"
   integrity sha512-oZLYFEAzUKyi3SKnXvj32ZCEGH6RDnao7COuCVhDydMS9NrCSVXhM79VaKyP5+Zc33m0QXEd2DN3UkU7OsHcfw==
 
+"@pyoner/svelte-ts-preprocess@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@pyoner/svelte-ts-preprocess/-/svelte-ts-preprocess-1.2.1.tgz#bf03e7e30b35ac3e1a1bbf3e10c06e0880ceed3a"
+  integrity sha512-6iIcYcna76WmNFPl9k9kRXyW9ubLDnGT9lMuiDI8K+8TdA/tFxeXQdE9NeIYEITGNYfUseKbtc3/pN6xEww+WA==
+
 "@rollup/plugin-commonjs@11.0.2":
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-11.0.2.tgz#837cc6950752327cb90177b608f0928a4e60b582"
