@@ -16,7 +16,7 @@ describe('@gtm/git', () => {
     })
 
     it('fetches empty commits', async () => {
-      const range = { start: '2020-01-01', end: '2020-02-01' }
+      const range = { start: '2010-01-01', end: '2010-12-31' }
       const commits = await service.fetchCommits(range)
       assert.equal(commits.length, 0)
     })

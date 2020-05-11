@@ -21,7 +21,7 @@ describe('compute', () => {
     it('Checks total by project', () => {
       const stats = computeStats(commits)
       const check = (p: string, expected: string): void => assert.equal(hhmm(stats.projects[p].total), expected)
-      check('web', '79h 22m')
+      check('web', '208h 24m')
     })
 
     it('Checks total time must be sum of time of projects', () => {

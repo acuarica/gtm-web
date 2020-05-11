@@ -87,8 +87,9 @@ export function computeStats(commits: Commit[]): Stats {
       projects[commit.Project] = project;
     }
     project.commits.push(commit);
-    if (commit.Note.Files === null) {
-      console.warn('gtm check: Commit note files not available:', commit);
+    if (!commit.Note.Files) {
+      if (commit.Note.Files === undefined)
+        console.warn('gtm check: Commit note files not available:', commit);
       continue;
     }
     let commitTimeSpent = 0;
