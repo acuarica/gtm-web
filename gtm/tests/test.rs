@@ -1,47 +1,126 @@
+use gtm::parse_commit_note;
+use gtm::parse_file_entry;
+use gtm::read_projects;
+use gtm::CommitNote;
+use gtm::FileNote;
+
 #[test]
 fn test_projects() {
-  let ps = gtm::read_projects("tests/cases/project.json").unwrap();
+  let ps = read_projects("tests/cases/project.json").unwrap();
   assert_eq!(ps.len(), 10);
 }
 
 #[test]
 fn test_empty_projects() {
-  let ps = gtm::read_projects("tests/cases/project-empty.json").unwrap();
+  let ps = read_projects("tests/cases/project-empty.json").unwrap();
   assert_eq!(ps.len(), 0);
 }
 
 #[test]
 fn test_parse_file_entry_invalid() {
-  assert!(gtm::parse_file_entry("").is_err());
-  assert!(gtm::parse_file_entry("src/file.ts:2797").is_err());
-  assert!(gtm::parse_file_entry("src/file.ts:2797,m").is_err());
-  assert!(gtm::parse_file_entry("src/file.ts2797,1585861200:354,m").is_err());
-  assert!(gtm::parse_file_entry("src/file.ts:123abc,1585861200:354,m").is_err());
-  assert!(gtm::parse_file_entry("src/file.ts:123,1585861200:354,a").is_err());
+  assert!(parse_file_entry("").is_err());
+  assert!(parse_file_entry("src/file.ts:2797").is_err());
+  assert!(parse_file_entry("src/file.ts:2797,m").is_err());
+  assert!(parse_file_entry("src/file.ts2797,1585861200:354,m").is_err());
+  assert!(parse_file_entry("src/file.ts:123abc,1585861200:354,m").is_err());
+  assert!(parse_file_entry("src/file.ts:123,1585861200:354,a").is_err());
 }
 
 #[test]
 fn test_parse_file_entry() {
-  let entry = "src/file.ts:150,1585861200:60,1585875600:90,m";
-  let note = gtm::parse_file_entry(entry).unwrap();
-  assert_eq!(note.source_file, "src/file.ts");
-  assert_eq!(note.status, "m");
-  assert_eq!(note.timeline.len(), 2);
-  assert_eq!(*note.timeline.get("1585861200").unwrap(), 60);
-  assert_eq!(*note.timeline.get("1585875600").unwrap(), 90);
+  assert_eq!(
+    parse_file_entry("src/file.ts:150,1585861200:60,1585875600:90,m").unwrap(),
+    FileNote {
+      source_file: "src/file.ts".to_string(),
+      time_spent: 150,
+      timeline: [
+        ("1585861200".to_string(), 60),
+        ("1585875600".to_string(), 90)
+      ]
+      .iter()
+      .cloned()
+      .collect(),
+      status: "m".to_string(),
+    }
+  );
+
+  assert_eq!(
+    parse_file_entry("comment/src/comment.ts:2797,1585861200:354,1585875600:50,1585879200:240,1585908000:444,1585918800:1629,1585929600:80,m")
+      .unwrap(),
+    FileNote {
+      source_file: "comment/src/comment.ts".to_string(),
+      time_spent: 2797,
+      timeline: [
+        ("1585861200".to_string(), 354),
+        ("1585875600".to_string(), 50),
+        ("1585879200".to_string(), 240),
+        ("1585908000".to_string(), 444),
+        ("1585918800".to_string(), 1629),
+        ("1585929600".to_string(), 80),
+      ]
+      .iter()
+      .cloned()
+      .collect(),
+      status: "m".to_string(),
+    }
+  );
 }
 
 #[test]
-fn test_parse_file_entry_full() {
-  let entry = "comment/src/comment.ts:2797,1585861200:354,1585875600:50,1585879200:240,1585908000:444,1585918800:1629,1585929600:80,m";
-  let note = gtm::parse_file_entry(entry).unwrap();
-
-  assert_eq!(note.source_file, "comment/src/comment.ts");
+fn test_commit_note_invalid() {
+  assert!(parse_commit_note("").is_err());
+  assert!(parse_commit_note("[]").is_err());
+  assert!(parse_commit_note("[ver:1total:213]").is_err());
+  assert!(parse_commit_note("[ver:a,total:213]").is_err());
+  assert!(parse_commit_note("[ver:1,total:a]").is_err());
 }
 
 #[test]
-fn test_note() {
-  let note = " [ver:1,total:4037]
+fn test_commit_note() {
+  assert_eq!(
+    parse_commit_note("[ver:2,total:213]").unwrap(),
+    CommitNote {
+      version: 2,
+      total: 213,
+      files: Vec::new(),
+    }
+  );
+
+  assert_eq!(
+    parse_commit_note(
+      "[ver:2,total:213]
+closebrackets/src/closebrackets.ts:950,1585918800:510,1585922400:400,1585929600:40,r
+text/src/char.ts:90,1585918800:90,r"
+    )
+    .unwrap(),
+    CommitNote {
+      version: 2,
+      total: 213,
+      files: vec![
+        FileNote {
+          source_file: "closebrackets/src/closebrackets.ts".to_string(),
+          time_spent: 950,
+          timeline: [
+            ("1585918800".to_string(), 510),
+            ("1585922400".to_string(), 400),
+            ("1585929600".to_string(), 40),
+          ]
+          .iter()
+          .cloned()
+          .collect(),
+          status: "r".to_string(),
+        },
+        FileNote {
+          source_file: "text/src/char.ts".to_string(),
+          time_spent: 90,
+          timeline: [("1585918800".to_string(), 90),].iter().cloned().collect(),
+          status: "r".to_string(),
+        }
+      ],
+    }
+  );
+
+  let note = parse_commit_note("[ver:1,total:4037]
 comment/src/comment.ts:2797,1585861200:354,1585875600:50,1585879200:240,1585908000:444,1585918800:1629,1585929600:80,m
 closebrackets/src/closebrackets.ts:950,1585918800:510,1585922400:400,1585929600:40,r
 text/src/char.ts:90,1585918800:90,r
@@ -50,46 +129,24 @@ state/src/selection.ts:40,1585918800:40,r
 highlight/src/highlight.ts:30,1585918800:30,r
 lang-javascript/src/javascript.ts:30,1585918800:30,r
 node_modules/w3c-keyname/index.d.ts:20,1585922400:20,r
-CHANGELOG.md:20,1585918800:20,r
-  ";
+CHANGELOG.md:20,1585918800:20,r").unwrap();
 
-  gtm::notes(note);
+  assert_eq!(note.version, 1);
+  assert_eq!(note.total, 4037);
+  assert_eq!(note.files.len(), 9);
+  assert_eq!(
+    note.files[3],
+    gtm::FileNote {
+      source_file: "demo/demo.ts".to_string(),
+      time_spent: 60,
+      timeline: [("1585918800".to_string(), 60)].iter().cloned().collect(),
+      status: "r".to_string(),
+    }
+  );
+}
 
-  assert_eq!(1, 1);
-
-
-  let nn = "[ver:1,total:3930]
-  demo/demo.ts:1011,1585832400:315,1585836000:676,1585839600:20,m
-  comment/src/index.ts:825,1585832400:213,1585836000:592,1585839600:20,m
-  .gtm/terminal.app:685,1585832400:540,1585836000:145,r
-  package.json:315,1585836000:308,1585839600:7,m
-  matchbrackets/src/matchbrackets.ts:180,1585832400:180,r
-  .gitignore:135,1585825200:60,1585832400:75,r
-  comment/package.json:106,1585832400:53,1585836000:40,1585839600:13,m
-  bin/cm.js:105,1585836000:105,r
-  closebrackets/src/closebrackets.ts:71,1585832400:60,1585836000:11,r
-  keymap/src/keymap.ts:60,1585832400:60,r
-  fold/src/fold.ts:60,1585832400:50,1585836000:10,r
-  bin/package.json:55,1585836000:55,r
-  commands/package.json:44,1585832400:44,r
-  demo/demo.js:35,1585832400:20,1585836000:15,r
-  fold/package.json:30,1585832400:20,1585836000:10,r
-  gutter/package.json:25,1585832400:25,r
-  tsconfig.json:22,1585836000:22,r
-  closebrackets/package.json:20,1585836000:20,r
-  tsconfig.base.json:19,1585836000:19,r
-  commands/src/README.md:15,1585832400:15,r
-  commands/src/commands.ts:15,1585832400:15,r
-  autocomplete/src/index.ts:15,1585832400:15,r
-  bin/console/index.d.ts:15,1585836000:15,r
-  README.md:12,1585836000:12,r
-  gutter/src/index.ts:10,1585832400:10,r
-  comment/src/index.js:10,1585836000:10,r
-  closebrackets/src/closebrackets.d.ts:7,1585836000:7,r
-  closebrackets/src/closebrackets.js:7,1585836000:7,r
-  closebrackets/src/closebrackets.d.ts.map:7,1585836000:7,r
-  closebrackets/dist/index.js:7,1585836000:7,r
-  closebrackets/dist/index.js.map:7,1585836000:7,r";
-
-  println!("{}", nn)
+#[test]
+fn test_commits() {
+  let c = gtm::commits();
+  assert!(c.is_ok());
 }

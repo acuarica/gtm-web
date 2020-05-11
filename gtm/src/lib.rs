@@ -1,11 +1,13 @@
 use git2::{Error, Repository};
-use serde::{Deserialize, Serialize};
+use regex::Regex;
+use serde::Serialize;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::Cursor;
 
-// extern crate serde_json;
+#[macro_use]
+extern crate lazy_static;
 
 type Seconds = u32;
 
@@ -13,13 +15,21 @@ type Filepath = String;
 
 type InitProjects = HashMap<String, String>;
 
-#[derive(Serialize, Deserialize)]
+#[derive(PartialEq, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct FileNote {
     pub source_file: Filepath,
     pub time_spent: Seconds,
     pub timeline: HashMap<Filepath, Seconds>,
     pub status: String,
+}
+
+#[derive(PartialEq, Debug, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct CommitNote {
+    pub version: u32,
+    pub total: Seconds,
+    pub files: Vec<FileNote>,
 }
 
 pub fn read_projects(filename: &str) -> Result<InitProjects, std::io::Error> {
@@ -68,10 +78,36 @@ pub fn parse_file_entry(file_entry: &str) -> Result<FileNote, &str> {
     Ok(note)
 }
 
-pub fn notes(message: &str) {
-    for line in Cursor::new(message).lines() {
-        println!("-->> {:?}", line)
+pub fn parse_commit_note(message: &str) -> Result<CommitNote, &str> {
+    lazy_static! {
+        static ref VERSION_RE: Regex = Regex::new(r"\[ver:(\d+),total:(\d+)\]").unwrap();
     }
+    let mut lines = Cursor::new(message).lines();
+    let mut commit = match lines.next() {
+        None => return Err("No version found"),
+        Some(Err(_)) => return Err("Error found"),
+        Some(Ok(first)) => match VERSION_RE.captures_iter(&first.to_string()).next() {
+            None => return Err("Invalid version header"),
+            Some(parts) => CommitNote {
+                version: match parts[1].parse::<Seconds>() {
+                    Err(_) => return Err("Invalid version"),
+                    Ok(value) => value,
+                },
+                total: match parts[2].parse::<Seconds>() {
+                    Err(_) => return Err("Invalid total"),
+                    Ok(value) => value,
+                },
+                files: Vec::new(),
+            },
+        },
+    };
+    for line in lines {
+        match parse_file_entry(&line.unwrap()) {
+            Err(_) => return Err("invalid file"),
+            Ok(entry) => commit.files.push(entry),
+        };
+    }
+    Ok(commit)
 }
 
 pub fn commits() -> Result<(), Error> {

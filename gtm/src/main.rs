@@ -7,13 +7,7 @@ extern crate web_view;
 
 use web_view::*;
 
-fn main() -> Result<(), git2::Error> {
-    println!("asdf");
-
-    gtm::commits()
-}
-
-pub fn main32() {
+pub fn main() {
     let html = format!(
         r#"
         <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>gtm Dashboard</title></head>
@@ -33,6 +27,8 @@ pub fn main32() {
         .user_data(vec![])
         .invoke_handler(|webview, arg| {
             use Cmd::*;
+
+            println!("invoke");
 
             let tasks_len = {
                 let tasks = webview.user_data_mut();
