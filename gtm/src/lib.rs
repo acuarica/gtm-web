@@ -110,13 +110,14 @@ pub fn parse_commit_note(message: &str) -> Result<CommitNote, &str> {
     Ok(commit)
 }
 
-pub fn commits() -> Result<(), Error> {
-    println!("asdf");
+pub fn get_commits(_path: &str) -> Result<(), Error> {
+    // let repo = Repository::open(path)?;
+    // let nt = repo.notes(Some("refs/notes/gtm-data")).unwrap();
+    Ok(())
+}
 
-    let repo = Repository::open("/Users/luigi/work/#forks/codemirror.next")?;
-    let r = repo.find_remote("origin").unwrap();
-    println!("remote: {:#?}", r.url());
-
+pub fn get_notes(path: &str) -> Result<(), Error> {
+    let repo = Repository::open(path)?;
     let nt = repo.notes(Some("refs/notes/gtm-data")).unwrap();
 
     for n in nt {

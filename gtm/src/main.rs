@@ -5,7 +5,21 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate web_view;
 
+use git2::Error;
+use git2::Repository;
 use web_view::*;
+
+pub fn main32() -> Result<(), Error> {
+    let repo = Repository::open("tests/cases/repo")?;
+
+    // let c = repo.head().unwrap();
+    let x = repo.references().unwrap();
+    for r in x {
+        println!("{:?}", r.unwrap().is_branch());
+    }
+
+    Ok(())
+}
 
 pub fn main() {
     let html = format!(
@@ -18,8 +32,8 @@ pub fn main() {
         scripts = inline_script(include_str!("../../dist/gtm/main.js"))
     );
 
-    let mut webview = web_view::builder()
-        .title("Rust Todo App")
+    let webview = web_view::builder()
+        .title("gtm Dashboard")
         .content(Content::Html(html))
         .size(320, 480)
         .resizable(true)
@@ -50,7 +64,7 @@ pub fn main() {
         .build()
         .unwrap();
 
-    webview.set_color((156, 39, 176));
+    // webview.set_color((156, 39, 176));
 
     let res = webview.run().unwrap();
 

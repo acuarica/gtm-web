@@ -1,3 +1,4 @@
+use git2::Error;
 use gtm::parse_commit_note;
 use gtm::parse_file_entry;
 use gtm::read_projects;
@@ -146,7 +147,10 @@ CHANGELOG.md:20,1585918800:20,r").unwrap();
 }
 
 #[test]
-fn test_commits() {
-  let c = gtm::commits();
-  assert!(c.is_ok());
+fn test_commits() -> Result<(), Error> {
+  // let repo = Repository::open("tests/cases/repo")?;
+  // repo.head()
+
+
+  Ok(())
 }
