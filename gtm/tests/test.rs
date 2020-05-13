@@ -1,4 +1,7 @@
+use git2::Commit;
 use git2::Error;
+use git2::Repository;
+use gtm::get_notes;
 use gtm::parse_commit_note;
 use gtm::parse_file_entry;
 use gtm::read_projects;
@@ -147,10 +150,42 @@ CHANGELOG.md:20,1585918800:20,r").unwrap();
 }
 
 #[test]
-fn test_commits() -> Result<(), Error> {
-  // let repo = Repository::open("tests/cases/repo")?;
+fn test_get_notes() -> Result<(), Error> {
+  let repo = Repository::open("tests/cases/repo")?;
+  let commit_notes = get_notes(&repo)?;
+
+  assert!(commit_notes.len() > 0);
+  Ok(())
+}
+
+// #[test]
+pub fn test_commits() -> Result<(), Error> {
+  let repo = Repository::open("tests/cases/repo")?;
+  let mut revwalk = repo.revwalk()?;
+
+  revwalk.push_head()?;
+
+  for oid in revwalk {
+    let oid = oid?;
+    let commit = repo.find_commit(oid)?;
+    pc(&commit);
+
+    let note = repo.find_note(Some("refs/notes/gtm-data"), oid);
+    // println!("note: {:?}", p);
+    if note.is_ok() {
+      let note = note.unwrap();
+      let msg = note.message().unwrap();
+      let cn = parse_commit_note(msg);
+      println!("{}, {:?}", msg, cn);
+    }
+  }
+
   // repo.head()
 
-
   Ok(())
+}
+
+fn pc(commit: &Commit) {
+  println!("{}", commit.author());
+  println!("{}", commit.message().unwrap());
 }

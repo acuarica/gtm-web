@@ -9,6 +9,8 @@ use std::io::Cursor;
 #[macro_use]
 extern crate lazy_static;
 
+pub const GTM_REFS: &str = "refs/notes/gtm-data";
+
 type Seconds = u32;
 
 type Filepath = String;
@@ -30,6 +32,34 @@ pub struct CommitNote {
     pub version: u32,
     pub total: Seconds,
     pub files: Vec<FileNote>,
+}
+
+#[derive(PartialEq, Debug, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Commit {
+    pub author: String,
+    pub date: String,
+    pub when: String,
+    pub hash: String,
+    pub subject: String,
+    pub message: String,
+    pub project: String,
+    pub note: CommitNote,
+}
+
+impl Commit {
+    pub fn new(commit: &git2::Commit, project: &str, note: CommitNote) -> Commit {
+        Commit {
+            author: commit.author().name().unwrap().to_string(),
+            date: "hello date".to_string(),
+            when: "hello when".to_string(),
+            hash: commit.id().to_string(),
+            subject: commit.summary().unwrap().to_string(),
+            message: commit.message().unwrap().to_string(),
+            project: project.to_string(),
+            note,
+        }
+    }
 }
 
 pub fn read_projects(filename: &str) -> Result<InitProjects, std::io::Error> {
@@ -69,7 +99,7 @@ pub fn parse_file_entry(file_entry: &str) -> Result<FileNote, &str> {
             Err(_) => return Err("Invalid total spent time"),
             Ok(value) => value,
         },
-        timeline: timeline,
+        timeline,
         status: match *parts.last().unwrap() {
             s @ "m" | s @ "r" | s @ "d" => s.to_string(),
             _ => return Err("Invalid status"),
@@ -116,20 +146,21 @@ pub fn get_commits(_path: &str) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn get_notes(path: &str) -> Result<(), Error> {
-    let repo = Repository::open(path)?;
-    let nt = repo.notes(Some("refs/notes/gtm-data")).unwrap();
+pub fn get_notes(repo: &Repository) -> Result<Vec<Commit>, Error> {
+    let notes = repo.notes(Some(GTM_REFS))?;
+    let project = repo.path().to_str().unwrap();
 
-    for n in nt {
-        let p = n.unwrap();
-        //let c = repo.find_commit( p.0).unwrap();
-        let note = repo.find_note(Some("refs/notes/gtm-data"), p.1);
-        println!("note: {:?}", p);
-        println!("{}", note.unwrap().message().unwrap());
-
-        // let message = note.unwrap().message().unwrap();
-        // notes(message)
+    let mut result = Vec::new();
+    for note in notes {
+        let p = note.unwrap();
+        let note = repo.find_note(Some(GTM_REFS), p.1)?;
+        if let Some(message) = note.message() {
+            if let Ok(commit_note) = parse_commit_note(message) {
+                let commit = repo.find_commit(p.1)?;
+                result.push(Commit::new(&commit, project, commit_note));
+            }
+        }
     }
 
-    return Ok(());
+    Ok(result)
 }

@@ -1,5 +1,7 @@
 //#![windows_subsystem = "windows"]
 
+#![feature(proc_macro_hygiene, decl_macro)]
+
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
@@ -7,21 +9,67 @@ extern crate web_view;
 
 use git2::Error;
 use git2::Repository;
+use structopt::StructOpt;
 use web_view::*;
+use std::path::{PathBuf, Path};
+use rocket::response::{NamedFile, content};
 
-pub fn main32() -> Result<(), Error> {
+#[derive(StructOpt)]
+struct Args {
+    command: Option<String>,
+}
+
+#[macro_use]
+extern crate rocket;
+
+#[get("/")]
+fn index() -> &'static str {
+    "Hello, world!"
+}
+
+#[get("/<file..>")]
+fn files(file: PathBuf) -> Option<NamedFile> {
+    NamedFile::open(Path::new("../dist/dev/").join(file)).ok()
+}
+
+#[get("/data/commits")]
+fn data() -> Option<content::Json<String>> {
+    if let Ok(repo) = Repository::open("tests/cases/repo") {
+        if let Ok(notes) = gtm::get_notes(&repo) {
+            let response = serde_json::to_string(&notes).unwrap();
+            Some(content::Json(response))
+        } else {
+            None
+        }
+    } else {
+        None
+    }
+}
+
+fn main() {
+    rocket::ignite().mount("/", routes![index, files, data]).launch();
+}
+
+pub fn main64() -> Result<(), Error> {
+    let args = Args::from_args();
+
+    match args.command {
+        Some(command) => println!("{}", command),
+        _ => println!("{}", "nada"),
+    }
+
     let repo = Repository::open("tests/cases/repo")?;
 
-    // let c = repo.head().unwrap();
-    let x = repo.references().unwrap();
-    for r in x {
-        println!("{:?}", r.unwrap().is_branch());
-    }
+    let notes = gtm::get_notes(&repo)?;
+    println!("{}", serde_json::to_string(&notes).unwrap());
+    // for n in ns {
+    //     println!("{:?}", n)
+    // }
 
     Ok(())
 }
 
-pub fn main() {
+pub fn main32() {
     let html = format!(
         r#"
         <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>gtm Dashboard</title></head>
@@ -66,6 +114,7 @@ pub fn main() {
 
     // webview.set_color((156, 39, 176));
 
+    // webview.navigate("http://localhost:9090/dev/");
     let res = webview.run().unwrap();
 
     println!("final state: {:?}", res);
