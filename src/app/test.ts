@@ -23,13 +23,14 @@ for (const suite in suites) {
   console.info(`Adding test suite for component ${suite} with test cases ${(tests as { name: string }[]).map(test => `'${test.name}'`)}`)
   const suiteDiv = document.createElement('div')
   suiteDiv.textContent = suite
+  suiteDiv.classList.add('text-gray-500', 'mt-1')
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   document.getElementById('menu')!.appendChild(suiteDiv)
 
   for (const test of tests) {
     const item = document.createElement('button')
     item.textContent = test.name
-    item.classList.add('block')
+    item.classList.add('block', 'ml-1', 'text-sm')
     item.addEventListener('click', async () => {
       console.info(`Running '${test.name}' of ${suite} test suite`)
       canvas.innerHTML = ''

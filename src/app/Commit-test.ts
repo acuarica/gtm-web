@@ -20,7 +20,7 @@ export default [{
   },
 }, {
   component: Commit,
-  name: 'No message in commit',
+  name: 'No commit message',
   props: {
     commit: {
       Author: 'you',
