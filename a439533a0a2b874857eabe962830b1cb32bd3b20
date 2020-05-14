@@ -1,0 +1,9 @@
+[ver:1,total:480]
+.gtm/terminal.app:150,1589461200:150,r
+src/app/Home.svelte:90,1589461200:90,m
+src/gtm/main.ts:60,1589461200:60,r
+src/desktop/preload.ts:60,1589461200:60,r
+src/app/Project.svelte:30,1589461200:30,m
+src/app/App.svelte:30,1589461200:30,r
+src/app/App-test.ts:30,1589461200:30,r
+src/desktop/Settings.svelte:30,1589461200:30,r
