@@ -6,8 +6,7 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate web_view;
 
-// use gtm::get_projects;
-// use gtm::read_projects;
+use gtm::fetch_projects;
 use git2::*;
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Request, Response, Server};
@@ -21,35 +20,42 @@ struct Args {
     command: Option<String>,
 }
 
-async fn data_commits(_req: Request<Body>) -> Result<Response<Body>, Infallible> {
-    let repo = Repository::open("/Users/luigi/work/home").unwrap();
-    let notes = gtm::get_notes(&repo).unwrap();
-    let json = serde_json::to_string(&notes).unwrap();
-    let response = Response::builder()
+async fn gtm_web_service(req: Request<Body>) -> Result<Response<Body>, Infallible> {
+    use hyper::*;
+    let mut response = Response::builder()
         .status(200)
         .header("X-Custom-Foo", "Bar")
         .header("Access-Control-Allow-Origin", "*")
-        .body(json.into())
+        .body(Body::empty())
         .unwrap();
-        Ok(response)
-    // Ok(Response::new(json.into()))
+
+    match (req.method(), req.uri().path()) {
+        (&Method::GET, "/data/commits") => {
+            println!("data/commits");
+            let repo = Repository::open("/Users/luigi/work/home").unwrap();
+            let notes = gtm::get_notes(&repo).unwrap();
+            let json = serde_json::to_string(&notes).unwrap();
+            *response.body_mut() = Body::from(json);
+        },
+        (&Method::GET, "/data/projects") => {
+            println!("data/projects");
+            let projects = fetch_projects();
+            let json = serde_json::to_string(&projects).unwrap();
+            *response.body_mut() = Body::from(json);
+        },
+        _ => {
+            *response.status_mut() = StatusCode::NOT_FOUND;
+        }
+    };
+    Ok(response)
 }
 
 #[tokio::main]
 async fn serve() {
-    // We'll bind to 127.0.0.1:3000
     let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
-
-    // A `Service` is needed for every connection, so this
-    // creates one from our `hello_world` function.
-    let make_svc = make_service_fn(|_conn| async {
-        // service_fn converts our function into a `Service`
-        Ok::<_, Infallible>(service_fn(data_commits))
-    });
-
+    let make_svc =
+        make_service_fn(|_conn| async { Ok::<_, Infallible>(service_fn(gtm_web_service)) });
     let server = Server::bind(&addr).serve(make_svc);
-
-    // Run this server for... forever!
     if let Err(e) = server.await {
         eprintln!("server error: {}", e);
     }

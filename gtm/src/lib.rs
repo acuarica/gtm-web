@@ -1,10 +1,12 @@
 use git2::{Error, Repository};
 use regex::Regex;
 use serde::Serialize;
-use std::collections::HashMap;
-use std::fs::File;
-use std::io::BufRead;
-use std::io::Cursor;
+use std::{
+    collections::HashMap,
+    fs::File,
+    io::{BufRead, Cursor},
+    path::Path,
+};
 
 #[macro_use]
 extern crate lazy_static;
@@ -62,19 +64,30 @@ impl Commit {
     }
 }
 
-pub fn read_projects(filename: &str) -> Result<InitProjects, std::io::Error> {
+pub fn read_projects<P: AsRef<Path>>(filename: P) -> Result<InitProjects, std::io::Error> {
     let file = File::open(filename)?;
     let ps = serde_json::from_reader(file)?;
     Ok(ps)
 }
 
-pub fn get_projects(init_projects: &InitProjects) -> Vec<&String> {
+pub fn get_projects(init_projects: &InitProjects) -> Vec<String> {
     let mut result = Vec::new();
     for k in init_projects.keys() {
-        result.push(k);
+        result.push(k.to_owned());
     }
 
     result
+}
+
+pub fn fetch_projects() -> Option<Vec<String>> {
+    let mut path = dirs::home_dir()?;
+    path.push(".git-time-metric");
+    path.push("project.json");
+    let init_projects = match read_projects(path) {
+        Ok(value) => value,
+        Err(_err) => return None,
+    };
+    Some(get_projects(&init_projects))
 }
 
 pub fn parse_file_entry(file_entry: &str) -> Result<FileNote, &str> {
