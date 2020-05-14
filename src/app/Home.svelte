@@ -6,7 +6,7 @@
     activityChartConfig,
     timeByFileStatusChartConfig,
     projectTotalsChartConfig
-  } from "../charts";
+  } from "./charts";
   import Chart from "./Chart.svelte";
   import DashboardCard from "./DashboardCard.svelte";
   import { computeWorkdirStatus, hhmm } from "@gtm/notes";
