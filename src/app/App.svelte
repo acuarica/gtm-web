@@ -22,7 +22,7 @@
   let projectListPromise = new Promise((_resolve, _reject) => {});
   let workdirStatsPromise = new Promise((_resolve, _reject) => {});
   let projectName;
-  export let title;
+  let title;
   let view = Home;
 
   function getBase() {
@@ -51,11 +51,12 @@
   });
 
   onMount(async () => {
-    router({ hashbang: true });
+    console.log("onmount app")
     projectListPromise = fetchProjectList();
     const workdirStatus = await fetchWorkdirStatus();
     workdirStatsPromise = Promise.resolve(computeWorkdirStatus(workdirStatus));
     console.log(workdirStatsPromise);
+    router({ hashbang: true });
   });
 
   async function fetch(event) {
@@ -65,10 +66,6 @@
       stats: computeStats(commits)
     });
   }
-
-  export let projects;
-
-  $: projectListPromise = Promise.resolve(projects);
 
   function handleRangeChange(event) {
     statsPromise = fetch(event);
