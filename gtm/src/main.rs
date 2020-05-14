@@ -1,5 +1,4 @@
 //#![windows_subsystem = "windows"]
-
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use]
@@ -7,50 +6,18 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate web_view;
 
+// use gtm::get_projects;
+// use gtm::read_projects;
 use git2::Error;
-use git2::Repository;
 use structopt::StructOpt;
 use web_view::*;
-use std::path::{PathBuf, Path};
-use rocket::response::{NamedFile, content};
 
 #[derive(StructOpt)]
 struct Args {
     command: Option<String>,
 }
 
-#[macro_use]
-extern crate rocket;
-
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
-
-#[get("/<file..>")]
-fn files(file: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new("../dist/dev/").join(file)).ok()
-}
-
-#[get("/data/commits")]
-fn data() -> Option<content::Json<String>> {
-    if let Ok(repo) = Repository::open("tests/cases/repo") {
-        if let Ok(notes) = gtm::get_notes(&repo) {
-            let response = serde_json::to_string(&notes).unwrap();
-            Some(content::Json(response))
-        } else {
-            None
-        }
-    } else {
-        None
-    }
-}
-
-fn main() {
-    rocket::ignite().mount("/", routes![index, files, data]).launch();
-}
-
-pub fn main64() -> Result<(), Error> {
+fn main() -> Result<(), Error> {
     let args = Args::from_args();
 
     match args.command {
@@ -58,18 +25,19 @@ pub fn main64() -> Result<(), Error> {
         _ => println!("{}", "nada"),
     }
 
-    let repo = Repository::open("tests/cases/repo")?;
+    // let repo = Repository::open("tests/cases/repo")?;
 
-    let notes = gtm::get_notes(&repo)?;
-    println!("{}", serde_json::to_string(&notes).unwrap());
+    // let notes = gtm::get_notes(&repo)?;
+    // println!("{}", serde_json::to_string(&notes).unwrap());
     // for n in ns {
     //     println!("{:?}", n)
     // }
 
+    run_webview();
     Ok(())
 }
 
-pub fn main32() {
+fn run_webview() {
     let html = format!(
         r#"
         <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>gtm Dashboard</title></head>
@@ -87,32 +55,41 @@ pub fn main32() {
         .resizable(true)
         .debug(true)
         .user_data(vec![])
-        .invoke_handler(|webview, arg| {
-            use Cmd::*;
+        .invoke_handler(|webview, _arg| {
+            // use Cmd::*;
 
             println!("invoke");
+            // webview.eval("app.$set({title: 'hola qwer sadfasdf'})");
 
-            let tasks_len = {
-                let tasks = webview.user_data_mut();
+            // let ps = read_projects("/Users/luigi/.git-time-metric/project.json").unwrap();
+            // let ps = get_projects(&ps);
+            // webview.eval(&format!(
+            //     "app.$set({{projects: {} }})",
+            //     serde_json::to_string(&ps).unwrap()
+            // ));
 
-                match serde_json::from_str(arg).unwrap() {
-                    Init => (),
-                    Log { text } => println!("{}", text),
-                    AddTask { name } => tasks.push(Task { name, done: false }),
-                    MarkTask { index, done } => tasks[index].done = done,
-                    ClearDoneTasks => tasks.retain(|t| !t.done),
-                }
+            // let tasks_len = {
+            //     let tasks = webview.user_data_mut();
 
-                tasks.len()
-            };
+            //     match serde_json::from_str(arg).unwrap() {
+            //         Init => (),
+            //         Log { text } => println!("{}", text),
+            //         AddTask { name } => tasks.push(Task { name, done: false }),
+            //         MarkTask { index, done } => tasks[index].done = done,
+            //         ClearDoneTasks => tasks.retain(|t| !t.done),
+            //     }
 
-            webview.set_title(&format!("Rust Todo App ({} Tasks)", tasks_len))?;
+            //     tasks.len()
+            // };
+
+            webview.set_title(&format!("Rust Todo App ({} Tasks)", 9))?;
             render(webview)
         })
         .build()
         .unwrap();
 
     // webview.set_color((156, 39, 176));
+    // cs.$set({commit:{Project: '23990239023'}})
 
     // webview.navigate("http://localhost:9090/dev/");
     let res = webview.run().unwrap();
