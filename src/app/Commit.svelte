@@ -49,7 +49,11 @@
   </button>
   <div>
     {#if toggleVisible}
-      <FileNotes files={commit.Note.Files} />
+      {#if commit.Note && commit.Note.Files}
+        <FileNotes files={commit.Note.Files} />
+      {:else}
+        <div class="text-red-400 italic">No files in commit</div>
+      {/if}
     {/if}
   </div>
 </div>
