@@ -1,0 +1,8 @@
+[ver:1,total:420]
+.gtm/terminal.app:130,1589436000:130,r
+gtm/src/main.rs:100,1589436000:100,r
+@git/test/git-test.ts:60,1589436000:60,m
+gtm/Cargo.toml:60,1589436000:60,r
+package.json:30,1589436000:30,m
+@git/src/git.ts:30,1589436000:30,m
+yarn.lock:10,1589436000:10,m
