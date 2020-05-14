@@ -1,0 +1,10 @@
+[ver:1,total:808]
+src/gtm/main.ts:240,1589486400:240,d
+src/app/App.svelte:183,1589486400:183,m
+src/app/test.ts:120,1589486400:120,m
+rollup.config.js:64,1589486400:64,m
+package.json:60,1589486400:60,r
+src/demo/demo.ts:60,1589486400:60,m
+src/dev/main.ts:50,1589486400:50,m
+src/app/gtm.ts:20,1589486400:20,m
+main.pcss:11,1589486400:11,d
