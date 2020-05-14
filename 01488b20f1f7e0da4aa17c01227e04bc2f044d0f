@@ -1,0 +1,15 @@
+[ver:1,total:1152]
+src/app/gtm.ts:381,1589486400:381,r
+.gtm/terminal.app:278,1589486400:278,r
+make.js:175,1589486400:175,r
+src/app/Home.svelte:140,1589486400:140,r
+package.json:30,1589486400:30,m
+src/app/test.html:27,1589486400:27,r
+dist/gtm/gtm.js:25,1589486400:25,r
+src/app/Home-test.ts:20,1589486400:20,r
+gtm/src/lib.rs:20,1589486400:20,r
+src/dev/main.js:20,1589486400:20,r
+src/app/gtm.js:12,1589486400:12,r
+src/app/main.pcss:8,1589486400:8,r
+tailwind.config.cjs:8,1589486400:8,r
+src/app/test.js:8,1589486400:8,r
