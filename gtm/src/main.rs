@@ -8,7 +8,11 @@ extern crate web_view;
 
 // use gtm::get_projects;
 // use gtm::read_projects;
-use git2::Error;
+use git2::*;
+use hyper::service::{make_service_fn, service_fn};
+use hyper::{Body, Request, Response, Server};
+use std::convert::Infallible;
+use std::net::SocketAddr;
 use structopt::StructOpt;
 use web_view::*;
 
@@ -17,7 +21,41 @@ struct Args {
     command: Option<String>,
 }
 
-fn main() -> Result<(), Error> {
+async fn data_commits(_req: Request<Body>) -> Result<Response<Body>, Infallible> {
+    let repo = Repository::open("/Users/luigi/work/home").unwrap();
+    let notes = gtm::get_notes(&repo).unwrap();
+    let json = serde_json::to_string(&notes).unwrap();
+    let response = Response::builder()
+        .status(200)
+        .header("X-Custom-Foo", "Bar")
+        .header("Access-Control-Allow-Origin", "*")
+        .body(json.into())
+        .unwrap();
+        Ok(response)
+    // Ok(Response::new(json.into()))
+}
+
+#[tokio::main]
+async fn serve() {
+    // We'll bind to 127.0.0.1:3000
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
+
+    // A `Service` is needed for every connection, so this
+    // creates one from our `hello_world` function.
+    let make_svc = make_service_fn(|_conn| async {
+        // service_fn converts our function into a `Service`
+        Ok::<_, Infallible>(service_fn(data_commits))
+    });
+
+    let server = Server::bind(&addr).serve(make_svc);
+
+    // Run this server for... forever!
+    if let Err(e) = server.await {
+        eprintln!("server error: {}", e);
+    }
+}
+
+pub fn main() -> Result<(), git2::Error> {
     let args = Args::from_args();
 
     match args.command {
@@ -25,6 +63,9 @@ fn main() -> Result<(), Error> {
         _ => println!("{}", "nada"),
     }
 
+    std::thread::spawn(move || {
+        serve();
+    });
     // let repo = Repository::open("tests/cases/repo")?;
 
     // let notes = gtm::get_notes(&repo)?;
