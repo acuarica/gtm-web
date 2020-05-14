@@ -17,3 +17,4 @@ lazy_static = "1.4.0"
 structopt = "0.3.13"
 hyper = "0.13"
 tokio = { version = "0.2", features = ["full"] }
+dirs = "2.0"
