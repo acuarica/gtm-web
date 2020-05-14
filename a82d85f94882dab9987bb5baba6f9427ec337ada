@@ -1,0 +1,12 @@
+[ver:1,total:1909]
+.gtm/terminal.app:1612,1589436000:20,1589439600:350,1589446800:350,1589450400:30,1589454000:822,1589461200:40,r
+@notes/test/notes-test.ts:90,1589436000:90,r
+gtm/Cargo.toml:50,1589439600:20,1589446800:20,1589461200:10,m
+package.json:30,1589436000:30,r
+gtm/tests/cases/project.json:30,1589450400:30,r
+assets/data/projects.json:20,1589454000:20,r
+@notes/index.ts:20,1589436000:20,r
+dist/gtm/main.js:20,1589454000:20,r
+src/app/test.ts:15,1589439600:15,r
+src/desktop/Settings.svelte:12,1589454000:12,r
+gtm/Cargo.lock:10,1589461200:10,m
