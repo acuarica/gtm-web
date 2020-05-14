@@ -61,11 +61,11 @@ export const configs = {
   },
 
   gtm: {
-    input: 'src/gtm/main.js',
+    input: 'src/app/gtm.js',
     output: {
       dir: 'dist/gtm',
       format: 'iife',
-      name: 'app',
+      name: 'gtm',
     },
     plugins: [
       ...plugins(false),

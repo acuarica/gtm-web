@@ -1,4 +1,5 @@
 <script>
+  import "./main.pcss";
   import Box from "./Box.svelte";
   import Icon from "./Icon.svelte";
   import { faTasks } from "@fortawesome/free-solid-svg-icons/faTasks";

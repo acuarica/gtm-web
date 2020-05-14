@@ -1,4 +1,3 @@
-import '../../main.pcss'
 import App from '../app/App.svelte'
 import { MockService } from '@gtm/mock';
 import { Commit, WorkdirStatusList } from '../../@notes';

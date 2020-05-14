@@ -1,4 +1,3 @@
-import '../../main.pcss'
 import App from '../app/App.svelte'
 import { Commit } from '@gtm/notes';
 

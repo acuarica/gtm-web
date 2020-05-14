@@ -1,9 +1,8 @@
-import '../../main.pcss'
-import DashboardCardTest from '../app/DashboardCard-test';
+import DashboardCardTest from './DashboardCard-test';
 import CommitTest from './Commit-test';
 import ProjectTest from './Project-test';
-import HomeTest from '../app/Home-test';
-import AppTest from '../app/App-test';
+import HomeTest from './Home-test';
+import AppTest from './App-test';
 
 console.info('Initializing component tests')
 
