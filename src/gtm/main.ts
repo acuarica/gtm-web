@@ -4,30 +4,42 @@ import { Commit } from '@gtm/notes';
 
 console.debug('Creating main gtm app with rust service')
 
-const fetchurl = async <T>(url: string): Promise<T> => await fetch('http://localhost:9090' + url).then(r => r.json())
+// const rpc = {
+//   invoke: function (arg: any) {
+//     (window.external as any).invoke(JSON.stringify(arg))
+//   },
+//   projects: function (): string[] {
+//     return []
+//   },
+// }
 
-const rpc = {
-  invoke: function (arg: any) {
-    (window.external as any).invoke(JSON.stringify(arg))
-  },
-  projects: function (): string[] {
-    rpc.invoke({ cmd: 'addTask', name: name });
-  },
-}
+const fetchurl = async <T>(url: string): Promise<T> => await fetch('http://localhost:8000'+url).then(r => r.json())
 
-new App({
+window.onload = function() { 
+    (window.external as any).invoke(JSON.stringify('asdf'))
+};
+
+export default new App({
   target: document.body,
   props: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fetchCommits: async (_range: { start: string; end: string }): Promise<Commit[]> => {
-      return Promise.resolve([])
+    fetchCommits: async (range: { start: string; end: string }): Promise<Commit[]> => {
+      const commitsDataUrl = '/data/commits'
+      const url = `${commitsDataUrl}?all&from=${range.start}&to=${range.end}`
+      return fetchurl(url)
     },
     fetchProjectList: async (): Promise<string[]> => {
-      const projects = rpc.projects()
-      return projects.map((p: string) => p.substring(p.lastIndexOf('/') + 1));
+
+      // new Promise((resolve, reject) =>{
+      //   rpc.resolve = resolve
+      //   invoke
+
+      // })
+      const url = '/data/projects';
+      return (await fetchurl<string[]>(url)).map((p: string) => p.substring(p.lastIndexOf('/') + 1));
     },
     fetchWorkdirStatus: async (): Promise<{ [p: string]: Commit }> => {
-      return Promise.resolve({})
+      const url = '/data/status';
+      return await fetchurl(url)
     },
   },
 });

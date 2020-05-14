@@ -20,7 +20,7 @@ export function delayError<T>(func: () => T, timeout: number): Promise<T> {
 
 console.debug('Creating main app with web service')
 
-const fetchurl = async <T>(url: string): Promise<T> => await fetch(url).then(r => r.json())
+const fetchurl = async <T>(url: string): Promise<T> => await fetch('http://localhost:8000'+url).then(r => r.json())
 
 new App({
   target: document.body,
