@@ -1,4 +1,4 @@
-import { GitService } from '@gtm/git'
+import { GitService, gethistory } from '@gtm/git'
 import { spawn } from 'child_process'
 import assert from 'assert'
 
@@ -27,6 +27,11 @@ describe('@gtm/git', () => {
       assert(commits.length > 0, 'no commits')
     })
 
+  })
+
+  it('git', async () => {
+    const h = await gethistory()
+    console.log(h)
   })
 
 })
