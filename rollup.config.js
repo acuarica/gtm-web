@@ -5,7 +5,6 @@ import livereload from 'rollup-plugin-livereload';
 import terser from 'rollup-plugin-terser';
 import copy from 'rollup-plugin-copy'
 import postcss from 'rollup-plugin-postcss'
-import progress from 'rollup-plugin-progress';
 import image from '@rollup/plugin-image';
 import purgecss from "@fullhuman/postcss-purgecss";
 import html from '@open-wc/rollup-plugin-html';
@@ -33,9 +32,6 @@ const plugins = (extract) => [
         defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
       })
     ]
-  }),
-  progress({
-    clearLine: true,
   }),
 ]
 
