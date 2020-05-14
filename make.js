@@ -77,7 +77,7 @@ async function rollupWatch(targets) {
       console.log(event)
     } else if (event.code === 'END') {
       // if (!opts || !opts.watch) {
-        // watcher.close()
+      // watcher.close()
       // }
     }
   });
@@ -135,7 +135,7 @@ const commands = {
           };
           if (range.start && range.end) {
             const data = await service.fetchCommits(range)
-            send(res, 200, data);
+            send(res, 200, data, { "Access-Control-Allow-Origin": "*" });
           } else {
             console.warn("Argument to or from not defined:", range)
           }
