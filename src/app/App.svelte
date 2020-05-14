@@ -51,7 +51,6 @@
   });
 
   onMount(async () => {
-    console.log("onmount app")
     projectListPromise = fetchProjectList();
     const workdirStatus = await fetchWorkdirStatus();
     workdirStatsPromise = Promise.resolve(computeWorkdirStatus(workdirStatus));

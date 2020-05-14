@@ -9,7 +9,6 @@ export class WebService implements GtmService {
   }
 
   async fetchProjectList(): Promise<string[]> {
-    console.log('waiting for projects')
     const value = await this.fetchurl<string[]>('/data/projects')
     return value.map((p: string) => p.substring(p.lastIndexOf('/') + 1))
   }

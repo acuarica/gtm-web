@@ -31,14 +31,12 @@ async fn gtm_web_service(req: Request<Body>) -> Result<Response<Body>, Infallibl
 
     match (req.method(), req.uri().path()) {
         (&Method::GET, "/data/commits") => {
-            println!("data/commits");
             let repo = Repository::open("/Users/luigi/work/home").unwrap();
             let notes = gtm::get_notes(&repo).unwrap();
             let json = serde_json::to_string(&notes).unwrap();
             *response.body_mut() = Body::from(json);
         },
         (&Method::GET, "/data/projects") => {
-            println!("data/projects");
             let projects = fetch_projects();
             let json = serde_json::to_string(&projects).unwrap();
             *response.body_mut() = Body::from(json);
@@ -98,7 +96,7 @@ fn run_webview() {
     let webview = web_view::builder()
         .title("gtm Dashboard")
         .content(Content::Html(html))
-        .size(320, 480)
+        .size(800, 600)
         .resizable(true)
         .debug(true)
         .user_data(vec![])
