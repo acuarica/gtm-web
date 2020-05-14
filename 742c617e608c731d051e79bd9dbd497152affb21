@@ -1,0 +1,6 @@
+[ver:1,total:570]
+src/desktop/preload.ts:380,1589493600:180,1589497200:200,d
+package.json:110,1589497200:110,m
+rollup.config.js:40,1589497200:40,m
+yarn.lock:30,1589497200:30,m
+src/desktop/main.ts:10,1589486400:10,d
