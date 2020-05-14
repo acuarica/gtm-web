@@ -15,7 +15,7 @@
   import "chartjs-chart-matrix";
 
   export let name;
-  export let statsPromise;
+  export let projectPromise;
   export let workdirStatsPromise;
 
   function cardFooterText(commits) {
@@ -25,33 +25,34 @@
   onMount(() => {});
 </script>
 
-<Fetch promise={statsPromise} let:value={res}>
-  {#if res.stats.projects[name]}
+<Fetch promise={projectPromise} let:value={project}>
+  {#if project}
     <div class="grid grid-cols-12 gap-3">
       <DashboardCard
         class="col-span-6"
         title="Total Time"
-        body={hhmm(res.stats.projects[name].total)}
-        footer={cardFooterText(res.stats.projects[name].commits)} />
+        body={hhmm(project.total)}
+        footer={cardFooterText(project.commits)} 
+        />
       <Box class="col-span-6">
         <Chart
-          config={timeByFileStatusChartConfig(res.stats.projects[name].status)} />
+          config={timeByFileStatusChartConfig(project.status)} />
       </Box>
       <Box class="col-span-12 px-6 py-3">
-        <Chart config={activityChartConfig([res.stats.projects[name]])} />
+        <Chart config={activityChartConfig([project])} />
       </Box>
       <Box class="col-span-12 px-6 py-3">
-        <Fetch promise={workdirStatsPromise} let:value={res}>
-          <Chart config={activityChartConfig([res.projects[name]], true)} />
+        <Fetch promise={workdirStatsPromise} let:value={workdirStats}>
+          <Chart config={activityChartConfig([workdirStats], true)} />
         </Fetch>
       </Box>
       <Box class="col-span-12 lg:col-span-6 p-4">
         <div class="font-bold">Files</div>
-        <FileNotes files={res.stats.projects[name].files} />
+        <FileNotes files={project.files} />
       </Box>
       <Commits
         class="col-span-12 lg:col-span-6"
-        commits={res.stats.projects[name].commits} />
+        commits={project.commits} />
     </div>
   {:else}
     <Box class="p-8">

@@ -22,8 +22,8 @@
   let projectListPromise = new Promise((_resolve, _reject) => {});
   let workdirStatsPromise = new Promise((_resolve, _reject) => {});
   let projectName;
-  let title;
-  let view;
+  export let title;
+  let view = Home;
 
   function getBase() {
     const pathname = window.location.pathname;
@@ -65,6 +65,10 @@
       stats: computeStats(commits)
     });
   }
+
+  export let projects;
+
+  $: projectListPromise = Promise.resolve(projects);
 
   function handleRangeChange(event) {
     statsPromise = fetch(event);

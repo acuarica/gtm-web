@@ -53,7 +53,7 @@ export const configs = {
     preserveModules: true,
     plugins: [
       ...plugins(false),
-      ...['dev/index', 'test/test'].map(f => html({ inputPath: `src/${f}.html` })),
+      ...['dev/index', 'app/test'].map(f => html({ inputPath: `src/${f}.html` })),
     ],
     watch: {
       clearScreen: false
@@ -61,7 +61,7 @@ export const configs = {
   },
 
   gtm: {
-    input: 'src/dev/index.html',
+    input: 'src/gtm/main.js',
     output: {
       dir: 'dist/gtm',
       format: 'iife',
@@ -70,7 +70,6 @@ export const configs = {
     plugins: [
       ...plugins(false),
       production && terser.terser(),
-      html(),
     ]
   },
 
