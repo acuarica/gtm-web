@@ -1,0 +1,11 @@
+[ver:1,total:1080]
+src/app/Home.svelte:344,1589482800:332,1589486400:12,m
+src/app/Home-test.ts:206,1589482800:194,1589486400:12,m
+src/app/App.svelte:186,1589486400:186,m
+@notes/src/notes.ts:120,1589482800:120,m
+src/app/Project-test.ts:89,1589482800:59,1589486400:30,r
+src/app/web.ts:60,1589482800:60,r
+src/app/test.ts:20,1589482800:20,r
+src/app/Commit-test.ts:20,1589482800:20,r
+src/app/test.html:20,1589482800:20,r
+src/app/App-test.ts:15,1589482800:15,r
