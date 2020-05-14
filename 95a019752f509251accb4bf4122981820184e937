@@ -1,0 +1,8 @@
+[ver:1,total:930]
+.gtm/terminal.app:480,1589497200:480,r
+src/desktop/index.html:200,1589486400:180,1589497200:20,r
+rollup.config.js:120,1589497200:120,m
+src/desktop/Settings.svelte:90,1589486400:20,1589497200:70,r
+src/app/test.ts:20,1589486400:20,r
+src/demo/demo.ts:10,1589497200:10,r
+gtm/src/main.rs:10,1589486400:10,r
