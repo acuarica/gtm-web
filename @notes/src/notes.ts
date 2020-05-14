@@ -70,6 +70,7 @@ export type DailyHours = { [date: string]: { total: number } }
 ///
 export type Stats = {
   projects: ProjectList;
+  commitCount: number;
   totalSecs: Seconds;
   status: FileStatus<number>;
 }
@@ -77,6 +78,7 @@ export type Stats = {
 ///
 export function computeStats(commits: Commit[]): Stats {
   const projects: ProjectList = {};
+  let commitCount = 0
   const status: FileStatus<number> = { 'm': 0, 'r': 0, 'd': 0 };
   let totalSecs: Seconds = 0;
 
@@ -92,6 +94,7 @@ export function computeStats(commits: Commit[]): Stats {
         console.warn('gtm check: Commit note files not available:', commit);
       continue;
     }
+    commitCount += 1
     let commitTimeSpent = 0;
     for (const file of commit.Note.Files) {
       commitTimeSpent += file.TimeSpent
@@ -135,7 +138,7 @@ export function computeStats(commits: Commit[]): Stats {
     commit.timeSpent = commitTimeSpent
   }
 
-  return { projects, totalSecs, status }
+  return { projects, commitCount, totalSecs, status }
 }
 
 ///

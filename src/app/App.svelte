@@ -54,16 +54,12 @@
     projectListPromise = fetchProjectList();
     const workdirStatus = await fetchWorkdirStatus();
     workdirStatsPromise = Promise.resolve(computeWorkdirStatus(workdirStatus));
-    console.log(workdirStatsPromise);
     router({ hashbang: true });
   });
 
   async function fetch(event) {
     const commits = await fetchCommits(event.detail);
-    return Promise.resolve({
-      commits: commits,
-      stats: computeStats(commits)
-    });
+    return Promise.resolve(computeStats(commits));
   }
 
   function handleRangeChange(event) {
