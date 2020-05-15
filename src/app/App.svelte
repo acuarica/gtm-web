@@ -40,7 +40,7 @@
     return base;
   }
 
-  router.base(getBase());
+  // router.base(getBase());
   router("/", () => {
     title = "All Projects";
     view = Home;
