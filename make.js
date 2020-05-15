@@ -3,7 +3,7 @@
 import chalk from 'chalk';
 import { spawn } from 'child_process'
 import sirv from 'sirv';
-import { GitService } from '@gtm/git';
+import { GitService } from '@gtm/gtm';
 import polka from 'polka';
 import send from '@polka/send-type';
 import * as rollup from 'rollup';
