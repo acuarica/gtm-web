@@ -7,9 +7,12 @@ export type Seconds = number
 ///
 export class FileNote {
   TimeSpent: Seconds = 0;
-  readonly Timeline: { [id: string]: Seconds } = {};
-  Status = '';
-  constructor(readonly SourceFile: string, timeSpent: Seconds) {
+  constructor(
+    readonly SourceFile: string,
+    timeSpent: Seconds,
+    readonly Timeline: { [id: string]: Seconds } = {},
+    readonly Status = ''
+  ) {
     this.TimeSpent = timeSpent;
   }
 }
