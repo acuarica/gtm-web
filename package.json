@@ -13,13 +13,16 @@
     "@git"
   ],
   "type": "module",
-  "main": "dist-electron/main.js",
+  "main": "dist/electron/main.js",
   "build": {
     "appId": "gtm-dashboard",
     "files": [
-      "dist-electron/**/*",
+      "dist/electron/**/*",
       "node_modules2/**/*",
       "package.json"
+    ],
+    "extraFiles": [
+      "gtm/target/debug/gtm"
     ],
     "directories": {
       "buildResources": "resources"
@@ -35,8 +38,9 @@
     "lint": "eslint **/*.ts *.js",
     "test": "mocha @*/test/*-test.js",
     "prepare": "yarn build",
-    "clean": "rm -rfv @*/index.js @*/src/*.js @*/test/*.js src/**/*.js dist",
-    "gtm": "/Users/luigi/work/#forks/gtm/bin/gtm"
+    "start": "electron dist/electron/main.js",
+    "dist": "electron-builder",
+    "clean": "rm -rfv @*/index.js @*/src/*.js @*/test/*.js src/**/*.js dist"
   },
   "dependencies": {
     "chart.js": "^2.9.3",
@@ -62,6 +66,8 @@
     "@typescript-eslint/parser": "^2.31.0",
     "autoprefixer": "^9.7.6",
     "chalk": "^4.0.0",
+    "electron": "^6.0.8",
+    "electron-builder": "^22.6.0",
     "eslint": "^6.8.0",
     "mocha": "^7.1.1",
     "polka": "^0.5.2",

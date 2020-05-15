@@ -6,6 +6,7 @@ let mainWindow: BrowserWindow | null;
 
 // const mode = process.env.NODE_ENV;
 
+
 function reloadOnChange(win: BrowserWindow): void {
   // if (mode !== 'development') return { close: () => {} };
 
@@ -29,6 +30,7 @@ function reloadOnChange(win: BrowserWindow): void {
 
 
 
+
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -38,9 +40,6 @@ function createWindow(): void {
     },
     width: 800,
   });
-
-
-  console.log(mainWindow)
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, './index.html'));

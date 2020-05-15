@@ -69,6 +69,28 @@ export const configs = {
     ]
   },
 
+  electron: {
+    input: ['main', 'preload'].map(f => `src/desktop/${f}.js`),
+    output: {
+      dir: 'dist/electron',
+      sourcemap: true,
+      format: 'cjs',
+    },
+    plugins: [
+      ...plugins(true),
+      copy({
+        targets: [
+          { src: 'src/desktop/index.html', dest: 'dist/electron' },
+          { src: 'gtm/target/debug/gtm', dest: 'dist/electron' },
+        ],
+      }),
+    ],
+    external: ['electron', 'child_process', 'fs', 'path', 'url', 'module', 'os'],
+    watch: {
+      clearScreen: false
+    }
+  },
+
   demo: {
     input: 'src/demo/index.html',
     output: {
