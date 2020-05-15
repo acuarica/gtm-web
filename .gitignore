@@ -4,7 +4,4 @@
 /@*/index.js
 /@*/src/*.js
 /@*/test/*.js
-/dist/dev/
-/dist/gtm/
-/dist/demo/
-/dist/electron/
+/dist/
