@@ -1,0 +1,9 @@
+[ver:1,total:1278]
+.gtm/terminal.app:644,1589508000:360,1589551200:284,r
+@git/src/git.ts:270,1589508000:270,r
+gtm/src/lib.rs:120,1589508000:90,1589551200:30,r
+gtm/src/main.rs:118,1589551200:118,m
+src/desktop/preload.ts:72,1589551200:72,r
+src/app/App.svelte:30,1589508000:30,r
+gtm/Cargo.lock:12,1589551200:12,m
+gtm/Cargo.toml:12,1589551200:12,m
