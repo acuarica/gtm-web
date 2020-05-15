@@ -1,0 +1,13 @@
+[ver:1,total:3781]
+.gtm/terminal.app:1959,1589551200:415,1589554800:759,1589558400:725,1589562000:60,r
+src/desktop/preload.ts:1040,1589551200:10,1589554800:330,1589558400:680,1589562000:20,r
+src/desktop/main.ts:394,1589558400:354,1589562000:40,r
+gtm/Cargo.toml:188,1589551200:188,r
+dist/electron/main.js:45,1589554800:45,r
+src/app/gtm.ts:35,1589551200:35,r
+@git/src/git.tsload.ts:30,1589554800:30,d
+.gitignore:20,1589562000:20,m
+gtm/src/lib.rs:20,1589558400:20,r
+dist/mac/gtm-dash.app/Contents/MacOS/gtm-dash:20,1589554800:20,r
+src/app/web.ts:15,1589551200:15,r
+node_modules/electron/electron.d.ts:15,1589558400:15,r
