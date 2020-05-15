@@ -1,0 +1,10 @@
+[ver:1,total:360]
+.gtm/terminal.app:132,1589562000:132,r
+package.json:80,1589562000:80,m
+@gtm/package.json:56,1589562000:56,m
+gtm/src/lib.rs:30,1589562000:30,r
+@gtm/gtm.ts:20,1589562000:20,m
+@gtm/git.ts:12,1589562000:12,d
+@notes/index.ts:10,1589562000:10,m
+@notes/package.json:10,1589562000:10,r
+@mock/package.json:10,1589562000:10,m
