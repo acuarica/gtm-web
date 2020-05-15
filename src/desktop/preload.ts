@@ -1,4 +1,4 @@
-import { GitService } from '../../@git/src/git.js'
+import { GitService } from '@gtm/gtm'
 import App from '../app/App.svelte'
 import Settings from './Settings.svelte'
 import { Commit, WorkdirStatusList } from '@gtm/notes';
@@ -11,7 +11,12 @@ console.info(`Using gtm path: '${gtmpath}'`)
 window.addEventListener('DOMContentLoaded', async () => {
 
   // const service = new GitService((args: string[]) => spawn('gtm', args))
-  const service = new GitService(args => spawn(gtmpath, args))
+  // const service = new GitService(args => spawn(gtmpath, args))
+  const service = new GitService(args => {
+    const child = spawn(gtmpath, args)
+    console.log(child)
+    return child
+  })
 
   console.info('Running gtm app using gtm Dashboard service')
   new App({
