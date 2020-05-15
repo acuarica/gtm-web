@@ -1,0 +1,8 @@
+[ver:1,total:756]
+.gtm/terminal.app:294,1589497200:150,1589500800:144,r
+gtm/src/main.rs:270,1589500800:270,r
+src/app/web.ts:60,1589500800:60,r
+rollup.config.js:60,1589500800:60,r
+package.json:30,1589497200:30,r
+gtm/Cargo.toml:30,1589500800:30,m
+src/app/gtm.ts:12,1589500800:12,r
