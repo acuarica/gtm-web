@@ -1,10 +1,7 @@
-//#![windows_subsystem = "windows"]
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
-extern crate web_view;
 
 use git2::*;
 use gtm::fetch_projects;
@@ -13,7 +10,6 @@ use hyper::{Body, Request, Response, Server};
 use std::convert::Infallible;
 use std::net::SocketAddr;
 use structopt::StructOpt;
-use web_view::*;
 
 #[derive(StructOpt)]
 struct Args {
@@ -59,7 +55,7 @@ async fn serve() {
     }
 }
 
-pub fn main() -> Result<(), git2::Error> {
+fn main() -> Result<(), git2::Error> {
     let args = Args::from_args();
 
     match args.command {
@@ -67,9 +63,7 @@ pub fn main() -> Result<(), git2::Error> {
         _ => println!("{}", "nada"),
     }
 
-    std::thread::spawn(move || {
-        serve();
-    });
+    serve();
     // let repo = Repository::open("tests/cases/repo")?;
 
     // let notes = gtm::get_notes(&repo)?;
@@ -78,97 +72,5 @@ pub fn main() -> Result<(), git2::Error> {
     //     println!("{:?}", n)
     // }
 
-    run_webview("http://localhost:8000".to_string());
     Ok(())
-}
-
-fn run_webview(origin: String) {
-    let html = format!(
-        r#"
-        <!doctype html>
-        <html lang="en">
-        <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width,initial-scale=1">
-            <title>gtm Dashboard</title>
-        </head>
-        <body class="bg-body text-primary">
-            <script type="text/javascript">{scripts}</script>
-            <script type="text/javascript">
-                gtm("{origin}");
-            </script>
-        </body>
-        </html>
-        "#,
-        scripts = include_str!("../../dist/gtm/gtm.js"),
-        origin = origin
-    );
-
-    let webview = web_view::builder()
-        .title("gtm Dashboard")
-        .content(Content::Html(html))
-        .size(800, 600)
-        .resizable(true)
-        .debug(true)
-        .user_data(vec![])
-        .invoke_handler(|webview, _arg| {
-            // use Cmd::*;
-
-            println!("invoke");
-            // webview.eval("app.$set({title: 'hola qwer sadfasdf'})");
-
-            // let ps = read_projects("/Users/luigi/.git-time-metric/project.json").unwrap();
-            // let ps = get_projects(&ps);
-            // webview.eval(&format!(
-            //     "app.$set({{projects: {} }})",
-            //     serde_json::to_string(&ps).unwrap()
-            // ));
-
-            // let tasks_len = {
-            //     let tasks = webview.user_data_mut();
-
-            //     match serde_json::from_str(arg).unwrap() {
-            //         Init => (),
-            //         Log { text } => println!("{}", text),
-            //         AddTask { name } => tasks.push(Task { name, done: false }),
-            //         MarkTask { index, done } => tasks[index].done = done,
-            //         ClearDoneTasks => tasks.retain(|t| !t.done),
-            //     }
-
-            //     tasks.len()
-            // };
-
-            webview.set_title(&format!("Rust Todo App ({} Tasks)", 9))?;
-            render(webview)
-        })
-        .build()
-        .unwrap();
-
-    let res = webview.run().unwrap();
-    println!("final state: {:?}", res);
-}
-
-pub fn render(webview: &mut WebView<Vec<Task>>) -> WVResult {
-    let render_tasks = {
-        let tasks = webview.user_data();
-        println!("{:#?}", tasks);
-        format!("rpc.render({})", serde_json::to_string(tasks).unwrap())
-    };
-    webview.eval(&render_tasks)
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Task {
-    name: String,
-    done: bool,
-}
-
-#[derive(Deserialize)]
-#[serde(tag = "cmd", rename_all = "camelCase")]
-pub enum Cmd {
-    Init,
-    Log { text: String },
-    AddTask { name: String },
-    MarkTask { index: usize, done: bool },
-    ClearDoneTasks,
 }
