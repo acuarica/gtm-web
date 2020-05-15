@@ -1,6 +1,6 @@
 
-export * from './src/format.js'
+export * from './format.js'
 
-export * from './src/notes.js'
+export * from './notes.js'
 
-export * from './src/service.js'
+export * from './service.js'
