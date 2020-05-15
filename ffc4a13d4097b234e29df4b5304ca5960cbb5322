@@ -1,0 +1,16 @@
+[ver:1,total:2903]
+.gtm/terminal.app:2174,1589562000:154,1589565600:541,1589576400:35,1589580000:1104,1589583600:340,r
+@notes/notes.ts:212,1589562000:60,1589565600:140,1589583600:12,m
+rollup.config.js:129,1589583600:129,r
+node_modules/@types/node/child_process.d.ts:100,1589576400:100,r
+.gitignore:60,1589562000:60,r
+@gtm/package.json:49,1589562000:49,r
+node_modules/@types/node/ts3.7/assert.d.ts:40,1589565600:40,r
+@notes/format-test.ts:30,1589562000:30,r
+@gtm/gtm.js:27,1589562000:27,r
+gtm/src/main.rs:20,1589562000:20,r
+@gtm/gtm-mock.ts:15,1589583600:15,r
+dist/electron/main.js:15,1589580000:15,r
+@notes/package.json:12,1589562000:12,r
+gtm/src/lib.rs:10,1589562000:10,r
+@gtm/gtm-test.js:10,1589562000:10,r
