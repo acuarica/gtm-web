@@ -37,7 +37,8 @@
     "prepare": "yarn build",
     "start": "electron dist/electron/main.js",
     "dist": "electron-builder",
-    "clean": "rm -rfv @*/*.js src/**/*.js dist"
+    "clean": "rm -rfv @*/*.js src/**/*.js dist",
+    "gtm": "gtm/target/debug/gtm"
   },
   "devDependencies": {
     "chart.js": "^2.9.3",
