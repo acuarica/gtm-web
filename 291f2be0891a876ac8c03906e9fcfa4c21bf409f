@@ -1,0 +1,12 @@
+[ver:1,total:2438]
+src/desktop/preload.ts:1074,1589666400:454,1589670000:620,m
+src/desktop/main.ts:560,1589666400:15,1589670000:545,m
+.gtm/terminal.app:524,1589666400:464,1589670000:60,r
+gtmserv/build.rs:75,1589662800:15,1589666400:60,r
+src/app/App-test.ts:50,1589666400:20,1589670000:30,r
+@gtm/gtm-mock.ts:50,1589666400:40,1589670000:10,r
+gtmserv/src/main.rs:30,1589662800:30,r
+gtmserv/target/release/gtmserv.d:30,1589666400:30,r
+src/dev/main.ts:15,1589666400:15,r
+node_modules/electron/electron.d.ts:15,1589670000:15,r
+gtmserv/Cargo.toml:15,1589662800:15,r
