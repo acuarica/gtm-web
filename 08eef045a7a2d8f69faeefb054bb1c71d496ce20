@@ -1,0 +1,10 @@
+[ver:1,total:1920]
+gtmserv/src/lib.rs:1575,1589670000:1575,m
+.gtm/terminal.app:155,1589670000:155,r
+gtmserv/tests/test.rs:95,1589670000:95,m
+gtmserv/tests/cases/project.json:45,1589670000:45,d
+gtmserv/tests/cases/project-empty.json:10,1589670000:10,d
+src/app/web.ts:10,1589670000:10,r
+make.js:10,1589670000:10,r
+@mock/mock.ts:10,1589670000:10,r
+@notes/service.ts:10,1589670000:10,r
