@@ -9,6 +9,7 @@ use gtm::to_unixtime;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
+#[cfg_attr(debug_assertions, structopt(version = "holaversion"))]
 /// The gtm Dashboard services
 ///
 /// Returns gtm time data for the specified services.
