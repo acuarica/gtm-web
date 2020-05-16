@@ -1,4 +1,4 @@
-import { GtmService, Commit, CommitsFilter, WorkdirStatusList } from '../../@notes';
+import { GtmService, Commit, CommitsFilter, WorkdirStatusList } from '@gtm/notes';
 
 export class WebService implements GtmService {
 
@@ -19,6 +19,55 @@ export class WebService implements GtmService {
 
   private async fetchurl<T>(url: string): Promise<T> {
     return await fetch(this.host + url).then(r => r.json())
+  }
+
+}
+
+export class DelayedService implements GtmService {
+
+  constructor(readonly service: GtmService, readonly timeout: number) { }
+
+  async fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
+    return this.delay(async () => this.service.fetchCommits(filter))
+  }
+
+  async fetchProjectList(): Promise<string[]> {
+    return this.delay(async () => this.service.fetchProjectList())
+  }
+
+  async fetchWorkdirStatus(): Promise<WorkdirStatusList> {
+    return this.delay(async () => this.service.fetchWorkdirStatus())
+  }
+
+  private delay<T>(action: () => T, timeout: number = this.timeout): Promise<T> {
+    return new Promise(function (resolve) {
+      setTimeout(() => {
+        resolve(action())
+      }, timeout)
+    })
+  }
+
+}
+export class FailureService implements GtmService {
+
+  constructor(readonly service: GtmService) { }
+
+  async fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
+    return this.fail(async () => this.service.fetchCommits(filter))
+  }
+
+  async fetchProjectList(): Promise<string[]> {
+    return this.fail(async () => this.service.fetchProjectList())
+  }
+
+  async fetchWorkdirStatus(): Promise<WorkdirStatusList> {
+    return this.fail(async () => this.service.fetchWorkdirStatus())
+  }
+
+  private fail<T>(action: () => T): Promise<T> {
+    return new Promise(function (_, reject) {
+      reject(action())
+    })
   }
 
 }
