@@ -1,0 +1,8 @@
+[ver:1,total:1366]
+@gtm/gtm-test.ts:537,1589598000:40,1589601600:497,m
+@gtm/gtm.ts:485,1589598000:60,1589601600:425,m
+@gtm/gtm-mock.ts:304,1589598000:20,1589601600:284,m
+.gtm/terminal.app:10,1589601600:10,r
+src/dev/main.ts:10,1589601600:10,r
+src/desktop/index.html:10,1589601600:10,r
+src/demo/index.html:10,1589601600:10,r
