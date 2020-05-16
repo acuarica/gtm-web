@@ -1,5 +1,5 @@
 [package]
-name = "gtm"
+name = "gtmserv"
 version = "0.1.0"
 authors = ["Luigi <luismastrangelo@gmail.com>"]
 edition = "2018"

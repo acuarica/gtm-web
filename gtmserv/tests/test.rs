@@ -1,9 +1,9 @@
-use gtm::get_projects;
+use gtmserv::get_projects;
 use git2::Commit;
 use git2::Error;
 use git2::Repository;
-use gtm::parse_commit_note;
-use gtm::read_projects;
+use gtmserv::parse_commit_note;
+use gtmserv::read_projects;
 
 #[test]
 fn test_read_projects() {

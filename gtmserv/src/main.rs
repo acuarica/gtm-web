@@ -3,9 +3,10 @@
 extern crate serde_derive;
 extern crate serde_json;
 
+use gtmserv::get_notes;
 use git2::*;
-use gtm::fetch_projects;
-use gtm::to_unixtime;
+use gtmserv::fetch_projects;
+use gtmserv::to_unixtime;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -36,7 +37,7 @@ fn main() -> Result<(), git2::Error> {
             let projects = fetch_projects();
             for project in projects.unwrap() {
                 let repo = Repository::open(project.to_owned()).unwrap();
-                gtm::get_notes(&mut notes, &repo, project.to_owned(), from_date, to_date).unwrap();
+                get_notes(&mut notes, &repo, project.to_owned(), from_date, to_date).unwrap();
             }
 
             let json = serde_json::to_string(&notes).unwrap();
