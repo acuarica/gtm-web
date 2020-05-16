@@ -5,11 +5,6 @@ use git2::Repository;
 use gtmserv::parse_commit_note;
 use gtmserv::read_projects;
 
-#[test]
-fn test_read_projects() {
-  assert_eq!(read_projects("tests/cases/project.json").unwrap().len(), 10);
-  assert_eq!(read_projects("tests/cases/project-empty.json").unwrap().len(), 0);
-}
 
 #[test]
 fn test_get_projects() {

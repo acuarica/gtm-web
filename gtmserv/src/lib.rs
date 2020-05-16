@@ -21,6 +21,12 @@ type Seconds = u32;
 
 type Filepath = String;
 
+/// Represents initialized projects by `gtm`.
+/// It is represented by a `HashMap` where the keys are paths and
+/// the values are formatted dates.
+/// The keys are the repository path of the working directory of the
+/// git repository.
+/// The values indicates when the git repo was `init` by gtm.
 type InitProjects = HashMap<String, String>;
 
 #[derive(PartialEq, Debug, Serialize)]
@@ -210,6 +216,27 @@ pub fn get_notes(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn empty_projects() -> Result<(), std::io::Error> {
+        let mut file = tempfile::NamedTempFile::new()?;
+        use std::io::Write;
+
+        writeln!(file, "{{}}")?;
+        assert_eq!(read_projects(file.path()).unwrap().len(), 0);
+        Ok(())
+    }
+
+    #[test]
+    fn test_read_projects() {
+        assert_eq!(read_projects("tests/cases/project.json").unwrap().len(), 10);
+        assert_eq!(
+            read_projects("tests/cases/project-empty.json")
+                .unwrap()
+                .len(),
+            0
+        );
+    }
 
     #[test]
     fn test_parse_file_entry_invalid() {
