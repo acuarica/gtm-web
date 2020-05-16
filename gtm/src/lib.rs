@@ -1,3 +1,5 @@
+use chrono::NaiveDate;
+use chrono::ParseResult;
 use git2::{Error, Repository};
 use regex::Regex;
 use serde::Serialize;
@@ -10,6 +12,8 @@ use std::{
 
 #[macro_use]
 extern crate lazy_static;
+
+extern crate chrono;
 
 pub const GTM_REFS: &str = "refs/notes/gtm-data";
 
@@ -50,15 +54,19 @@ pub struct Commit {
 }
 
 impl Commit {
-    pub fn new(commit: &git2::Commit, project: &str, note: CommitNote) -> Commit {
+    pub fn new(commit: &git2::Commit, project: String, note: CommitNote) -> Commit {
+        use chrono::{TimeZone, Utc};
+        use git2::Time;
+        let formatdate = |time: Time| Utc.timestamp(time.seconds(), 0).to_string();
+
         Commit {
             author: commit.author().name().unwrap().to_string(),
-            date: "hello date".to_string(),
-            when: "hello when".to_string(),
+            date: formatdate(commit.time()),
+            when: formatdate(commit.author().when()),
             hash: commit.id().to_string(),
             subject: commit.summary().unwrap().to_string(),
             message: commit.message().unwrap().to_string(),
-            project: project.to_string(),
+            project,
             note,
         }
     }
@@ -168,23 +176,35 @@ pub fn get_commits(_path: &str) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn get_notes(repo: &Repository) -> Result<Vec<Commit>, Error> {
-    let notes = repo.notes(Some(GTM_REFS))?;
-    let project = repo.path().to_str().unwrap();
+pub fn to_unixtime(date: String) -> ParseResult<i64> {
+    let date = NaiveDate::parse_from_str(date.as_ref(), "%Y-%m-%d")?;
+    Ok(date.and_hms(0, 0, 0).timestamp())
+}
 
-    let mut result = Vec::new();
+pub fn get_notes(
+    result: &mut Vec<Commit>,
+    repo: &Repository,
+    project: String,
+    from_date: i64,
+    to_date: i64,
+) -> Result<(), Error> {
+    let notes = repo.notes(Some(GTM_REFS))?;
+
     for note in notes {
         let p = note.unwrap();
         let note = repo.find_note(Some(GTM_REFS), p.1)?;
         if let Some(message) = note.message() {
-            if let Ok(commit_note) = parse_commit_note(message) {
-                let commit = repo.find_commit(p.1)?;
-                result.push(Commit::new(&commit, project, commit_note));
+            let commit = repo.find_commit(p.1)?;
+            let time = commit.time().seconds();
+            if time >= from_date && time <= to_date {
+                if let Ok(commit_note) = parse_commit_note(message) {
+                    result.push(Commit::new(&commit, project.to_owned(), commit_note));
+                }
             }
         }
     }
 
-    Ok(result)
+    Ok(())
 }
 
 #[cfg(test)]

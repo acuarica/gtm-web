@@ -5,6 +5,7 @@ extern crate serde_json;
 
 use git2::*;
 use gtm::fetch_projects;
+use gtm::to_unixtime;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -27,8 +28,16 @@ fn main() -> Result<(), git2::Error> {
 
     match command {
         GtmCommand::Commits { from_date, to_date } => {
-            let repo = Repository::open("/Users/luigi/work/home").unwrap();
-            let notes = gtm::get_notes(&repo).unwrap();
+            let from_date = to_unixtime(from_date).unwrap();
+            let to_date = to_unixtime(to_date).unwrap();
+
+            let mut notes = Vec::new();
+            let projects = fetch_projects();
+            for project in projects.unwrap() {
+                let repo = Repository::open(project.to_owned()).unwrap();
+                gtm::get_notes(&mut notes, &repo, project.to_owned(), from_date, to_date).unwrap();
+            }
+
             let json = serde_json::to_string(&notes).unwrap();
             println!("{}", json);
         }

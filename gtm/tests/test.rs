@@ -2,7 +2,6 @@ use gtm::get_projects;
 use git2::Commit;
 use git2::Error;
 use git2::Repository;
-use gtm::get_notes;
 use gtm::parse_commit_note;
 use gtm::read_projects;
 
@@ -26,15 +25,6 @@ pub fn create_test_repo() -> Result<(), Error> {
   // let odb = repo.odb()?;
 
 
-  Ok(())
-}
-
-#[test]
-fn test_get_notes() -> Result<(), Error> {
-  let repo = Repository::open("tests/cases/repo")?;
-  let commit_notes = get_notes(&repo)?;
-
-  assert!(commit_notes.len() > 0);
   Ok(())
 }
 
