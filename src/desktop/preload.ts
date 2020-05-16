@@ -5,20 +5,14 @@ import { Commit, WorkdirStatusList } from '@gtm/notes';
 import * as path from 'path';
 import { spawn } from 'child_process';
 
-const gtmpath = path.join(__dirname, 'gtm')
-console.info(`Using gtm path: '${gtmpath}'`)
+const gtmservpath = path.join(__dirname, 'gtmserv')
+console.info('Path to gtmserv:', gtmservpath)
 
 window.addEventListener('DOMContentLoaded', async () => {
 
-  // const service = new GitService((args: string[]) => spawn('gtm', args))
-  // const service = new GitService(args => spawn(gtmpath, args))
-  const service = new GitService(args => {
-    const child = spawn(gtmpath, args)
-    console.log(child)
-    return child
-  })
+  const service = new GitService(args => spawn(gtmservpath, args))
+  console.info('Starting gtm Dashboard using gtm service:', await service.getVersion())
 
-  console.info('Running gtm app using gtm Dashboard service')
   new App({
     target: document.body,
     props: {
