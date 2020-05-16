@@ -36,7 +36,8 @@
     "test": "mocha @*/*-test.js",
     "prepare": "yarn build",
     "start": "electron dist/gtm-dash/main.js",
-    "dist": "electron-builder",
+    "package": "electron-builder",
+    "dist": "cargo build --release --manifest-path gtm/Cargo.toml && yarn build && electron-builder",
     "clean": "rm -rfv @*/*.js src/**/*.js dist",
     "gtm": "gtm/target/debug/gtm"
   },
