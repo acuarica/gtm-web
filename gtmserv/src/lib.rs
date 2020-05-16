@@ -216,30 +216,45 @@ pub fn get_notes(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::{self, Write};
+    use tempfile::NamedTempFile;
+
+    const PROJECT_JSON: &[u8] = br#"{"/path/to/emacs.d":"2020-05-04T04:39:54.911709457+02:00",
+            "/path/to/codemirror.next":"2020-05-04T04:38:18.093292086+02:00",
+            "/path/to/gtm":"2020-05-04T04:35:28.761863254+02:00",
+            "/path/to/gtm/web":"2020-05-04T04:44:39.112956448+02:00"}"#;
 
     #[test]
-    fn empty_projects() -> Result<(), std::io::Error> {
-        let mut file = tempfile::NamedTempFile::new()?;
-        use std::io::Write;
+    fn read_init_projects() -> Result<(), io::Error> {
+        let mut file = NamedTempFile::new()?;
+        file.write(PROJECT_JSON)?;
+        let ps = read_projects(file.path()).unwrap();
+        assert_eq!(ps.len(), 4);
+        assert!(ps.contains_key("/path/to/gtm"));
+        Ok(())
+    }
 
-        writeln!(file, "{{}}")?;
+    #[test]
+    fn read_empty_init_projects() -> Result<(), io::Error> {
+        let mut file = NamedTempFile::new()?;
+        file.write(b"{}")?;
         assert_eq!(read_projects(file.path()).unwrap().len(), 0);
         Ok(())
     }
 
     #[test]
-    fn test_read_projects() {
-        assert_eq!(read_projects("tests/cases/project.json").unwrap().len(), 10);
-        assert_eq!(
-            read_projects("tests/cases/project-empty.json")
-                .unwrap()
-                .len(),
-            0
-        );
+    fn gets_init_projects() -> Result<(), io::Error> {
+        let mut file = NamedTempFile::new()?;
+        file.write(PROJECT_JSON)?;
+        let ps = read_projects(file.path()).unwrap();
+        let ps = get_projects(&ps);
+        assert_eq!(ps.len(), 4);
+        assert!(ps.contains(&&"/path/to/gtm".to_string()));
+        Ok(())
     }
 
     #[test]
-    fn test_parse_file_entry_invalid() {
+    fn parse_file_entry_checks_invalid() {
         assert!(parse_file_entry("").is_err());
         assert!(parse_file_entry("src/file.ts:2797").is_err());
         assert!(parse_file_entry("src/file.ts:2797,m").is_err());
@@ -249,7 +264,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_file_entry() {
+    fn parses_file_entry() {
         assert_eq!(
             parse_file_entry("src/file.ts:150,1585861200:60,1585875600:90,m").unwrap(),
             FileNote {
@@ -289,7 +304,7 @@ mod tests {
     }
 
     #[test]
-    fn test_commit_note_invalid() {
+    fn checks_commit_note_invalid() {
         assert!(parse_commit_note("").is_err());
         assert!(parse_commit_note("[]").is_err());
         assert!(parse_commit_note("[ver:1total:213]").is_err());
@@ -298,7 +313,7 @@ mod tests {
     }
 
     #[test]
-    fn test_commit_note() {
+    fn parses_commit_note() {
         assert_eq!(
             parse_commit_note("[ver:2,total:213]").unwrap(),
             CommitNote {

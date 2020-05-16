@@ -1,18 +1,7 @@
-use gtmserv::get_projects;
 use git2::Commit;
 use git2::Error;
 use git2::Repository;
 use gtmserv::parse_commit_note;
-use gtmserv::read_projects;
-
-
-#[test]
-fn test_get_projects() {
-  let ps = read_projects("tests/cases/project.json").unwrap();
-  let ps = get_projects(&ps);
-  assert_eq!(ps.len(), 10);
-  assert!(ps.contains(&&"/Volumes/Data/work/#archive/emacs.d".to_string()));
-}
 
 pub fn create_test_repo() -> Result<(), Error> {
 
