@@ -17,32 +17,29 @@ async function writeJSON<T>(result: Promise<T>): Promise<void> {
   if (argv.length <= 2) {
     console.log('No enough arguments provided for gtm-mock')
     process.exit(2)
-  } else if (argv[2] !== 'export') {
-    console.log('Command argument for gtm-mock must be `export`')
-    process.exit(3)
-  } else if (argv.length <= 3) {
+  } else if (argv.length <= 2) {
     console.log('No enough arguments provided for gtm-mock export command')
-    process.exit(4)
+    process.exit(3)
   } else {
-    const command = argv[3]
+    const command = argv[2]
     const service = await MockService.create(readFile)
     try {
       switch (command) {
-        case '-data=commits':
-          if (argv.length <= 5) {
+        case 'commits':
+          if (argv.length <= 4) {
             console.log('No enough arguments provided for data=commits')
             process.exit(5)
           }
-          writeJSON(service.fetchCommits({ start: argv[4].split('=')[1], end: argv[5].split('=')[1] }))
+          writeJSON(service.fetchCommits({ start: argv[3].split('=')[1], end: argv[4].split('=')[1] }))
           break
-        case '-data=projects':
+        case 'projects':
           writeJSON(service.fetchProjectList())
           break
-        case '-data=status':
+        case 'status':
           writeJSON(service.fetchWorkdirStatus())
           break
         default:
-          console.log('Unrecognized gtm-mock export sub-command')
+          console.log('Unrecognized gtm-mock export sub-command, got:', argv)
           process.exit(6)
       }
     } catch (err) {

@@ -31,7 +31,7 @@ async function runGtm<T>(gtm: GtmSpawn, args: string[]): Promise<T> {
       throw new GtmErr(outBuf + errBuf, 0)
     }
   } else {
-    throw new GtmErr(outBuf, await exitCode ?? undefined)
+    throw new GtmErr(outBuf + errBuf, await exitCode ?? undefined)
   }
 }
 
