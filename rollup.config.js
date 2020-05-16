@@ -56,23 +56,10 @@ export const configs = {
     }
   },
 
-  gtm: {
-    input: 'src/app/gtm.js',
-    output: {
-      dir: 'dist/gtm',
-      format: 'iife',
-      name: 'gtm',
-    },
-    plugins: [
-      ...plugins(false),
-      production && terser.terser(),
-    ]
-  },
-
-  electron: {
+  app: {
     input: ['main', 'preload'].map(f => `src/desktop/${f}.js`),
     output: {
-      dir: 'dist/electron',
+      dir: 'dist/gtm-dash',
       sourcemap: true,
       format: 'cjs',
     },
@@ -80,8 +67,8 @@ export const configs = {
       ...plugins(true),
       copy({
         targets: [
-          { src: 'src/desktop/index.html', dest: 'dist/electron' },
-          { src: 'gtm/target/debug/gtm', dest: 'dist/electron' },
+          { src: 'src/desktop/index.html', dest: 'dist/gtm-dash' },
+          { src: 'gtm/target/debug/gtm', dest: 'dist/gtm-dash' },
         ],
       }),
     ],

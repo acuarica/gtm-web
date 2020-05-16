@@ -13,11 +13,11 @@
     "@gtm"
   ],
   "type": "module",
-  "main": "dist/electron/main.js",
+  "main": "dist/gtm-dash/main.js",
   "build": {
     "appId": "gtm-dash",
     "files": [
-      "dist/electron/**/*",
+      "dist/gtm-dash/**/*",
       "package.json"
     ],
     "asar": false,
@@ -30,12 +30,12 @@
     "last 1 chrome versions"
   ],
   "scripts": {
-    "dev": "./make.js dev:dev:gtm serve",
+    "dev": "./make.js dev:dev:app serve",
     "build": "tsc && rollup --config",
     "lint": "eslint **/*.ts *.js",
     "test": "mocha @*/*-test.js",
     "prepare": "yarn build",
-    "start": "electron dist/electron/main.js",
+    "start": "electron dist/gtm-dash/main.js",
     "dist": "electron-builder",
     "clean": "rm -rfv @*/*.js src/**/*.js dist",
     "gtm": "gtm/target/debug/gtm"
