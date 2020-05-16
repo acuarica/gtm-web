@@ -134,8 +134,12 @@ const commands = {
             end: req.query.to
           };
           if (range.start && range.end) {
-            const data = await service.fetchCommits(range)
-            send(res, 200, data, { "Access-Control-Allow-Origin": "*" });
+            try {
+              const data = await service.fetchCommits(range)
+              send(res, 200, data, { "Access-Control-Allow-Origin": "*" });
+            } catch (e) {
+              console.error(e)
+            }
           } else {
             console.warn("Argument to or from not defined:", range)
           }

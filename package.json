@@ -39,7 +39,7 @@
     "package": "electron-builder",
     "dist": "cargo build --release --manifest-path gtm/Cargo.toml && yarn build && electron-builder",
     "clean": "rm -rfv @*/*.js src/**/*.js dist",
-    "gtm": "gtm/target/debug/gtm"
+    "gtm": "gtmserv/target/debug/gtmserv"
   },
   "devDependencies": {
     "chart.js": "^2.9.3",
