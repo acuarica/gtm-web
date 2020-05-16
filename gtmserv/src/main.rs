@@ -3,14 +3,14 @@
 extern crate serde_derive;
 extern crate serde_json;
 
-use gtmserv::get_notes;
 use git2::*;
 use gtmserv::fetch_projects;
+use gtmserv::get_notes;
 use gtmserv::to_unixtime;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
-#[cfg_attr(debug_assertions, structopt(version = "holaversion"))]
+#[cfg_attr(debug_assertions, structopt(version = env!("GTM_VERSION")))]
 /// The gtm Dashboard services
 ///
 /// Returns gtm time data for the specified services.

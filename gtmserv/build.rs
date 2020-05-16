@@ -1,9 +1,20 @@
+use std::process::Command;
+use std::env;
 
 fn main() {
-  // Tell Cargo that if the given file changes, to rerun this build script.
-  // println!("cargo:rerun-if-changed=src/hello.c");
-  // Use the `cc` crate to build a C file and statically link it.
-  // cc::Build::new()
-  //     .file("src/hello.c")
-  //     .compile("hello");
+    let sha = run_command(Command::new("git").args(&["rev-parse", "--short", "HEAD"]));
+    println!("cargo:rustc-env=GTM_SHA_SHORT={}", sha);
+
+    let semver = env::var("CARGO_PKG_VERSION").unwrap();
+
+    println!("cargo:rustc-env=GTM_VERSION={}-dev-{}", semver, sha);
+}
+
+fn run_command(command: &mut Command) -> String {
+    if let Ok(o) = command.output() {
+        if o.status.success() {
+            return String::from_utf8_lossy(&o.stdout).trim().to_owned();
+        }
+    }
+    return "UNKNOWN".to_owned();
 }
