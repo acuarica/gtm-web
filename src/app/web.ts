@@ -4,6 +4,10 @@ export class WebService implements GtmService {
 
   constructor(readonly host: string = '') { }
 
+  getVersion(): Promise<string | null> {
+    return this.fetchurl('/version')
+  }
+
   fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
     return this.fetchurl(`/data/commits?from=${filter.start}&to=${filter.end}`)
   }
@@ -26,6 +30,10 @@ export class WebService implements GtmService {
 export class DelayedService implements GtmService {
 
   constructor(readonly service: GtmService, readonly timeout: number) { }
+
+  getVersion(): Promise<string | null> {
+    return this.service.getVersion()
+  }
 
   async fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
     return this.delay(async () => this.service.fetchCommits(filter))
@@ -51,6 +59,10 @@ export class DelayedService implements GtmService {
 export class FailureService implements GtmService {
 
   constructor(readonly service: GtmService) { }
+
+  getVersion(): Promise<string | null> {
+    throw new Error('Could not retrieve version');
+  }
 
   async fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
     return this.fail(async () => this.service.fetchCommits(filter))

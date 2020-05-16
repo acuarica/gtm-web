@@ -12,6 +12,10 @@ export class MockService implements GtmService {
     readonly workdir: WorkdirStatusList) {
   }
 
+  getVersion(): Promise<string | null> {
+    return Promise.resolve('gtm mock service')
+  }
+
   static async create(loader: Loader): Promise<MockService> {
     const service = new MockService(
       await loader('commits') as Commit[],

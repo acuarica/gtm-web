@@ -4,40 +4,13 @@ import { parseDate } from '@gtm/notes'
 
 export type GtmSpawn = (args: string[]) => ChildProcessWithoutNullStreams
 
-async function runGtm<T>(gtm: GtmSpawn, args: string[]): Promise<T> {
-  const child = gtm(args);
-
-  const exitCode = new Promise<number | null>(resolve => {
-    child.on('exit', code => {
-      resolve(code)
-    });
-  });
-
-  let outBuf = ''
-  for await (const data of child.stdout) {
-    outBuf += data
-  }
-
-  let errBuf = ''
-  for await (const data of child.stderr) {
-    errBuf += data
-  }
-
-  if (await exitCode === 0) {
-    try {
-      const json = JSON.parse(outBuf)
-      return json
-    } catch (err) {
-      throw new GtmErr(outBuf + errBuf, 0)
-    }
-  } else {
-    throw new GtmErr(outBuf + errBuf, await exitCode ?? undefined)
-  }
-}
-
 export class GitService implements GtmService {
 
   constructor(readonly gtm: GtmSpawn) { }
+
+  getVersion(): Promise<string | null> {
+    return this.runGtm(['--version'])
+  }
 
   fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
     const start = parseDate(filter.start)
@@ -52,17 +25,53 @@ export class GitService implements GtmService {
       `--to-date=${end.add(1, 'day').format('YYYY-MM-DD')}`,
     ]
 
-    return runGtm(this.gtm, args)
+    return this.fetchGtm(args)
   }
 
   fetchProjectList(): Promise<string[]> {
     const args = ['projects']
-    return runGtm(this.gtm, args)
+    return this.fetchGtm(args)
   }
 
   fetchWorkdirStatus(): Promise<WorkdirStatusList> {
     const args = ['status']
-    return runGtm(this.gtm, args)
+    return this.fetchGtm(args)
+  }
+
+  private async fetchGtm<T>(args: string[]): Promise<T> {
+    const outBuf = await this.runGtm(args)
+    try {
+      const json = JSON.parse(outBuf)
+      return json
+    } catch (err) {
+      throw new GtmErr(outBuf, 0)
+    }
+  }
+
+  private async runGtm(args: string[]): Promise<string> {
+    const child = this.gtm(args);
+
+    const exitCode = new Promise<number | null>(resolve => {
+      child.on('exit', code => {
+        resolve(code)
+      });
+    });
+
+    let outBuf = ''
+    for await (const data of child.stdout) {
+      outBuf += data
+    }
+
+    let errBuf = ''
+    for await (const data of child.stderr) {
+      errBuf += data
+    }
+
+    if (await exitCode === 0) {
+      return outBuf
+    } else {
+      throw new GtmErr(outBuf + errBuf, await exitCode ?? undefined)
+    }
   }
 
 }
