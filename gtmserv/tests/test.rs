@@ -51,11 +51,21 @@ fn status() {
         FileEvent::new(1589673494, "src/file2.ts"),
         FileEvent::new(1589673601, "test/test1.ts"),
         FileEvent::new(1589673632, "test/test2.ts"),
-        FileEvent::new(1589673662, "dist/dist1/ts"),
-        FileEvent::new(1589673678, "assets/logo.png"),
+        FileEvent::new(1589673658, "assets/logo.png"),
         FileEvent::new(1589673732, "assets/main.css"),
     ];
 
     let map = get_status(swd);
-    assert!(map.get(&1589673480).unwrap().contains_key("src/file1.ts"));
+
+    let bin = map.get(&1589673480).unwrap();
+    assert_eq!(bin.timespent("src/file1.ts".to_string()), 30);
+    assert_eq!(bin.timespent("src/file2.ts".to_string()), 30);
+
+    let bin = map.get(&1589673600).unwrap();
+    assert_eq!(bin.timespent("test/test1.ts".to_string()), 20);
+    assert_eq!(bin.timespent("test/test2.ts".to_string()), 20);
+    assert_eq!(bin.timespent("assets/logo.png".to_string()), 20);
+
+    let bin = map.get(&1589673720).unwrap();
+    assert_eq!(bin.timespent("assets/main.css".to_string()), 60);
 }

@@ -227,22 +227,47 @@ impl FileEvent {
     }
 }
 
-type StatusWorkdir = Vec<FileEvent>;
-
-type FileEventMap = HashMap<u64, HashMap<String, usize>>;
-
 /// Given a Unix epoch,
 /// returns a Unix epoch rounded down to the minute.
 /// It is used to create bins at the minute granularity.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// assert_eq!(gtmserv::down_to_minute(1589673494), 1589673480);
 /// ```
 pub fn down_to_minute(timestamp: u64) -> u64 {
     (timestamp / 60) * 60
 }
+
+pub struct TimelineBin {
+    filemap: HashMap<Filepath, usize>,
+    count: usize,
+}
+
+impl TimelineBin {
+    fn new() -> TimelineBin {
+        TimelineBin {
+            filemap: HashMap::new(),
+            count: 0,
+        }
+    }
+
+    fn append(self: &mut Self, filepath: Filepath) {
+        self.count += 1;
+        let count = self.filemap.entry(filepath).or_insert(0);
+        *count += 1;
+    }
+
+    pub fn timespent(self: &Self, filepath: Filepath) -> Seconds {
+        let count = self.filemap.get(&filepath).unwrap();
+        (60 * count / self.count) as u32
+    }
+}
+
+type StatusWorkdir = Vec<FileEvent>;
+
+type FileEventMap = HashMap<u64, TimelineBin>;
 
 /// Creates a file event map.
 pub fn get_status(swd: StatusWorkdir) -> FileEventMap {
@@ -251,11 +276,12 @@ pub fn get_status(swd: StatusWorkdir) -> FileEventMap {
     for fe in swd {
         assert!(prevepoch < fe.timestamp);
         let minute = down_to_minute(fe.timestamp);
-        let bin = map.entry(minute).or_insert_with(HashMap::new);
-        *(*bin).entry(fe.filename).or_insert(0) += 1;
+        let bin = map.entry(minute).or_insert_with(TimelineBin::new);
+        (*bin).append(fe.filename);
 
         prevepoch = fe.timestamp;
     }
+
     map
 }
 
