@@ -213,6 +213,52 @@ pub fn get_notes(
     Ok(())
 }
 
+pub struct FileEvent {
+    timestamp: u64,
+    filename: String,
+}
+
+impl FileEvent {
+    pub fn new(timestamp: u64, filename: &str) -> FileEvent {
+        FileEvent {
+            timestamp,
+            filename: filename.to_string(),
+        }
+    }
+}
+
+type StatusWorkdir = Vec<FileEvent>;
+
+type FileEventMap = HashMap<u64, HashMap<String, usize>>;
+
+/// Given a Unix epoch,
+/// returns a Unix epoch rounded down to the minute.
+/// It is used to create bins at the minute granularity.
+/// 
+/// # Examples
+/// 
+/// ```
+/// assert_eq!(gtmserv::down_to_minute(1589673494), 1589673480);
+/// ```
+pub fn down_to_minute(timestamp: u64) -> u64 {
+    (timestamp / 60) * 60
+}
+
+/// Creates a file event map.
+pub fn get_status(swd: StatusWorkdir) -> FileEventMap {
+    let mut map = HashMap::new();
+    let mut prevepoch = 0;
+    for fe in swd {
+        assert!(prevepoch < fe.timestamp);
+        let minute = down_to_minute(fe.timestamp);
+        let bin = map.entry(minute).or_insert_with(HashMap::new);
+        *(*bin).entry(fe.filename).or_insert(0) += 1;
+
+        prevepoch = fe.timestamp;
+    }
+    map
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
