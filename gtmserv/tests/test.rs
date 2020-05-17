@@ -1,7 +1,7 @@
-use gtmserv::get_status;
 use git2::Commit;
 use git2::Error;
 use git2::Repository;
+use gtmserv::get_status;
 use gtmserv::parse_commit_note;
 use gtmserv::FileEvent;
 
@@ -68,4 +68,6 @@ fn status() {
 
     let bin = map.get(&1589673720).unwrap();
     assert_eq!(bin.timespent("assets/main.css".to_string()), 60);
+
+    assert_eq!(map.commit_note().total, 180);
 }

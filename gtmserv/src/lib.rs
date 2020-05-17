@@ -46,6 +46,16 @@ pub struct CommitNote {
     pub files: Vec<FileNote>,
 }
 
+impl CommitNote {
+    fn new(version: u32, total: Seconds) -> CommitNote {
+        CommitNote {
+            version,
+            total,
+            files: Vec::new(),
+        }
+    }
+}
+
 #[derive(PartialEq, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct Commit {
@@ -240,6 +250,10 @@ pub fn down_to_minute(timestamp: u64) -> u64 {
     (timestamp / 60) * 60
 }
 
+pub fn down_to_hour(timestamp: u64) -> u64 {
+    (timestamp / 3600) * 3600
+}
+
 pub struct TimelineBin {
     filemap: HashMap<Filepath, usize>,
     count: usize,
@@ -267,22 +281,67 @@ impl TimelineBin {
 
 type StatusWorkdir = Vec<FileEvent>;
 
-type FileEventMap = HashMap<u64, TimelineBin>;
+pub struct Timeline {
+    timeline: HashMap<u64, TimelineBin>,
+}
 
-/// Creates a file event map.
-pub fn get_status(swd: StatusWorkdir) -> FileEventMap {
-    let mut map = HashMap::new();
-    let mut prevepoch = 0;
-    for fe in swd {
-        assert!(prevepoch < fe.timestamp);
-        let minute = down_to_minute(fe.timestamp);
-        let bin = map.entry(minute).or_insert_with(TimelineBin::new);
-        (*bin).append(fe.filename);
-
-        prevepoch = fe.timestamp;
+impl Timeline {
+    pub fn new() -> Timeline {
+        Timeline {
+            timeline: HashMap::new(),
+        }
     }
 
-    map
+    pub fn append(self: &mut Self, fileevent: FileEvent) {
+        let minute = down_to_minute(fileevent.timestamp);
+        let bin = self.timeline.entry(minute).or_insert_with(TimelineBin::new);
+        (*bin).append(fileevent.filename.to_owned());
+    }
+
+    pub fn get(self: &Self, timestamp: &u64) -> Option<&TimelineBin> {
+        self.timeline.get(timestamp)
+    }
+
+    pub fn commit_note(self) -> CommitNote {
+        let mut cn = CommitNote::new(1, 0);
+        let mut fs = HashMap::new();
+        for (ts, bin) in self.timeline {
+            for (f, _count) in &bin.filemap {
+                let (timespent, e) = fs.entry(f.to_owned()).or_insert((0, HashMap::new()));
+                let h = down_to_hour(ts).to_string();
+                let t = (*e).entry(h).or_insert(0);
+                let seconds = bin.timespent(f.to_owned());
+                *timespent += seconds;
+                *t += seconds;
+                cn.total += seconds;
+            }
+        }
+
+        for (fp, tl) in fs {
+            let note = FileNote {
+                source_file: fp,
+                status: "r".to_string(),
+                time_spent: 0,
+                timeline: tl.1,
+            };
+            cn.files.push(note);
+        }
+
+        cn
+    }
+}
+
+/// Creates a file event map.
+pub fn get_status(swd: StatusWorkdir) -> Timeline {
+    let mut timeline = Timeline::new();
+    let mut prevepoch = 0;
+    for fileevent in swd {
+        assert!(prevepoch < fileevent.timestamp);
+        prevepoch = fileevent.timestamp;
+        timeline.append(fileevent);
+    }
+
+    timeline
 }
 
 #[cfg(test)]
