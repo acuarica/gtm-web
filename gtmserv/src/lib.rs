@@ -58,6 +58,14 @@ impl CommitNote {
 
 #[derive(PartialEq, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
+pub struct WorkdirStatus {
+    pub total: Seconds,
+    pub label: String,
+    pub commit_note: CommitNote,
+}
+
+#[derive(PartialEq, Debug, Serialize)]
+#[serde(rename_all = "PascalCase")]
 pub struct Commit {
     pub author: String,
     pub date: String,
@@ -223,8 +231,9 @@ pub fn get_notes(
     Ok(())
 }
 
+#[derive(Debug)]
 pub struct FileEvent {
-    timestamp: u64,
+    pub timestamp: u64,
     filename: String,
 }
 
@@ -342,6 +351,10 @@ pub fn get_status(swd: StatusWorkdir) -> Timeline {
     }
 
     timeline
+}
+
+pub fn read_status() {
+
 }
 
 #[cfg(test)]
