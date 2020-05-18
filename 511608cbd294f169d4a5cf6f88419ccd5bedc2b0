@@ -1,0 +1,7 @@
+[ver:1,total:1146]
+.gtm/terminal.app:817,1589810400:265,1589821200:30,1589824800:80,1589828400:410,1589832000:32,r
+src/dev/main.ts:140,1589781600:60,1589785200:60,1589832000:20,m
+node_modules/chartjs-plugin-datalabels/types/context.d.ts:69,1589828400:69,r
+src/app/Home.svelte:61,1589828400:61,r
+src/app/Project.svelte:46,1589828400:46,r
+src/app/Progress.svelte:13,1589828400:13,r
