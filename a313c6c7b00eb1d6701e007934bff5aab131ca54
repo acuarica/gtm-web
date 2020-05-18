@@ -1,0 +1,6 @@
+[ver:1,total:930]
+package.json:375,1589835600:225,1589839200:150,m
+.gtm/terminal.app:250,1589835600:250,r
+src/demo/demo.ts:180,1589839200:180,r
+rollup.config.js:105,1589835600:105,r
+gtmserv/tests/test.rs:20,1589835600:20,r
