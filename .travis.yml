@@ -3,6 +3,10 @@ os:
   - osx
   - windows
 
+# https://travis-ci.community/t/timeout-after-build-finished-and-succeeded/1336
+env:
+  - YARN_GPG=no
+
 language: node_js
 node_js: v13.12.0
 
