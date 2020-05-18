@@ -1,15 +1,14 @@
 #![feature(int_error_matching)]
 
-use chrono::NaiveDate;
-use chrono::ParseResult;
+use chrono::{NaiveDate, ParseResult};
 use git2::{Error, Repository};
 use regex::Regex;
 use serde::Serialize;
-use std::num::IntErrorKind;
 use std::{
     collections::HashMap,
     fs::File,
     io::{BufRead, Cursor},
+    num::IntErrorKind,
     path::Path,
 };
 
@@ -170,18 +169,16 @@ pub enum FileNoteParseError {
 /// Parses a file note entry.
 ///
 /// ```
+/// #[macro_use] extern crate maplit;
 /// assert_eq!(
 ///     gtmserv::parse_file_note("src/file.ts:150,1585861200:60,1585875600:90,m").unwrap(),
 ///     gtmserv::FileNote {
 ///         source_file: "src/file.ts".to_owned(),
 ///         time_spent: 150,
-///         timeline: [
-///             ("1585861200".to_owned(), 60),
-///             ("1585875600".to_owned(), 90)
-///         ]
-///         .iter()
-///         .cloned()
-///         .collect(),
+///         timeline: hashmap! {
+///             "1585861200".to_owned() => 60,
+///             "1585875600".to_owned() => 90,
+///         },
 ///         status: "m".to_owned(),
 ///     }
 /// );
@@ -192,17 +189,14 @@ pub enum FileNoteParseError {
 ///  gtmserv::FileNote {
 ///   source_file: "comment/src/comment.ts".to_string(),
 ///   time_spent: 2797,
-///   timeline: [
-///     ("1585861200".to_owned(), 354),
-///     ("1585875600".to_owned(), 50),
-///     ("1585879200".to_owned(), 240),
-///     ("1585908000".to_owned(), 444),
-///     ("1585918800".to_owned(), 1629),
-///     ("1585929600".to_owned(), 80),
-///   ]
-///   .iter()
-///   .cloned()
-///   .collect(),
+///   timeline: hashmap! {
+///     "1585861200".to_owned() => 354,
+///     "1585875600".to_owned() => 50,
+///     "1585879200".to_owned() => 240,
+///     "1585908000".to_owned() => 444,
+///     "1585918800".to_owned() => 1629,
+///     "1585929600".to_owned() => 80,
+///   },
 ///   status: "m".to_string(),
 /// });
 /// ```
@@ -292,9 +286,9 @@ pub enum CommitNoteParseError {
 }
 
 /// Parses a `CommitNote`.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```
 /// assert_eq!(
 ///     gtmserv::parse_commit_note("[ver:2,total:123]").unwrap(),
@@ -305,9 +299,9 @@ pub enum CommitNoteParseError {
 ///     }
 /// );
 /// ```
-/// 
+///
 /// A more contrived example:
-/// 
+///
 /// ```
 /// #[macro_use] extern crate maplit;
 /// assert_eq!(
@@ -340,9 +334,9 @@ pub enum CommitNoteParseError {
 ///         }
 ///     );
 /// ```
-/// 
+///
 /// We can also check for individual files:
-/// 
+///
 /// ```
 /// #[macro_use] extern crate maplit;
 /// let note = gtmserv::parse_commit_note("[ver:1,total:4037]
@@ -469,6 +463,10 @@ pub fn down_to_hour(timestamp: u64) -> u64 {
     (timestamp / 3600) * 3600
 }
 
+pub struct Timeline {
+    timeline: HashMap<u64, TimelineBin>,
+}
+
 pub struct TimelineBin {
     filemap: HashMap<Filepath, usize>,
     count: usize,
@@ -488,35 +486,120 @@ impl TimelineBin {
         *count += 1;
     }
 
-    pub fn timespent(self: &Self, filepath: Filepath) -> Seconds {
+    fn timespent(self: &Self, filepath: Filepath) -> Seconds {
         let count = self.filemap.get(&filepath).unwrap();
-        (60 * count / self.count) as u32
+        (60 * count / self.count) as Seconds
     }
 }
 
-type StatusWorkdir = Vec<FileEvent>;
-
-pub struct Timeline {
-    timeline: HashMap<u64, TimelineBin>,
-}
-
 impl Timeline {
-    pub fn new() -> Timeline {
+    fn new() -> Timeline {
         Timeline {
             timeline: HashMap::new(),
         }
     }
 
-    pub fn append(self: &mut Self, fileevent: FileEvent) {
-        let minute = down_to_minute(fileevent.timestamp);
-        let bin = self.timeline.entry(minute).or_insert_with(TimelineBin::new);
-        (*bin).append(fileevent.filename.to_owned());
+    /// Creates a `Timeline` from a list of file events.
+    /// 
+    /// ```
+    /// use gtmserv::*;
+    /// Timeline::from_events(vec![
+    ///     FileEvent::new(1589673491, "src/file1.ts"),
+    ///     FileEvent::new(1589673601, "test/test1.ts"),
+    /// ]);
+    /// ```
+    /// 
+    /// The events in the list must be ordered by timestamp.
+    /// 
+    /// ```should_panic
+    /// use gtmserv::*;
+    /// Timeline::from_events(vec![
+    ///     FileEvent::new(1589673491, "src/file1.ts"),
+    ///     FileEvent::new(1589673601, "test/test1.ts"),
+    ///     FileEvent::new(1589673600, "test/test2.ts"),
+    /// ]);
+    /// ```
+    pub fn from_events(events: Vec<FileEvent>) -> Timeline {
+        let mut timeline = Timeline::new();
+        let mut prevepoch = 0;
+        for event in events {
+            assert!(prevepoch < event.timestamp);
+            prevepoch = event.timestamp;
+            timeline.append(event);
+        }
+
+        timeline
     }
 
+    /// Adds a new event to this timeline.
+    fn append(self: &mut Self, event: FileEvent) {
+        let minute = down_to_minute(event.timestamp);
+        let bin = self.timeline.entry(minute).or_insert_with(TimelineBin::new);
+        (*bin).append(event.filename.to_owned());
+    }
+
+    /// ```
+    /// use gtmserv::*;
+    /// let map = Timeline::from_events(vec![
+    ///     FileEvent::new(1589673491, "src/file1.ts"),
+    ///     FileEvent::new(1589673494, "src/file2.ts"),
+    ///     FileEvent::new(1589673601, "test/test1.ts"),
+    ///     FileEvent::new(1589673632, "test/test2.ts"),
+    ///     FileEvent::new(1589673658, "assets/logo.png"),
+    ///     FileEvent::new(1589673732, "assets/main.css"),
+    ///     FileEvent::new(1589673854, "src/file2.ts"),
+    /// ]);
+    ///
+    /// let bin = map.get(&1589673480).unwrap();
+    /// assert_eq!(bin.timespent("src/file1.ts".to_string()), 30);
+    /// assert_eq!(bin.timespent("src/file2.ts".to_string()), 30);
+    ///
+    /// let bin = map.get(&1589673600).unwrap();
+    /// assert_eq!(bin.timespent("test/test1.ts".to_string()), 20);
+    /// assert_eq!(bin.timespent("test/test2.ts".to_string()), 20);
+    /// assert_eq!(bin.timespent("assets/logo.png".to_string()), 20);
+    /// 
+    /// let bin = map.get(&1589673720).unwrap();
+    /// assert_eq!(bin.timespent("assets/main.css".to_string()), 60);
+    /// 
+    /// let bin = map.get(&1589673840).unwrap();
+    /// assert_eq!(bin.timespent("src/file2.ts".to_string()), 60);
+    /// ```
     pub fn get(self: &Self, timestamp: &u64) -> Option<&TimelineBin> {
         self.timeline.get(timestamp)
     }
 
+    ///
+    /// ```
+    /// use gtmserv::*;
+    /// 
+    /// let map = Timeline::from_events(vec![
+    ///     FileEvent::new(1589673491, "src/file1.ts"),
+    ///     FileEvent::new(1589673494, "src/file2.ts"),
+    ///     FileEvent::new(1589673601, "test/test1.ts"),
+    ///     FileEvent::new(1589673632, "test/test2.ts"),
+    ///     FileEvent::new(1589673658, "assets/logo.png"),
+    ///     FileEvent::new(1589673732, "assets/main.css"),
+    /// ]);
+    ///
+    /// let bin = map.get(&1589673480).unwrap();
+    /// assert_eq!(bin.timespent("src/file1.ts".to_string()), 30);
+    /// assert_eq!(bin.timespent("src/file2.ts".to_string()), 30);
+    ///
+    /// let bin = map.get(&1589673600).unwrap();
+    /// assert_eq!(bin.timespent("test/test1.ts".to_string()), 20);
+    /// assert_eq!(bin.timespent("test/test2.ts".to_string()), 20);
+    /// assert_eq!(bin.timespent("assets/logo.png".to_string()), 20);
+    ///
+    /// let bin = map.get(&1589673720).unwrap();
+    /// assert_eq!(bin.timespent("assets/main.css".to_string()), 60);
+    ///
+    /// let commit_note = map.commit_note();
+    /// assert_eq!(commit_note.total, 180);
+    /// assert!(commit_note.files.contains(
+    ///     &parse_file_note("test/test1.ts:20,1589673600:20,r").unwrap()
+    ///     ));
+    /// ```
     pub fn commit_note(self) -> CommitNote {
         let mut cn = CommitNote::new(1, 0);
         let mut fs = HashMap::new();
@@ -536,7 +619,7 @@ impl Timeline {
             let note = FileNote {
                 source_file: fp,
                 status: "r".to_string(),
-                time_spent: 0,
+                time_spent: tl.0,
                 timeline: tl.1,
             };
             cn.files.push(note);
@@ -545,18 +628,3 @@ impl Timeline {
         cn
     }
 }
-
-/// Creates a file event map.
-pub fn get_status(swd: StatusWorkdir) -> Timeline {
-    let mut timeline = Timeline::new();
-    let mut prevepoch = 0;
-    for fileevent in swd {
-        assert!(prevepoch < fileevent.timestamp);
-        prevepoch = fileevent.timestamp;
-        timeline.append(fileevent);
-    }
-
-    timeline
-}
-
-pub fn read_status() {}

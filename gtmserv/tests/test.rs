@@ -4,12 +4,14 @@ use git2::Commit;
 use git2::Error;
 use git2::Repository;
 use gtmserv::get_projects;
-use gtmserv::get_status;
 use gtmserv::parse_commit_note;
 use gtmserv::read_projects;
-use gtmserv::FileEvent;
+use gtmserv::{Timeline, FileEvent};
 
-use std::io::{self, Write};
+use std::{
+    env,
+    io::{self, Write},
+};
 use tempfile::NamedTempFile;
 
 const PROJECT_JSON: &[u8] = br#"{"/path/to/emacs.d":"2020-05-04T04:39:54.911709457+02:00",
@@ -44,6 +46,14 @@ fn gets_init_projects() -> Result<(), io::Error> {
     assert_eq!(ps.len(), 4);
     assert!(ps.contains(&&"/path/to/gtm".to_string()));
     Ok(())
+}
+
+#[test]
+fn test() {
+
+    // TempDir
+    // let mut file = NamedTempFile::new()?;
+    // env::set_var("HOME", "yes");
 }
 
 pub fn create_test_repo() -> Result<(), Error> {
@@ -87,28 +97,4 @@ fn pc(commit: &Commit) {
 
 #[test]
 fn status() {
-    let swd = vec![
-        FileEvent::new(1589673491, "src/file1.ts"),
-        FileEvent::new(1589673494, "src/file2.ts"),
-        FileEvent::new(1589673601, "test/test1.ts"),
-        FileEvent::new(1589673632, "test/test2.ts"),
-        FileEvent::new(1589673658, "assets/logo.png"),
-        FileEvent::new(1589673732, "assets/main.css"),
-    ];
-
-    let map = get_status(swd);
-
-    let bin = map.get(&1589673480).unwrap();
-    assert_eq!(bin.timespent("src/file1.ts".to_string()), 30);
-    assert_eq!(bin.timespent("src/file2.ts".to_string()), 30);
-
-    let bin = map.get(&1589673600).unwrap();
-    assert_eq!(bin.timespent("test/test1.ts".to_string()), 20);
-    assert_eq!(bin.timespent("test/test2.ts".to_string()), 20);
-    assert_eq!(bin.timespent("assets/logo.png".to_string()), 20);
-
-    let bin = map.get(&1589673720).unwrap();
-    assert_eq!(bin.timespent("assets/main.css".to_string()), 60);
-
-    assert_eq!(map.commit_note().total, 180);
 }
