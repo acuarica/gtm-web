@@ -1,9 +1,50 @@
+#![feature(int_error_matching)]
+
 use git2::Commit;
 use git2::Error;
 use git2::Repository;
+use gtmserv::get_projects;
 use gtmserv::get_status;
 use gtmserv::parse_commit_note;
+use gtmserv::read_projects;
 use gtmserv::FileEvent;
+
+use std::io::{self, Write};
+use tempfile::NamedTempFile;
+
+const PROJECT_JSON: &[u8] = br#"{"/path/to/emacs.d":"2020-05-04T04:39:54.911709457+02:00",
+            "/path/to/codemirror.next":"2020-05-04T04:38:18.093292086+02:00",
+            "/path/to/gtm":"2020-05-04T04:35:28.761863254+02:00",
+            "/path/to/gtm/web":"2020-05-04T04:44:39.112956448+02:00"}"#;
+
+#[test]
+fn read_init_projects() -> Result<(), io::Error> {
+    let mut file = NamedTempFile::new()?;
+    file.write(PROJECT_JSON)?;
+    let ps = read_projects(file.path()).unwrap();
+    assert_eq!(ps.len(), 4);
+    assert!(ps.contains_key("/path/to/gtm"));
+    Ok(())
+}
+
+#[test]
+fn read_empty_init_projects() -> Result<(), io::Error> {
+    let mut file = NamedTempFile::new()?;
+    file.write(b"{}")?;
+    assert_eq!(read_projects(file.path()).unwrap().len(), 0);
+    Ok(())
+}
+
+#[test]
+fn gets_init_projects() -> Result<(), io::Error> {
+    let mut file = NamedTempFile::new()?;
+    file.write(PROJECT_JSON)?;
+    let ps = read_projects(file.path()).unwrap();
+    let ps = get_projects(&ps);
+    assert_eq!(ps.len(), 4);
+    assert!(ps.contains(&&"/path/to/gtm".to_string()));
+    Ok(())
+}
 
 pub fn create_test_repo() -> Result<(), Error> {
     // let repo = Repository::open("/Users/luigi/work/home")?;
