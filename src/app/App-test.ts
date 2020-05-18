@@ -2,32 +2,19 @@ import App from './App.svelte'
 import { WebService, DelayedService, FailureService } from './web'
 import { WorkdirStatusList, Commit, CommitsFilter } from '@gtm/notes'
 
-const web = new WebService()
-const delay = new DelayedService(web, 3000)
-const fail = new FailureService(delay)
-
-export default [{
-  component: App,
-  name: 'App with web service',
-  props: {
-    fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => web.fetchCommits(filter),
-    fetchProjectList: (): Promise<string[]> => web.fetchProjectList(),
-    fetchWorkdirStatus: (): Promise<WorkdirStatusList> => web.fetchWorkdirStatus(),
+export default [
+  { service: new WebService(), name: 'web service' },
+  { service: new FailureService(), name: 'failure web service' },
+  { service: new DelayedService(new WebService(), 3000), name: 'delayed web service' },
+  { service: new DelayedService(new FailureService(), 4000), name: 'delayed failure web service' },
+].map(t => {
+  return {
+    component: App,
+    name: `with ${t.name}`,
+    props: {
+      fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => t.service.fetchCommits(filter),
+      fetchProjectList: (): Promise<string[]> => t.service.fetchProjectList(),
+      fetchWorkdirStatus: (): Promise<WorkdirStatusList> => t.service.fetchWorkdirStatus(),
+    }
   }
-}, {
-  component: App,
-  name: 'App using delayed web service',
-  props: {
-    fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => delay.fetchCommits(filter),
-    fetchProjectList: (): Promise<string[]> => delay.fetchProjectList(),
-    fetchWorkdirStatus: (): Promise<WorkdirStatusList> => delay.fetchWorkdirStatus(),
-  }
-}, {
-  component: App,
-  name: 'App using failure web service',
-  props: {
-    fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => fail.fetchCommits(filter),
-    fetchProjectList: (): Promise<string[]> => fail.fetchProjectList(),
-    fetchWorkdirStatus: (): Promise<WorkdirStatusList> => fail.fetchWorkdirStatus(),
-  }
-}]
+})

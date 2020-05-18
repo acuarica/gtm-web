@@ -58,27 +58,25 @@ export class DelayedService implements GtmService {
 }
 export class FailureService implements GtmService {
 
-  constructor(readonly service: GtmService) { }
-
   getVersion(): Promise<string | null> {
-    throw new Error('Could not retrieve version');
+    throw new Error('No version found in FailureService');
   }
 
   async fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
-    return this.fail(async () => this.service.fetchCommits(filter))
+    return this.fail(`commits ${JSON.stringify(filter)}`)
   }
 
   async fetchProjectList(): Promise<string[]> {
-    return this.fail(async () => this.service.fetchProjectList())
+    return this.fail('project list')
   }
 
   async fetchWorkdirStatus(): Promise<WorkdirStatusList> {
-    return this.fail(async () => this.service.fetchWorkdirStatus())
+    return this.fail('workdir status')
   }
 
-  private fail<T>(action: () => T): Promise<T> {
+  private fail<T>(service: string): Promise<T> {
     return new Promise(function (_, reject) {
-      reject(action())
+      reject({ reason: 'Testing with FailureService', service: service })
     })
   }
 
