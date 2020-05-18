@@ -19,7 +19,6 @@
     if (chart) chart.destroy();
     // chart.config
     const ctx = canvas.getContext("2d");
-    console.log("@chart/mount", config);
     chart = new Chart(ctx, config);
     // chart.data = config.data
     // chart.options = config.options

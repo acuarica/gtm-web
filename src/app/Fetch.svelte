@@ -9,5 +9,5 @@
 {:then value}
   <slot {value} />
 {:catch error}
-  <p style="color: red">{error} while performing fetch</p>
+  <p style="color: red">Got {JSON.stringify(error)} while performing fetch</p>
 {/await}

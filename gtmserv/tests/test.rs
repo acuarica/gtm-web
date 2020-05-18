@@ -1,17 +1,8 @@
 #![feature(int_error_matching)]
 
-use git2::Commit;
-use git2::Error;
-use git2::Repository;
-use gtmserv::get_projects;
-use gtmserv::parse_commit_note;
-use gtmserv::read_projects;
-use gtmserv::{Timeline, FileEvent};
-
-use std::{
-    env,
-    io::{self, Write},
-};
+use git2::{Commit, Error, Repository};
+use gtmserv::{get_projects, parse_commit_note, read_projects};
+use std::io::{self, Write};
 use tempfile::NamedTempFile;
 
 const PROJECT_JSON: &[u8] = br#"{"/path/to/emacs.d":"2020-05-04T04:39:54.911709457+02:00",
@@ -93,8 +84,4 @@ pub fn test_commits() -> Result<(), Error> {
 fn pc(commit: &Commit) {
     println!("{}", commit.author());
     println!("{}", commit.message().unwrap());
-}
-
-#[test]
-fn status() {
 }

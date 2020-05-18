@@ -24,20 +24,59 @@ enum GtmCommand {
     Status,
 }
 
-fn main() -> Result<(), git2::Error> {
+#[derive(Debug)]
+enum GtmError {
+    Git(git2::Error),
+    Parse(chrono::ParseError),
+}
+
+impl std::error::Error for GtmError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            GtmError::Git(err) => Some(err),
+            GtmError::Parse(err) => Some(err),
+        }
+    }
+    // fn cause(&self) -> Option<&dyn std::error::Error> {
+    //     std::error.source()
+    // }
+}
+
+impl std::fmt::Display for GtmError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GtmError::Git(err) => write!(f, "Git2 error: {}", err),
+            GtmError::Parse(err) => write!(f, "Parse date error: {}", err),
+        }
+    }
+}
+
+impl From<chrono::ParseError> for GtmError {
+    fn from(err: chrono::ParseError) -> Self {
+        GtmError::Parse(err)
+    }
+}
+
+impl From<git2::Error> for GtmError {
+    fn from(err: git2::Error) -> Self {
+        GtmError::Git(err)
+    }
+}
+
+fn main() -> Result<(), GtmError> {
     let command = GtmCommand::from_args();
 
     match command {
         GtmCommand::Commits { from_date, to_date } => {
-            let from_date = to_unixtime(from_date).unwrap();
-            let to_date = to_unixtime(to_date).unwrap();
+            let from_date = to_unixtime(from_date)?;
+            let to_date = to_unixtime(to_date)?;
 
             let mut notes = Vec::new();
             let projects = fetch_projects();
             for project in projects.unwrap() {
                 let path = PathBuf::from(project.as_str());
                 let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
-                let repo = Repository::open(project.to_owned()).unwrap();
+                let repo = Repository::open(project.to_owned())?;
                 get_notes(&mut notes, &repo, pkey, from_date, to_date).unwrap();
             }
 
@@ -77,7 +116,10 @@ fn main() -> Result<(), git2::Error> {
                     label: "TBD".to_string(),
                     commit_note: cn,
                 };
-                wd.insert(project, ws);
+
+                let path = PathBuf::from(project.as_str());
+                let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
+                wd.insert(pkey, ws);
             }
             let json = serde_json::to_string(&wd).unwrap();
             println!("{}", json);

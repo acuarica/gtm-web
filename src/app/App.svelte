@@ -16,7 +16,7 @@
   export let fetchCommits;
   export let fetchProjectList;
   export let fetchWorkdirStatus;
-  export let settingsView;
+  export let settingsView = null;
 
   let statsPromise = new Promise((_resolve, _reject) => {});
   let projectListPromise = new Promise((_resolve, _reject) => {});
@@ -28,6 +28,10 @@
 
   function selectHome() {
     title = "All Projects";
+    params = {
+      statsPromise: statsPromise,
+      workdirStatsPromise: workdirStatsPromise
+    };
     view = Home;
   }
 
@@ -37,9 +41,8 @@
     params = {
       name: project,
       projectPromise: (await statsPromise).projects[project],
-      
-
-    }
+      workdirStatsPromise: workdirStatsPromise
+    };
     view = Project;
   }
 
@@ -91,13 +94,9 @@
           </Box>
 
         </div>
+
         <div class="bg-view p-3 flex-1 w-auto flex-col">
-          <svelte:component
-            this={view}
-            {statsPromise}
-            {workdirStatsPromise}
-            {...params}
-            name={projectName} />
+          <svelte:component this={view} {...params} />
         </div>
 
       </div>
