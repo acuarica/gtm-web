@@ -1,22 +1,6 @@
 import App from '../app/App.svelte'
 import { Commit } from '@gtm/notes';
 
-export function delay<T>(func: any, timeout: number): Promise<T> {
-  return new Promise(function (resolve) {
-    setTimeout(() => {
-      resolve(func())
-    }, timeout);
-  })
-}
-
-export function delayError<T>(func: () => T, timeout: number): Promise<T> {
-  return new Promise(function (_, reject) {
-    setTimeout(() => {
-      reject(func())
-    }, timeout);
-  })
-}
-
 console.debug('Creating main app with web service')
 
 const fetchurl = async <T>(url: string): Promise<T> => await fetch('http://localhost:8000'+url).then(r => r.json())
