@@ -1,5 +1,5 @@
 import moment from 'moment';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 import { getDaily, FileStatus, ProjectList } from '@gtm/notes';
 import { hhmm } from '@gtm/notes';
 import { ChartConfiguration } from 'chart.js'
@@ -57,14 +57,14 @@ export function timeByFileStatusChartConfig(status: FileStatus<number>): ChartCo
 ///
 export function projectTotalsChartConfig(projects: ProjectList): ChartConfiguration {
   console.assert(typeof projects === 'object', 'Invalid projects:', projects)
-  const datasets = [];
+  const datasets: { data: number[]; commitcount: number; label: string }[] = [];
   for (const pname in projects) {
     const p = projects[pname];
     datasets.push({
       data: [p.total],
       commitcount: p.commits.length,
       label: pname,
-    } as any);
+    });
   }
 
   return {
@@ -109,7 +109,6 @@ export function activityChartConfig(projects: ProjectList, status = false): Char
     : 'Committed timeline by Project (report)'
   const daily = getDaily(projects)
   const dailyKeys = Object.keys(daily)
-  console.log(projects, daily, dailyKeys)
   return {
     type: 'matrix',
     data: {
@@ -118,10 +117,7 @@ export function activityChartConfig(projects: ProjectList, status = false): Char
           label: projects[p].name,
           data: projects[p].timelineMatrix,
           borderWidth: 1,
-          width: function (ctx: any): number {
-            // const value = (<{ v: number }>ctx.dataset.data![ctx.dataIndex]!).v;
-            // const levels = 10;
-            // const alpha = Math.floor(value * levels / 3600) / levels + (1 / levels);
+          width: function (ctx: Context): number {
             const a = ctx.chart.chartArea;
             return (a.right - a.left) / 25;
           },
@@ -154,9 +150,6 @@ export function activityChartConfig(projects: ProjectList, status = false): Char
           offset: true,
           time: { unit: 'day', parser: 'YYYY-MM-DD' },
           ticks: {
-            // reverse: true,
-            // min: min.format('X'),
-            // max: max.format('X'),
           },
           gridLines: { drawOnChartArea: false },
         }, {
