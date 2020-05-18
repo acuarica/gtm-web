@@ -260,9 +260,6 @@ pub enum CommitNoteParseError {
     /// ```
     EmptyNote,
 
-    ///
-    NonUtf8,
-
     /// ```
     /// assert_eq!(gtmserv::parse_commit_note("[]"), Err(gtmserv::CommitNoteParseError::InvalidHeader));
     /// assert_eq!(gtmserv::parse_commit_note("[ver:1total:213]"), Err(gtmserv::CommitNoteParseError::InvalidHeader));
@@ -369,8 +366,14 @@ pub fn parse_commit_note(message: &str) -> Result<CommitNote, CommitNoteParseErr
     let mut lines = Cursor::new(message).lines();
     let mut commit = match lines.next() {
         None => return Err(CommitNoteParseError::EmptyNote),
-        Some(Err(_)) => return Err(CommitNoteParseError::NonUtf8),
-        Some(Ok(first)) => match VERSION_RE.captures_iter(&first.to_owned()).next() {
+        Some(first) => match VERSION_RE
+            .captures_iter(
+                &first
+                    .expect("Could not read from cursor, aborting")
+                    .to_owned(),
+            )
+            .next()
+        {
             None => return Err(CommitNoteParseError::InvalidHeader),
             Some(parts) => CommitNote {
                 version: match parts[1].parse::<u32>() {
@@ -486,7 +489,7 @@ impl TimelineBin {
         *count += 1;
     }
 
-    fn timespent(self: &Self, filepath: Filepath) -> Seconds {
+    pub fn timespent(self: &Self, filepath: Filepath) -> Seconds {
         let count = self.filemap.get(&filepath).unwrap();
         (60 * count / self.count) as Seconds
     }
@@ -500,7 +503,7 @@ impl Timeline {
     }
 
     /// Creates a `Timeline` from a list of file events.
-    /// 
+    ///
     /// ```
     /// use gtmserv::*;
     /// Timeline::from_events(vec![
@@ -508,9 +511,9 @@ impl Timeline {
     ///     FileEvent::new(1589673601, "test/test1.ts"),
     /// ]);
     /// ```
-    /// 
+    ///
     /// The events in the list must be ordered by timestamp.
-    /// 
+    ///
     /// ```should_panic
     /// use gtmserv::*;
     /// Timeline::from_events(vec![
@@ -558,10 +561,10 @@ impl Timeline {
     /// assert_eq!(bin.timespent("test/test1.ts".to_string()), 20);
     /// assert_eq!(bin.timespent("test/test2.ts".to_string()), 20);
     /// assert_eq!(bin.timespent("assets/logo.png".to_string()), 20);
-    /// 
+    ///
     /// let bin = map.get(&1589673720).unwrap();
     /// assert_eq!(bin.timespent("assets/main.css".to_string()), 60);
-    /// 
+    ///
     /// let bin = map.get(&1589673840).unwrap();
     /// assert_eq!(bin.timespent("src/file2.ts".to_string()), 60);
     /// ```
@@ -572,7 +575,7 @@ impl Timeline {
     ///
     /// ```
     /// use gtmserv::*;
-    /// 
+    ///
     /// let map = Timeline::from_events(vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673494, "src/file2.ts"),
