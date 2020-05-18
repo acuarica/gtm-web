@@ -4,11 +4,7 @@ extern crate serde_derive;
 extern crate serde_json;
 
 use git2::*;
-use gtmserv::fetch_projects;
-use gtmserv::get_notes;
-use gtmserv::get_status;
-use gtmserv::WorkdirStatus;
-use gtmserv::{to_unixtime, FileEvent};
+use gtmserv::{fetch_projects, get_notes, to_unixtime, FileEvent, Timeline, WorkdirStatus};
 use std::{collections::HashMap, fs, path::PathBuf};
 use structopt::StructOpt;
 
@@ -39,8 +35,10 @@ fn main() -> Result<(), git2::Error> {
             let mut notes = Vec::new();
             let projects = fetch_projects();
             for project in projects.unwrap() {
+                let path = PathBuf::from(project.as_str());
+                let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
                 let repo = Repository::open(project.to_owned()).unwrap();
-                get_notes(&mut notes, &repo, project.to_owned(), from_date, to_date).unwrap();
+                get_notes(&mut notes, &repo, pkey, from_date, to_date).unwrap();
             }
 
             let json = serde_json::to_string(&notes).unwrap();
@@ -73,7 +71,7 @@ fn main() -> Result<(), git2::Error> {
                     }
                 }
                 events.sort_by_key(|k| k.timestamp);
-                let cn = get_status(events).commit_note();
+                let cn = Timeline::from_events(events).commit_note();
                 let ws = WorkdirStatus {
                     total: cn.total,
                     label: "TBD".to_string(),
