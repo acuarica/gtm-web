@@ -5,7 +5,6 @@
   import { faTasks } from "@fortawesome/free-solid-svg-icons/faTasks";
   import { onMount } from "svelte";
   import { computeStats, computeWorkdirStatus } from "@gtm/notes";
-  import router from "page";
   import Fetch from "./Fetch.svelte";
   import Navbar from "./Navbar.svelte";
   import Progress from "./Progress.svelte";
@@ -24,38 +23,31 @@
   let workdirStatsPromise = new Promise((_resolve, _reject) => {});
   let projectName;
   let title;
-  let view = Home;
+  let view;
+  let params;
 
-  function getBase() {
-    const pathname = window.location.pathname;
-    const parts = pathname.split("/");
-    console.assert(parts.length >= 2, "not / found");
-    console.assert(parts[0] === "", "trailing string before /");
-    parts.shift();
-    if (parts[parts.length - 1] === "") {
-      parts.pop();
-    }
-    const base = "/" + parts.join("/");
-    console.info("Using base path:", base);
-    return base;
-  }
-
-  // router.base(getBase());
-  router("/", () => {
+  function selectHome() {
     title = "All Projects";
     view = Home;
-  });
-  router("/projects/:project", ctx => {
-    projectName = ctx.params.project;
-    title = projectName;
+  }
+
+  async function selectProject(project) {
+    projectName = project;
+    title = project;
+    params = {
+      name: project,
+      projectPromise: (await statsPromise).projects[project],
+      
+
+    }
     view = Project;
-  });
+  }
 
   onMount(async () => {
     projectListPromise = fetchProjectList();
     const workdirStatus = await fetchWorkdirStatus();
     workdirStatsPromise = Promise.resolve(computeWorkdirStatus(workdirStatus));
-    router({ hashbang: true });
+    selectHome();
   });
 
   async function fetch(event) {
@@ -78,22 +70,22 @@
         <div class="hidden sm:block bg-sidebar p-3">
 
           <Box class="w-56 flex-shrink-0 p-3 h-full">
-            <a
+            <button
               class="block py-1 pl-1 text-lg rounded hover:bg-gray-600
               hover:text-gray-300"
-              href="./">
+              on:click={() => selectHome()}>
               <Icon class="mb-1 h-4" icon={faTasks} />
               <span class={view === Home ? 'font-bold' : ''}>All Projects</span>
-            </a>
+            </button>
 
             <Fetch promise={projectListPromise} let:value={projectList}>
               {#each projectList as project}
-                <a
-                  class="block py-1 pl-6 rounded hover:bg-gray-600
+                <button
+                  class="block py-1 px-6 rounded hover:bg-gray-600
                   hover:text-gray-300 {view === Project && projectName === project ? 'font-bold' : ''}"
-                  href="./projects/{project}">
+                  on:click={() => selectProject(project)}>
                   {project}
-                </a>
+                </button>
               {/each}
             </Fetch>
           </Box>
@@ -104,6 +96,7 @@
             this={view}
             {statsPromise}
             {workdirStatsPromise}
+            {...params}
             name={projectName} />
         </div>
 
