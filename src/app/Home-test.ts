@@ -6,7 +6,7 @@ const web = new WebService()
 
 export default [{
   component: Home,
-  name: 'Home with data',
+  name: 'w/data',
   props: {
     statsPromise: web.fetchCommits({ start: '2020-01-01', end: '2020-04-30' }).then(value => computeStats(value)),
     workdirStatsPromise: web.fetchWorkdirStatus().then(value => computeWorkdirStatus(value))

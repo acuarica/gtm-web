@@ -6,7 +6,7 @@ const web = new WebService()
 
 export default [{
   component: Project,
-  name: 'Project valid data',
+  name: 'w/valid data',
   props: {
     name: 'web',
     projectPromise: web.fetchCommits({ start: '2020-01-01', end: '2020-04-30' }).then(value => computeStats(value).projects['web']),
@@ -14,7 +14,7 @@ export default [{
   }
 }, {
   component: Project,
-  name: 'Project not defined',
+  name: 'not defined',
   props: {
     name: 'work',
     projectPromise: undefined,
@@ -22,7 +22,7 @@ export default [{
   }
 }, {
   component: Project,
-  name: 'Project delay loading',
+  name: 'w/delay loading',
   props: {
     name: 'web',
     projectPromise: web.fetchCommits({ start: '2020-01-01', end: '2020-04-30' }).then(value => computeStats(value).projects['web']),

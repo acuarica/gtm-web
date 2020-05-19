@@ -2,7 +2,7 @@ import Commit from '../app/Commit.svelte';
 
 export default [{
   component: Commit,
-  name: 'Show full commit',
+  name: 'showing full commit',
   props: {
     commit: {
       Author: 'me',
@@ -20,7 +20,7 @@ export default [{
   },
 }, {
   component: Commit,
-  name: 'No commit message',
+  name: 'w/no commit message',
   props: {
     commit: {
       Author: 'you',
