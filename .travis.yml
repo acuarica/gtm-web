@@ -11,7 +11,7 @@ language: rust
 rust: nightly
 
 cache:
-  yarn: true
+  # yarn: true
   cargo: true
   directories:
     - node_modules
@@ -42,9 +42,9 @@ deploy:
     api_key: $GITHUB_TOKEN
     file:
       - dist/gtm-dash_0.0.1_amd64.snap
-      # - dist/gtm-dash-0.0.1.AppImage
-      # - dist/gtm-dash-0.0.1.dmg
-      # - dist/gtm-dash Setup 0.0.1.exe
+      - dist/gtm-dash-0.0.1.AppImage
+      - dist/gtm-dash-0.0.1.dmg
+      - "dist/gtm-dash Setup 0.0.1.exe"
     draft: true
     on:
       branch: develop
