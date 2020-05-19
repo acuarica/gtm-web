@@ -14,11 +14,15 @@ rust: nightly
 
 cache:
   yarn: true
+  cargo: true
   directories:
     - node_modules
 
+before_install:
+  - npm install --global yarn
+
 install:
-  - "cargo build --release --manifest-path gtmserv/Cargo.toml"
+  - cargo build --release --manifest-path gtmserv/Cargo.toml
 
 script:
   - "cargo test --manifest-path gtmserv/Cargo.toml"
