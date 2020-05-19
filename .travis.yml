@@ -7,10 +7,8 @@ os:
 env:
   - YARN_GPG=no
 
-# language: node_js
 language: rust
 rust: nightly
-# node_js: v13.12.0
 
 cache:
   yarn: true
@@ -21,9 +19,14 @@ cache:
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
-  - echo $PATH
-  - node --version
-  - yarn --version
+  - export PATH=$PATH:"/c/Program Files/nodejs"
+  - node --version || true
+  - export PATH=$PATH:"/c/Program Files (x86)/nodejs"
+  - node --version || true
+  - export PATH=$PATH:"/c/Program Files/Yarn/bin"
+  - yarn --version || true
+  - export PATH=$PATH:"/c/Program Files (x86)/Yarn/bin"
+  - yarn --version || true
 
 install:
   - yarn install
