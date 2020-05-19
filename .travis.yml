@@ -10,11 +10,12 @@ env:
 language: rust
 rust: nightly
 
-cache:
-  # yarn: true
-  cargo: true
-#  directories:
-#    - node_modules
+# Unable to use cache on windows, so we remove it
+# cache:
+#   cargo: true
+#   yarn: true
+#   directories:
+#     - node_modules
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
