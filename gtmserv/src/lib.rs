@@ -458,10 +458,30 @@ impl FileEvent {
 /// ```
 /// assert_eq!(gtmserv::down_to_minute(1589673494), 1589673480);
 /// ```
+/// 
+/// If a Unix epoch is already down to the minute, `down_to_minute` returns the same value.
+/// 
+/// ```
+/// assert_eq!(gtmserv::down_to_minute(1589920680), 1589920680);
+/// ```
 pub fn down_to_minute(timestamp: u64) -> u64 {
     (timestamp / 60) * 60
 }
 
+/// Given a Unix epoch, returns a Unix epoch rounded down to the hour.
+/// It is used to create bins at the hour granularity.
+///
+/// # Examples
+///
+/// ```
+/// assert_eq!(gtmserv::down_to_hour(1589673494), 1589670000);
+/// ```
+/// 
+/// If a Unix epoch is already down to the hour, `down_to_hour` returns the same value.
+/// 
+/// ```
+/// assert_eq!(gtmserv::down_to_hour(1589918400), 1589918400);
+/// ```
 pub fn down_to_hour(timestamp: u64) -> u64 {
     (timestamp / 3600) * 3600
 }
@@ -470,27 +490,49 @@ pub struct Timeline {
     timeline: HashMap<u64, TimelineBin>,
 }
 
+/// ```
+/// assert_eq!("", "");
+/// ```
 pub struct TimelineBin {
     filemap: HashMap<Filepath, usize>,
     count: usize,
 }
 
 impl TimelineBin {
-    fn new() -> TimelineBin {
+
+    /// Creates a new `TimelineBin`.
+    /// When created, the bin will be empty, *i.e.*, there are no files in it.
+    pub fn new() -> TimelineBin {
         TimelineBin {
             filemap: HashMap::new(),
             count: 0,
         }
     }
 
-    fn append(self: &mut Self, filepath: Filepath) {
+    /// ```
+    /// let mut bin = gtmserv::TimelineBin::new();
+    /// bin.append("src/main.rs".to_owned());
+    /// ```
+    pub fn append(self: &mut Self, filepath: Filepath) {
         self.count += 1;
         let count = self.filemap.entry(filepath).or_insert(0);
         *count += 1;
     }
 
+    /// ```
+    /// let mut bin = gtmserv::TimelineBin::new();
+    /// bin.append("src/main.rs".to_owned());
+    /// assert_eq!(bin.timespent("src/main.rs".to_owned()), 60);
+    /// ```
+    /// 
+    /// When the file is not present in the bin, panics.
+    /// 
+    /// ```should_panic
+    /// let mut bin = gtmserv::TimelineBin::new();
+    /// bin.timespent("src/not-present.rs".to_owned());
+    /// ```
     pub fn timespent(self: &Self, filepath: Filepath) -> Seconds {
-        let count = self.filemap.get(&filepath).unwrap();
+        let count = self.filemap.get(&filepath).expect("File not present in bin");
         (60 * count / self.count) as Seconds
     }
 }
