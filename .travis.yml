@@ -19,7 +19,9 @@ cache:
     - node_modules
 
 before_install:
-  - npm install --global yarn
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then npm install --global yarn ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then npm install --global yarn ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install yarn ; fi
 
 install:
   - cargo build --release --manifest-path gtmserv/Cargo.toml
