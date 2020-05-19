@@ -21,45 +21,39 @@
   let statsPromise = new Promise((_resolve, _reject) => {});
   let projectListPromise = new Promise((_resolve, _reject) => {});
   let workdirStatsPromise = new Promise((_resolve, _reject) => {});
-  let projectName;
   let title;
-  let view;
+  let view = Home;
+  let viewProject;
   let params;
 
-  function selectHome() {
+  $: if (view === Home) {
     title = "All Projects";
     params = {
       statsPromise: statsPromise,
       workdirStatsPromise: workdirStatsPromise
     };
-    view = Home;
   }
 
-  async function selectProject(project) {
-    projectName = project;
-    title = project;
+  $: if (view === Project) {
+    title = viewProject;
     params = {
-      name: project,
-      projectPromise: (await statsPromise).projects[project],
-      workdirStatsPromise: (await workdirStatsPromise).projects[project],
+      name: viewProject,
+      projectPromise: statsPromise.then(s => s.projects[viewProject]),
+      workdirStatsPromise: workdirStatsPromise.then(
+        s => s.projects[viewProject]
+      )
     };
-    view = Project;
   }
 
-  onMount(async () => {
+  onMount(() => {
     projectListPromise = fetchProjectList();
-    const workdirStatus = await fetchWorkdirStatus();
-    workdirStatsPromise = Promise.resolve(computeWorkdirStatus(workdirStatus));
-    selectHome();
+    workdirStatsPromise = fetchWorkdirStatus().then(ws =>
+      computeWorkdirStatus(ws)
+    );
   });
 
-  async function fetch(event) {
-    const commits = await fetchCommits(event.detail);
-    return Promise.resolve(computeStats(commits));
-  }
-
   function handleRangeChange(event) {
-    statsPromise = fetch(event);
+    statsPromise = fetchCommits(event.detail).then(cs => computeStats(cs));
   }
 </script>
 
@@ -76,7 +70,9 @@
             <button
               class="block py-1 pl-1 text-lg rounded hover:bg-gray-600
               hover:text-gray-300"
-              on:click={() => selectHome()}>
+              on:click={() => {
+                view = Home;
+              }}>
               <Icon class="mb-1 h-4" icon={faTasks} />
               <span class={view === Home ? 'font-bold' : ''}>All Projects</span>
             </button>
@@ -85,8 +81,11 @@
               {#each projectList as project}
                 <button
                   class="block py-1 px-6 rounded hover:bg-gray-600
-                  hover:text-gray-300 {view === Project && projectName === project ? 'font-bold' : ''}"
-                  on:click={() => selectProject(project)}>
+                  hover:text-gray-300 {view === Project && viewProject === project ? 'font-bold' : ''}"
+                  on:click={() => {
+                    viewProject = project;
+                    view = Project;
+                  }}>
                   {project}
                 </button>
               {/each}
