@@ -39,6 +39,24 @@ fn gets_init_projects() -> Result<(), io::Error> {
     Ok(())
 }
 
+mod projects {
+
+    use assert_cmd::Command;
+
+    #[test]
+    fn file_doesnt_exist() -> Result<(), Box<dyn std::error::Error>> {
+        let mut cmd = Command::cargo_bin("gtmserv")?;
+        cmd
+            .arg("projects")
+            .assert()
+            .success();
+            // .stderr(predicate::str::contains("No such file or directory"));
+
+        Ok(())
+    }
+
+}
+
 #[test]
 fn test() {
 
