@@ -24,13 +24,17 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install yarn ; fi
 
 install:
-  - cargo build --release --manifest-path gtmserv/Cargo.toml
+  - yarn install
 
 script:
-  - "cargo test --manifest-path gtmserv/Cargo.toml"
+  - cargo build --release --manifest-path gtmserv/Cargo.toml
+  - cargo test --manifest-path gtmserv/Cargo.toml
+  - yarn build
+  - yarn test
+  - yarn pack
 
-before_deploy:
-  - "npm run build"
+# before_deploy:
+#   - "npm run build"
 
 deploy:
   provider: pages
