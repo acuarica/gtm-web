@@ -1,6 +1,6 @@
 os:
-  - linux
-  - osx
+  # - linux
+  # - osx
   - windows
 
 # https://travis-ci.community/t/timeout-after-build-finished-and-succeeded/1336
@@ -13,8 +13,8 @@ rust: nightly
 cache:
   # yarn: true
   cargo: true
-  directories:
-    - node_modules
+#  directories:
+#    - node_modules
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
