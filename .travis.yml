@@ -1,6 +1,6 @@
 os:
-  # - linux
-  # - osx
+  - linux
+  - osx
   - windows
 
 # https://travis-ci.community/t/timeout-after-build-finished-and-succeeded/1336
@@ -19,12 +19,10 @@ cache:
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
+  # Force update of path env var on windows
+  # Choco updates only for powershell
   - export PATH=$PATH:"/c/Program Files/nodejs"
   - node --version || true
-  - export PATH=$PATH:"/c/Program Files (x86)/nodejs"
-  - node --version || true
-  - export PATH=$PATH:"/c/Program Files/Yarn/bin"
-  - yarn --version || true
   - export PATH=$PATH:"/c/Program Files (x86)/Yarn/bin"
   - yarn --version || true
 
@@ -38,13 +36,21 @@ script:
   - yarn test
   - yarn dist
 
-# before_deploy:
-#   - "npm run build"
-
 deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  local_dir: dist/demo
-  on:
-    branch: master
+  - provider: releases
+    skip_cleanup: true
+    api_key: $GITHUB_TOKEN
+    file:
+      - dist/gtm-dash_0.0.1_amd64.snap
+      # - dist/gtm-dash-0.0.1.AppImage
+      # - dist/gtm-dash-0.0.1.dmg
+      # - dist/gtm-dash Setup 0.0.1.exe
+    draft: true
+    on:
+      branch: develop
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: dist/demo
+    on:
+      branch: master
