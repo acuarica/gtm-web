@@ -27,7 +27,7 @@ export class WebService implements GtmService {
 
 }
 
-export class DelayedService implements GtmService {
+export class DelayService implements GtmService {
 
   constructor(readonly service: GtmService, readonly timeout: number) { }
 
