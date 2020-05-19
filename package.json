@@ -34,9 +34,8 @@
     "lint": "eslint \"**/*.ts\" *.js",
     "build": "tsc && rollup --config",
     "test": "mocha @*/*-test.js",
-    "pack": "electron-builder",
+    "dist": "electron-builder",
     "start": "electron dist/gtm-dash/main.js",
-    "dist": "cargo build --release --manifest-path gtmserv/Cargo.toml && yarn build && electron-builder",
     "clean": "rm -rfv @*/*.js src/**/*.js dist",
     "gtm": "gtmserv/target/debug/gtmserv"
   },

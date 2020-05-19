@@ -32,7 +32,7 @@ script:
   - cargo test --manifest-path gtmserv/Cargo.toml
   - yarn build
   - yarn test
-  - yarn pack
+  - yarn dist
 
 # before_deploy:
 #   - "npm run build"
