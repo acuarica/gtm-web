@@ -1,6 +1,6 @@
 os:
-  - linux
-  - osx
+  # - linux
+  # - osx
   - windows
 
 # https://travis-ci.community/t/timeout-after-build-finished-and-succeeded/1336
@@ -20,9 +20,10 @@ cache:
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
-  # - if [ "$TRAVIS_OS_NAME" = "osx" ]; then npm install --global yarn ; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
-  # - if [ "$TRAVIS_OS_NAME" = "windows" ]; then  ; fi
+  - echo $PATH
+  - node --version
+  - yarn --version
 
 install:
   - yarn install
