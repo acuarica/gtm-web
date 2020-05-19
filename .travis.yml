@@ -19,9 +19,10 @@ cache:
     - node_modules
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then npm install --global yarn ; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then npm install --global yarn ; fi
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install yarn ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
+  # - if [ "$TRAVIS_OS_NAME" = "osx" ]; then npm install --global yarn ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
+  # - if [ "$TRAVIS_OS_NAME" = "windows" ]; then  ; fi
 
 install:
   - yarn install
