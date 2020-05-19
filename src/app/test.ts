@@ -4,7 +4,7 @@ import ProjectTest from './Project-test';
 import HomeTest from './Home-test';
 import AppTest from './App-test';
 
-console.info('Initializing component tests')
+console.debug('Initializing component tests')
 
 const suites = {
   'DashboardCard': DashboardCardTest,
@@ -19,7 +19,7 @@ const canvas = document.getElementById('canvas')!
 
 for (const suite in suites) {
   const tests = suites[suite as keyof typeof suites]
-  console.info(`Adding test suite for component ${suite} with test cases ${(tests as { name: string }[]).map(test => `'${test.name}'`)}`)
+  console.debug(`Adding test suite for component ${suite} ${(tests as { name: string }[]).map(test => `'${test.name}'`)}`)
   const suiteDiv = document.createElement('div')
   suiteDiv.textContent = suite
   suiteDiv.classList.add('text-gray-500', 'mt-1')
@@ -31,7 +31,7 @@ for (const suite in suites) {
     item.textContent = test.name
     item.classList.add('block', 'ml-1', 'text-sm')
     item.addEventListener('click', async () => {
-      console.info(`Running '${test.name}' of ${suite} test suite`)
+      console.debug(`Running '${test.name}' of ${suite} test suite`)
       canvas.innerHTML = ''
       new test.component({
         target: canvas,
