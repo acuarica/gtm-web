@@ -41,7 +41,7 @@
     params = {
       name: project,
       projectPromise: (await statsPromise).projects[project],
-      workdirStatsPromise: workdirStatsPromise
+      workdirStatsPromise: (await workdirStatsPromise).projects[project],
     };
     view = Project;
   }
