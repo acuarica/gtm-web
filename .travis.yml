@@ -7,13 +7,21 @@ os:
 env:
   - YARN_GPG=no
 
-language: node_js
-node_js: v13.12.0
+# language: node_js
+language: rust
+rust: nightly
+# node_js: v13.12.0
 
 cache:
   yarn: true
   directories:
     - node_modules
+
+install:
+  - "cargo build --release --manifest-path gtmserv/Cargo.toml"
+
+script:
+  - "cargo test --manifest-path gtmserv/Cargo.toml"
 
 before_deploy:
   - "npm run build"
