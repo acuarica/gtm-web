@@ -31,12 +31,11 @@
   ],
   "scripts": {
     "dev": "./make.js dev:dev:app serve",
-    "build": "tsc && rollup --config",
     "lint": "eslint \"**/*.ts\" *.js",
+    "build": "tsc && rollup --config",
     "test": "mocha @*/*-test.js",
-    "prepare": "yarn build",
+    "pack": "electron-builder",
     "start": "electron dist/gtm-dash/main.js",
-    "package": "electron-builder",
     "dist": "cargo build --release --manifest-path gtmserv/Cargo.toml && yarn build && electron-builder",
     "clean": "rm -rfv @*/*.js src/**/*.js dist",
     "gtm": "gtmserv/target/debug/gtmserv"
