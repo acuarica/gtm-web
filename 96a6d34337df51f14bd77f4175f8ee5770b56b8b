@@ -1,0 +1,13 @@
+[ver:1,total:2220]
+.gtm/terminal.app:690,1589954400:690,r
+src/app/App.svelte:485,1589954400:485,r
+.travis.yml:200,1589954400:200,r
+package.json:180,1589954400:180,r
+@gtm/gtm.ts:180,1589954400:180,r
+src/desktop/Settings.svelte:135,1589954400:135,r
+make.js:120,1589954400:120,m
+src/desktop/preload.ts:70,1589954400:70,r
+@notes/service.ts:60,1589954400:60,r
+src/app/web.ts:40,1589954400:40,r
+src/app/App-test.ts:30,1589954400:30,r
+src/desktop/main.ts:30,1589954400:30,r
