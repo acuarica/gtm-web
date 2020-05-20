@@ -12,6 +12,7 @@
   import Home from "./Home.svelte";
   import Project from "./Project.svelte";
   import Commits from "./Commits.svelte";
+  import DashboardCard from "./DashboardCard.svelte";
 
   export let fetchCommits;
   export let fetchProjectList;
@@ -67,17 +68,21 @@
         <div class="hidden sm:block bg-sidebar p-3">
 
           <Box class="w-56 flex-shrink-0 p-3 h-full">
-            <button
-              class="block py-1 pl-1 text-lg rounded hover:bg-gray-600
-              hover:text-gray-300"
-              on:click={() => {
-                view = Home;
-              }}>
-              <Icon class="mb-1 h-4" icon={faTasks} />
-              <span class={view === Home ? 'font-bold' : ''}>All Projects</span>
-            </button>
+            {#await projectListPromise}
+              <!-- Only to linting complain -->
+            {:then projectList}
+              <button
+                class="block py-1 pl-1 text-lg rounded hover:bg-gray-600
+                hover:text-gray-300"
+                on:click={() => {
+                  view = Home;
+                }}>
+                <Icon class="mb-1 h-4" icon={faTasks} />
+                <span class={view === Home ? 'font-bold' : ''}>
+                  All Projects
+                </span>
+              </button>
 
-            <Fetch promise={projectListPromise} let:value={projectList}>
               {#each projectList as project}
                 <button
                   class="block py-1 px-6 rounded hover:bg-gray-600
@@ -89,13 +94,24 @@
                   {project}
                 </button>
               {/each}
-            </Fetch>
+            {/await}
           </Box>
 
         </div>
 
         <div class="bg-view p-3 flex-1 w-auto flex-col">
-          <svelte:component this={view} {...params} />
+          {#await projectListPromise}
+            <Progress />
+          {:then _projectList}
+            <svelte:component this={view} {...params} />
+          {:catch error}
+            <Box class="h-full p-4">
+              <DashboardCard
+                title="Could not get gtm projects"
+                body="Make sure gtm is installed"
+                footer="Got error: {JSON.stringify(error)}" />
+            </Box>
+          {/await}
         </div>
 
       </div>
