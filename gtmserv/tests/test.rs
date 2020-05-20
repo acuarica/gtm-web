@@ -1,12 +1,12 @@
 #![feature(int_error_matching)]
 
-use gtmserv::GTM_REFS;
 use git2::Oid;
-use std::error::Error;
-use tempfile::tempdir;
 use git2::{Commit, Repository, Signature};
-use gtmserv::{get_projects, parse_commit_note, read_projects, get_notes};
+use gtmserv::GTM_REFS;
+use gtmserv::{get_notes, get_projects, parse_commit_note, read_projects};
+use std::error::Error;
 use std::io::{self, Write};
+use tempfile::tempdir;
 use tempfile::NamedTempFile;
 
 const PROJECT_JSON: &[u8] = br#"{"/path/to/emacs.d":"2020-05-04T04:39:54.911709457+02:00",
@@ -50,15 +50,11 @@ mod projects {
     #[test]
     fn file_doesnt_exist() -> Result<(), Box<dyn std::error::Error>> {
         let mut cmd = Command::cargo_bin("gtmserv")?;
-        cmd
-            .arg("projects")
-            .assert()
-            .success();
-            // .stderr(predicate::str::contains("No such file or directory"));
+        cmd.arg("projects").assert().success();
+        // .stderr(predicate::str::contains("No such file or directory"));
 
         Ok(())
     }
-
 }
 
 #[test]
@@ -76,9 +72,9 @@ fn test_notes() -> Result<(), Box<dyn Error>> {
     println!("Using repo path: {:?}", repo_path);
 
     let repo = Repository::init(repo_path)?;
-    let oid = create_commit(&repo)?;
+    let sig = Signature::now("My name is test", "test@test.io")?;
+    let oid = create_commit(&repo, &sig)?;
 
-    let sig = repo.signature()?;
     repo.note(&sig, &sig, Some(GTM_REFS), oid, "[ver:1,total:180]", false)?;
 
     let mut cs = Vec::new();
@@ -88,9 +84,7 @@ fn test_notes() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn create_commit(repo: &Repository) -> Result<Oid, git2::Error> {
-    let sig = Signature::now("My name is test", "test@test.io")?;
-
+fn create_commit(repo: &Repository, sig: &Signature) -> Result<Oid, git2::Error> {
     let tree_id = {
         let mut index = repo.index()?;
         index.write_tree()?
