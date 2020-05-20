@@ -1,6 +1,6 @@
 os:
-  # - linux
-  # - osx
+  - linux
+  - osx
   - windows
 
 # https://travis-ci.community/t/timeout-after-build-finished-and-succeeded/1336
@@ -17,7 +17,13 @@ rust: nightly
 #   directories:
 #     - node_modules
 
-before_install:
+install:
+  - cargo build --release --manifest-path gtmserv/Cargo.toml
+
+script:
+  - cargo test --manifest-path gtmserv/Cargo.toml
+
+before_deploy:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
   # Force update of path env var on windows
@@ -26,13 +32,6 @@ before_install:
   - node --version || true
   - export PATH=$PATH:"/c/Program Files (x86)/Yarn/bin"
   - yarn --version || true
-
-install:
-  - yarn install
-
-script:
-  - cargo build --release --manifest-path gtmserv/Cargo.toml
-  - cargo test --manifest-path gtmserv/Cargo.toml
   - yarn build
   - yarn test
   - yarn dist
@@ -42,16 +41,18 @@ deploy:
     skip_cleanup: true
     api_key: $GITHUB_TOKEN
     file:
-      - dist/gtm-dash_0.0.1_amd64.snap
-      - dist/gtm-dash-0.0.1.AppImage
-      - dist/gtm-dash-0.0.1.dmg
-      - "dist/gtm-dash Setup 0.0.1.exe"
-    draft: true
+      - dist/gtm-dash_0.1.0_amd64.snap
+      - dist/gtm-dash-0.1.0.AppImage
+      - dist/gtm-dash-0.1.0.dmg
+      - "dist/gtm-dash Setup 0.1.0.exe"
+    prerelease: true
+    overwrite: true
     on:
-      branch: develop
+      tags: true
   - provider: pages
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
     local_dir: dist/demo
     on:
       branch: master
+      condition: $TRAVIS_OS_NAME = linux
