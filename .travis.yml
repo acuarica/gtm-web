@@ -17,13 +17,7 @@ cache:
   directories:
     - node_modules
 
-install:
-  - cargo build --release --manifest-path gtmserv/Cargo.toml
-
-script:
-  - cargo test --release --manifest-path gtmserv/Cargo.toml
-
-before_deploy:
+before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
   # Force update of path env var on windows
@@ -32,9 +26,25 @@ before_deploy:
   - node --version || true
   - export PATH=$PATH:"/c/Program Files (x86)/Yarn/bin"
   - yarn --version || true
+
+install:
+  - cargo build --release --manifest-path gtmserv/Cargo.toml
   - yarn install --check-files
   - yarn build
+
+script:
+  - cargo test --release --manifest-path gtmserv/Cargo.toml
   - yarn test
+
+before_deploy:
+#   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
+#   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
+#   # Force update of path env var on windows
+#   # Choco updates only for powershell
+#   - export PATH=$PATH:"/c/Program Files/nodejs"
+#   - node --version || true
+#   - export PATH=$PATH:"/c/Program Files (x86)/Yarn/bin"
+#   - yarn --version || true
   - yarn dist
 
 deploy:
