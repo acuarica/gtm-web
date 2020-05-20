@@ -27,6 +27,21 @@
     "linux": {
       "target": "AppImage"
     },
+    "appImage": {
+      "artifactName": "${productName}-v${version}.AppImage"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "dmg": {
+      "artifactName": "${productName}-v${version}.dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "artifactName": "${productName}-v${version}.exe"
+    },
     "publish": null
   },
   "browserslist": [

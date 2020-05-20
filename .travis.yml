@@ -38,6 +38,9 @@ script:
   - yarn test
 
 before_deploy:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export APP_EXT=exe ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then export APP_EXT=dmg ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export APP_EXT=exe ; fi
 #   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
 #   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
 #   # Force update of path env var on windows
@@ -55,9 +58,10 @@ deploy:
     api_key: $GITHUB_TOKEN
     file:
       # - dist/gtm-dash_0.1.0_amd64.snap
-      - dist/gtm-dash-0.1.0.AppImage
-      - dist/gtm-dash-0.1.0.dmg
-      - "dist/gtm-dash Setup 0.1.0.exe"
+      # - dist/gtm-dash-0.1.0.AppImage
+      # - dist/gtm-dash-0.1.0.dmg
+      # - "dist/gtm-dash Setup 0.1.0.exe"
+      - dist/gtm-dash-${TRAVIS_TAG}.${APP_EXT}
     prerelease: true
     overwrite: true
     on:
