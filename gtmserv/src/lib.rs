@@ -447,8 +447,7 @@ pub fn get_notes(
         let note = repo.find_note(Some(GTM_REFS), p.1)?;
         if let Some(message) = note.message() {
             let commit = repo.find_commit(p.1)?;
-            let time = commit.time().seconds();
-            // let time = commit.time().offset_minutes()
+            let time = commit.time().seconds() + commit.time().offset_minutes() as i64 * 60;
             if time >= from_date && time <= to_date {
                 if let Ok(commit_note) = parse_commit_note(message) {
                     result.push(Commit::new(&commit, project.to_owned(), commit_note));
