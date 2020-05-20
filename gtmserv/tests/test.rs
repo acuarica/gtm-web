@@ -4,7 +4,7 @@ use gtmserv::GTM_REFS;
 use git2::Oid;
 use std::error::Error;
 use tempfile::tempdir;
-use git2::{Commit, Repository};
+use git2::{Commit, Repository, Signature};
 use gtmserv::{get_projects, parse_commit_note, read_projects, get_notes};
 use std::io::{self, Write};
 use tempfile::NamedTempFile;
@@ -89,7 +89,7 @@ fn test_notes() -> Result<(), Box<dyn Error>> {
 }
 
 fn create_commit(repo: &Repository) -> Result<Oid, git2::Error> {
-    let sig = repo.signature()?;
+    let sig = Signature::now("My name is test", "test@test.io")?;
 
     let tree_id = {
         let mut index = repo.index()?;
