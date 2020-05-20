@@ -1,7 +1,7 @@
 #![feature(int_error_matching)]
 
 use git2::Oid;
-use git2::{Commit, Repository, Signature};
+use git2::{Repository, Signature};
 use gtmserv::GTM_REFS;
 use gtmserv::{get_notes, get_projects, parse_commit_note, read_projects};
 use std::error::Error;
@@ -104,7 +104,8 @@ pub fn test_commits() -> Result<(), git2::Error> {
     for oid in revwalk {
         let oid = oid?;
         let commit = repo.find_commit(oid)?;
-        pc(&commit);
+        println!("{}", commit.author());
+        println!("{}", commit.message().unwrap());
 
         let note = repo.find_note(Some("refs/notes/gtm-data"), oid);
         // println!("note: {:?}", p);
@@ -116,12 +117,5 @@ pub fn test_commits() -> Result<(), git2::Error> {
         }
     }
 
-    // repo.head()
-
     Ok(())
-}
-
-fn pc(commit: &Commit) {
-    println!("{}", commit.author());
-    println!("{}", commit.message().unwrap());
 }
