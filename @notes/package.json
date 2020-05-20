@@ -1,6 +1,6 @@
 {
   "name": "@gtm/notes",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "main": "index.js",
   "types": "index.ts"
