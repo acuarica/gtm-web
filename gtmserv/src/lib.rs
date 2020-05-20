@@ -1,6 +1,6 @@
 #![feature(int_error_matching)]
 
-use chrono::{NaiveDate, ParseResult};
+use chrono::NaiveDate;
 use git2::{Error, Repository};
 use regex::Regex;
 use serde::Serialize;
@@ -403,8 +403,12 @@ pub fn get_commits(_path: &str) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn to_unixtime(date: String) -> ParseResult<i64> {
-    let date = NaiveDate::parse_from_str(date.as_ref(), "%Y-%m-%d")?;
+/// Parses a date in `%Y-%m-%d` format.
+/// ```
+/// assert_eq!(gtmserv::parse_date("2020-05-20".to_owned()), Ok(1589932800));
+/// ```
+pub fn parse_date(date: &str) -> chrono::ParseResult<i64> {
+    let date = NaiveDate::parse_from_str(date, "%Y-%m-%d")?;
     Ok(date.and_hms(0, 0, 0).timestamp())
 }
 
@@ -458,9 +462,9 @@ impl FileEvent {
 /// ```
 /// assert_eq!(gtmserv::down_to_minute(1589673494), 1589673480);
 /// ```
-/// 
+///
 /// If a Unix epoch is already down to the minute, `down_to_minute` returns the same value.
-/// 
+///
 /// ```
 /// assert_eq!(gtmserv::down_to_minute(1589920680), 1589920680);
 /// ```
@@ -476,9 +480,9 @@ pub fn down_to_minute(timestamp: u64) -> u64 {
 /// ```
 /// assert_eq!(gtmserv::down_to_hour(1589673494), 1589670000);
 /// ```
-/// 
+///
 /// If a Unix epoch is already down to the hour, `down_to_hour` returns the same value.
-/// 
+///
 /// ```
 /// assert_eq!(gtmserv::down_to_hour(1589918400), 1589918400);
 /// ```
@@ -499,7 +503,6 @@ pub struct TimelineBin {
 }
 
 impl TimelineBin {
-
     /// Creates a new `TimelineBin`.
     /// When created, the bin will be empty, *i.e.*, there are no files in it.
     pub fn new() -> TimelineBin {
@@ -524,15 +527,18 @@ impl TimelineBin {
     /// bin.append("src/main.rs".to_owned());
     /// assert_eq!(bin.timespent("src/main.rs".to_owned()), 60);
     /// ```
-    /// 
+    ///
     /// When the file is not present in the bin, panics.
-    /// 
+    ///
     /// ```should_panic
     /// let mut bin = gtmserv::TimelineBin::new();
     /// bin.timespent("src/not-present.rs".to_owned());
     /// ```
     pub fn timespent(self: &Self, filepath: Filepath) -> Seconds {
-        let count = self.filemap.get(&filepath).expect("File not present in bin");
+        let count = self
+            .filemap
+            .get(&filepath)
+            .expect("File not present in bin");
         (60 * count / self.count) as Seconds
     }
 }

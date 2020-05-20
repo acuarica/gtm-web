@@ -4,7 +4,7 @@ extern crate serde_derive;
 extern crate serde_json;
 
 use git2::*;
-use gtmserv::{fetch_projects, get_notes, to_unixtime, FileEvent, Timeline, WorkdirStatus};
+use gtmserv::{fetch_projects, get_notes, parse_date, FileEvent, Timeline, WorkdirStatus};
 use std::{collections::HashMap, fs, path::PathBuf};
 use structopt::StructOpt;
 
@@ -68,8 +68,8 @@ fn main() -> Result<(), GtmError> {
 
     match command {
         GtmCommand::Commits { from_date, to_date } => {
-            let from_date = to_unixtime(from_date)?;
-            let to_date = to_unixtime(to_date)?;
+            let from_date = parse_date(&from_date)?;
+            let to_date = parse_date(&to_date)?;
 
             let mut notes = Vec::new();
             let projects = fetch_projects();
