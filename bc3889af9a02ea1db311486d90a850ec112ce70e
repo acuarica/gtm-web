@@ -1,0 +1,10 @@
+[ver:1,total:3120]
+src/app/App.svelte:2201,1589958000:1615,1589961600:586,m
+.gtm/terminal.app:450,1589954400:150,1589958000:300,r
+make.js:180,1589958000:180,r
+src/app/Fetch.svelte:125,1589958000:105,1589961600:20,r
+.travis.yml:45,1589958000:45,r
+src/app/DashboardCard.svelte:45,1589958000:15,1589961600:30,r
+../../../.git/modules/#forks/gtm/modules/web/TAG_EDITMSG:30,1589954400:30,d
+src/app/Home.svelte:24,1589961600:24,r
+tailwind.config.cjs:20,1589958000:20,r
