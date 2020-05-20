@@ -38,7 +38,7 @@ script:
   - yarn test
 
 before_deploy:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export APP_EXT=exe ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export APP_EXT=AppImage ; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then export APP_EXT=dmg ; fi
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export APP_EXT=exe ; fi
 #   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
