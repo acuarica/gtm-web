@@ -1,0 +1,9 @@
+[ver:1,total:788]
+src/app/App.svelte:360,1589929200:360,r
+gtmserv/Cargo.toml:150,1589932800:150,r
+package.json:111,1589932800:111,m
+.gtm/terminal.app:60,1589929200:60,r
+@mock/package.json:40,1589932800:40,m
+@notes/package.json:37,1589932800:37,m
+@gtm/package.json:15,1589932800:15,m
+dist/gtm-dash/main.js:15,1589932800:15,r
