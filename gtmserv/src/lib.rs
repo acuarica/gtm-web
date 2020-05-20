@@ -1,6 +1,6 @@
 #![feature(int_error_matching)]
 
-use chrono::NaiveDate;
+use chrono::{FixedOffset, NaiveDate};
 use git2::{Error, Repository};
 use regex::Regex;
 use serde::Serialize;
@@ -79,19 +79,39 @@ pub struct Commit {
     pub note: CommitNote,
 }
 
+/// Formats a git2 date time in RFC 822 format.
+/// It uses the git2 time offset to proper format the date.
+///
+/// ```
+/// use git2::Time;
+/// use gtmserv::format_time;
+/// assert_eq!(
+///     format_time(Time::new(1589945042, 0)),
+///     "2020-05-20 03:24:02 +00:00");
+/// assert_eq!(
+///     format_time(Time::new(1589945042, 2*60)),
+///     "2020-05-20 05:24:02 +02:00");
+/// assert_eq!(
+///     format_time(Time::new(1589945042, -3*60)),
+///     "2020-05-20 00:24:02 -03:00");
+/// ```
+pub fn format_time(time: git2::Time) -> String {
+    use chrono::TimeZone;
+    FixedOffset::east(time.offset_minutes() * 60)
+        .timestamp(time.seconds(), 0)
+        .to_string()
+}
+
 impl Commit {
     pub fn new(commit: &git2::Commit, project: String, note: CommitNote) -> Commit {
-        use chrono::{TimeZone, Utc};
-        use git2::Time;
-        let formatdate = |time: Time| Utc.timestamp(time.seconds(), 0).to_string();
-
+        let text = |msg: Option<&str>| msg.unwrap_or("<invalid utf-8>").to_string();
         Commit {
-            author: commit.author().name().unwrap().to_string(),
-            date: formatdate(commit.time()),
-            when: formatdate(commit.author().when()),
+            author: text(commit.author().name()),
+            date: format_time(commit.time()),
+            when: format_time(commit.author().when()),
             hash: commit.id().to_string(),
-            subject: commit.summary().unwrap().to_string(),
-            message: commit.message().unwrap().to_string(),
+            subject: text(commit.summary()),
+            message: text(commit.message()),
             project,
             note,
         }
@@ -404,8 +424,9 @@ pub fn get_commits(_path: &str) -> Result<(), Error> {
 }
 
 /// Parses a date in `%Y-%m-%d` format.
+///
 /// ```
-/// assert_eq!(gtmserv::parse_date("2020-05-20".to_owned()), Ok(1589932800));
+/// assert_eq!(gtmserv::parse_date("2020-05-20"), Ok(1589932800));
 /// ```
 pub fn parse_date(date: &str) -> chrono::ParseResult<i64> {
     let date = NaiveDate::parse_from_str(date, "%Y-%m-%d")?;
@@ -427,6 +448,7 @@ pub fn get_notes(
         if let Some(message) = note.message() {
             let commit = repo.find_commit(p.1)?;
             let time = commit.time().seconds();
+            // let time = commit.time().offset_minutes()
             if time >= from_date && time <= to_date {
                 if let Ok(commit_note) = parse_commit_note(message) {
                     result.push(Commit::new(&commit, project.to_owned(), commit_note));
