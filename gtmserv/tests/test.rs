@@ -1,7 +1,11 @@
 #![feature(int_error_matching)]
 
-use git2::{Commit, Error, Repository};
-use gtmserv::{get_projects, parse_commit_note, read_projects};
+use gtmserv::GTM_REFS;
+use git2::Oid;
+use std::error::Error;
+use tempfile::tempdir;
+use git2::{Commit, Repository};
+use gtmserv::{get_projects, parse_commit_note, read_projects, get_notes};
 use std::io::{self, Write};
 use tempfile::NamedTempFile;
 
@@ -65,15 +69,39 @@ fn test() {
     // env::set_var("HOME", "yes");
 }
 
-pub fn create_test_repo() -> Result<(), Error> {
-    // let repo = Repository::open("/Users/luigi/work/home")?;
-    // let odb = repo.odb()?;
+#[test]
+fn test_notes() -> Result<(), Box<dyn Error>> {
+    let temp = tempdir()?;
+    let repo_path = temp.path();
+    println!("Using repo path: {:?}", repo_path);
+
+    let repo = Repository::init(repo_path)?;
+    let oid = create_commit(&repo)?;
+
+    let sig = repo.signature()?;
+    repo.note(&sig, &sig, Some(GTM_REFS), oid, "[ver:1,total:180]", false)?;
+
+    let mut cs = Vec::new();
+    get_notes(&mut cs, &repo, "test".to_owned(), 0, 2589945042)?;
+    println!("{:?}", cs);
 
     Ok(())
 }
 
+fn create_commit(repo: &Repository) -> Result<Oid, git2::Error> {
+    let sig = repo.signature()?;
+
+    let tree_id = {
+        let mut index = repo.index()?;
+        index.write_tree()?
+    };
+
+    let tree = repo.find_tree(tree_id)?;
+    repo.commit(Some("HEAD"), &sig, &sig, "Initial commit", &tree, &[])
+}
+
 // #[test]
-pub fn test_commits() -> Result<(), Error> {
+pub fn test_commits() -> Result<(), git2::Error> {
     let repo = Repository::open("tests/cases/repo")?;
     let mut revwalk = repo.revwalk()?;
 
