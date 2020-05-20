@@ -32,6 +32,7 @@ before_deploy:
   - node --version || true
   - export PATH=$PATH:"/c/Program Files (x86)/Yarn/bin"
   - yarn --version || true
+  - yarn install
   - yarn build
   - yarn test
   - yarn dist
