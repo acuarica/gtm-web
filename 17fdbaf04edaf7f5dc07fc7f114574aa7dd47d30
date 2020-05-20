@@ -1,0 +1,6 @@
+[ver:1,total:2820]
+.gtm/terminal.app:1370,1589961600:820,1589965200:300,1589979600:60,1589983200:190,r
+.travis.yml:1230,1589965200:240,1589968800:180,1589979600:420,1589983200:390,m
+src/app/App.svelte:120,1589961600:120,r
+../../../.git/modules/#forks/gtm/modules/web/COMMIT_EDITMSG:80,1589983200:80,r
+../../../.git/modules/#forks/gtm/modules/web/TAG_EDITMSG:20,1589961600:20,d
