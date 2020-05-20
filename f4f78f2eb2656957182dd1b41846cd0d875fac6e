@@ -1,0 +1,7 @@
+[ver:1,total:600]
+.gtm/terminal.app:220,1589950800:200,1589954400:20,r
+.travis.yml:180,1589954400:180,r
+package.json:140,1589954400:140,m
+gtmserv/tests/test.rs:20,1589950800:20,r
+../../../.git/modules/#forks/gtm/modules/web/COMMIT_EDITMSG:20,1589954400:20,r
+../../../.git/modules/#forks/gtm/modules/web/TAG_EDITMSG:20,1589950800:20,d
