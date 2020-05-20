@@ -24,6 +24,9 @@
     "directories": {
       "buildResources": "resources"
     },
+    "linux": {
+      "target": "AppImage"
+    },
     "publish": null
   },
   "browserslist": [
