@@ -127,6 +127,11 @@ const commands = {
       const service = new GitService(args => spawn('yarn', ['--silent', 'gtm', ...args]))
       polka()
         .use(assets)
+        .get('/version', async (req, res) => {
+          ui.logln(`Request version: ${req.path}`)
+          const data = await service.getVersion()
+          send(res, 200, data);
+        })
         .get('/data/commits', async (req, res) => {
           ui.logln(`Request: ${req.path}${req.search}`)
           const range = {
