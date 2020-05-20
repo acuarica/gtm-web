@@ -36,10 +36,8 @@ install:
 script:
   - cargo test --release --manifest-path gtmserv/Cargo.toml
   - yarn test
-  - yarn dist
-  - travis_terminate 0
 
-# before_deploy:
+before_deploy:
 #   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
 #   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install nodejs && choco install yarn; fi
 #   # Force update of path env var on windows
@@ -48,6 +46,8 @@ script:
 #   - node --version || true
 #   - export PATH=$PATH:"/c/Program Files (x86)/Yarn/bin"
 #   - yarn --version || true
+  - yarn dist
+  # - travis_terminate 0
 
 deploy:
   - provider: releases
