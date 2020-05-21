@@ -19,6 +19,8 @@ enum GtmCommand {
         from_date: String,
         #[structopt(long)]
         to_date: String,
+        #[structopt(long)]
+        message: Option<String>,
     },
     Projects,
     Status,
@@ -67,7 +69,11 @@ fn main() -> Result<(), GtmError> {
     let command = GtmCommand::from_args();
 
     match command {
-        GtmCommand::Commits { from_date, to_date } => {
+        GtmCommand::Commits {
+            from_date,
+            to_date,
+            message,
+        } => {
             let from_date = parse_date(&from_date)?;
             let to_date = parse_date(&to_date)?;
 
@@ -77,7 +83,7 @@ fn main() -> Result<(), GtmError> {
                 let path = PathBuf::from(project.as_str());
                 let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
                 let repo = Repository::open(project.to_owned())?;
-                get_notes(&mut notes, &repo, pkey, from_date, to_date).unwrap();
+                get_notes(&mut notes, &repo, pkey, from_date, to_date, &message).unwrap();
             }
 
             let json = serde_json::to_string(&notes).unwrap();

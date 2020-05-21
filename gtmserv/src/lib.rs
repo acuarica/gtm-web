@@ -439,6 +439,7 @@ pub fn get_notes(
     project: String,
     from_date: i64,
     to_date: i64,
+    search_message: &Option<String>,
 ) -> Result<(), Error> {
     let notes = repo.notes(Some(GTM_REFS))?;
 
@@ -448,7 +449,22 @@ pub fn get_notes(
         if let Some(message) = note.message() {
             let commit = repo.find_commit(p.1)?;
             let time = commit.time().seconds() + commit.time().offset_minutes() as i64 * 60;
-            if time >= from_date && time <= to_date {
+
+            let f = |msg: &String| {
+                if let Some(message) = commit.message() {
+                    message.to_lowercase().contains(msg.to_lowercase().as_str())
+                } else {
+                    true
+                }
+            };
+
+            if time >= from_date
+                && time <= to_date
+                && match search_message {
+                    None => true,
+                    Some(msg) => f(msg),
+                }
+            {
                 if let Ok(commit_note) = parse_commit_note(message) {
                     result.push(Commit::new(&commit, project.to_owned(), commit_note));
                 }

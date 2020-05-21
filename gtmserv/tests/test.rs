@@ -45,12 +45,44 @@ fn gets_init_projects() -> Result<(), io::Error> {
 
 mod projects {
 
+    const GTM_CMD: &str = "gtmserv";
+
+    use super::*;
     use assert_cmd::Command;
+    use std::env;
+    use tempfile::tempdir;
+    use tempfile::Builder;
+
+    fn create_config_file(json_text: &[u8]) -> Result<(), Box<dyn Error>> {
+        let home = tempdir()?;
+        env::set_var("HOME", home.path().as_os_str());
+        let mut file = Builder::new()
+            .prefix("project")
+            .suffix(".json")
+            .tempfile_in(home.path())?;
+        file.write(json_text)?;
+
+        Ok(())
+    }
 
     #[test]
-    fn file_doesnt_exist() -> Result<(), Box<dyn std::error::Error>> {
-        let mut cmd = Command::cargo_bin("gtmserv")?;
-        cmd.arg("projects").assert().success();
+    fn file_doesnt_exist() -> Result<(), Box<dyn Error>> {
+        create_config_file(PROJECT_JSON)?;
+
+        let mut cmd = Command::cargo_bin(GTM_CMD)?;
+        cmd.
+        arg("projects").assert().success();
+
+        println!("{:?}", cmd.assert());
+        // .stderr(predicate::str::contains("No such file or directory"));
+
+        Ok(())
+    }
+
+    #[test]
+    fn file_project() -> Result<(), Box<dyn std::error::Error>> {
+        let mut cmd = Command::cargo_bin(GTM_CMD)?;
+        cmd.arg("commits").assert().failure();
         // .stderr(predicate::str::contains("No such file or directory"));
 
         Ok(())
@@ -78,7 +110,7 @@ fn test_notes() -> Result<(), Box<dyn Error>> {
     repo.note(&sig, &sig, Some(GTM_REFS), oid, "[ver:1,total:180]", false)?;
 
     let mut cs = Vec::new();
-    get_notes(&mut cs, &repo, "test".to_owned(), 0, 2589945042)?;
+    get_notes(&mut cs, &repo, "test".to_owned(), 0, 2589945042, &None)?;
     println!("{:?}", cs);
 
     Ok(())
