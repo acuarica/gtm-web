@@ -68,7 +68,9 @@ export const configs = {
       copy({
         targets: [
           { src: 'src/desktop/index.html', dest: 'dist/gtm-dash' },
-          { src: `gtmserv/target/${production ? 'release' : 'debug'}/gtmserv*`, dest: 'dist/gtm-dash' },
+          ...['', '.exe'].map(ext => {
+            return { src: `gtmserv/target/${production ? 'release' : 'debug'}/gtmserv${ext}`, dest: 'dist/gtm-dash' }
+          })
         ],
       }),
     ],
