@@ -24,10 +24,14 @@ It will automatically detect your gtm installation, and you can visualize you ti
 - Filter by date and git message contents
 - Visualize your time data per project or all together
 - Integrated timeline on what projects you spend most of your time
+- Report time spent in each commit
+- Report time spent in each file
 
 ## Demo
 
-You can see gtm Dashboard in action:
+gtm Dashboard works offline.
+Once installed, it reads your time data generated from gtm.
+However, since it is made using web technologies, you can see gtm Dashboard in action:
 
 [https://acuarica.github.io/gtm-web/](https://acuarica.github.io/gtm-web/)
 
@@ -56,5 +60,6 @@ The project view shows your **gtm** data focused in a given project.
 ### Project's commit view
 
 The project view includes files and commits in the given range.
+You can visualize time spent in each commit and in each file.
 
 ![Project-commits](docs/Project-commits.gif)
