@@ -25,6 +25,10 @@ export class GitService implements GtmService {
       `--to-date=${end.add(1, 'day').format('YYYY-MM-DD')}`,
     ]
 
+    if (filter.message) {
+      args.push(`--message=${filter.message}`)
+    }
+
     return this.fetchGtm(args)
   }
 

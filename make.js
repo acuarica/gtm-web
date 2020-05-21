@@ -138,6 +138,10 @@ const commands = {
             start: req.query.from,
             end: req.query.to
           };
+          if (req.query.message) {
+            range.message = req.query.message
+          }
+
           if (range.start && range.end) {
             try {
               const data = await service.fetchCommits(range)

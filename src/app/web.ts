@@ -9,7 +9,11 @@ export class WebService implements GtmService {
   }
 
   fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
-    return this.fetchurl(`/data/commits?from=${filter.start}&to=${filter.end}`)
+    let args = `/data/commits?from=${filter.start}&to=${filter.end}`
+    if (filter.message) {
+      args += `&message=${filter.message}`
+    }
+    return this.fetchurl(args)
   }
 
   async fetchProjectList(): Promise<string[]> {

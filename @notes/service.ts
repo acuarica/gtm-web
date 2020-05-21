@@ -9,6 +9,7 @@ export class GtmErr {
 export interface CommitsFilter {
   start: string;
   end: string;
+  message?: string;
 }
 export interface GtmService {
 

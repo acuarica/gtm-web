@@ -53,15 +53,30 @@
     );
   });
 
+  let currentFilter = {};
+
   function handleRangeChange(event) {
-    statsPromise = fetchCommits(event.detail).then(cs => computeStats(cs));
+    fetchStats(event.detail);
+  }
+
+  function handleSearch(event) {
+    fetchStats({ message: event.detail.text });
+  }
+
+  function fetchStats(partialFilter) {
+    currentFilter = { ...currentFilter, ...partialFilter };
+    statsPromise = fetchCommits(currentFilter).then(cs => computeStats(cs));
   }
 </script>
 
 <div class="container antialiased serif h-screen">
   <div class="flex flex-col h-full divide-y divide-divide-color">
 
-    <Navbar {title} {handleRangeChange} {settingsView} />
+    <Navbar
+      {title}
+      {handleRangeChange}
+      {settingsView}
+      on:search={handleSearch} />
 
     <div class="flex flex-1 ">
       <div class="flex flex-row w-full divide-x divide-divide-color">

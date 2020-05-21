@@ -72,7 +72,7 @@
       class="px-2 pb-1 md:flex md:items-center {isOpen ? 'block' : 'hidden'}">
       <div class="mr-2 hidden lg:block text-xs">Commit Filters</div>
       <DatePicker on:change={handleRangeChange} />
-      <SearchBox />
+      <SearchBox on:search />
       <button
         class="text-white px-2 py-1 mr-2 hidden sm:block focus:outline-none
         rounded hover:bg-gray-800"
