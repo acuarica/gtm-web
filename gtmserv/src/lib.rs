@@ -4,6 +4,7 @@ use chrono::{DateTime, FixedOffset, TimeZone};
 use git2::Repository;
 use regex::Regex;
 use serde::Serialize;
+use serde::Deserialize;
 use std::{
     collections::{hash_map, HashMap},
     fs::File,
@@ -53,7 +54,7 @@ impl InitProjects {
     }
 }
 
-#[derive(PartialEq, Debug, Serialize)]
+#[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct FileNote {
     pub source_file: Filepath,
@@ -62,7 +63,7 @@ pub struct FileNote {
     pub status: String,
 }
 
-#[derive(PartialEq, Debug, Serialize)]
+#[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct CommitNote {
     pub version: u32,
@@ -88,7 +89,7 @@ pub struct WorkdirStatus {
     pub commit_note: CommitNote,
 }
 
-#[derive(PartialEq, Debug, Serialize)]
+#[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct Commit {
     pub author: String,

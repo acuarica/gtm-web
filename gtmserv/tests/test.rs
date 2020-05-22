@@ -155,17 +155,16 @@ mod cli_tests {
     use crate::init_projects_tests;
     use crate::init_projects_tests::PROJECT_JSON;
     use assert_cmd::Command;
+    use gtmserv::Commit;
     use predicates::prelude::*;
     use std::collections::HashMap;
     use std::error::Error;
-    use std::{env, fs};
-    use tempfile::tempdir;
-    use tempfile::TempDir;
+    use std::fs;
+    use tempfile::{tempdir, TempDir};
 
     fn create_config_file(json_text: &[u8]) -> Result<TempDir, Box<dyn Error>> {
         print!("Using temp dir as HOME ... ");
         let home = tempdir()?;
-        env::set_var("HOME", home.path().as_os_str());
         println!("{:?} [OK]", &home.path());
         let mut path = home.path().to_path_buf();
         path.push(".git-time-metric");
@@ -179,13 +178,15 @@ mod cli_tests {
 
     #[test]
     fn run_projects_from_env_with_empty_json() -> Result<(), Box<dyn Error>> {
-        let _home = create_config_file(b"{}")?;
+        let home = create_config_file(b"{}")?;
         Command::cargo_bin(GTM_CMD)?
+            .env("HOME", home.path())
             .arg("projects")
             .assert()
             .success()
             .stdout(predicate::function(|out| {
                 let list: Vec<String> = serde_json::from_slice(out).unwrap();
+                println!("Got from stdout: {:?}", list);
                 list.len() == 0
             }))
             .stderr(predicate::str::is_empty());
@@ -194,8 +195,9 @@ mod cli_tests {
 
     #[test]
     fn run_projects_from_env_with_json() -> Result<(), Box<dyn Error>> {
-        let _home = create_config_file(init_projects_tests::PROJECT_JSON)?;
+        let home = create_config_file(init_projects_tests::PROJECT_JSON)?;
         Command::cargo_bin(GTM_CMD)?
+            .env("HOME", home.path())
             .arg("projects")
             .assert()
             .success()
@@ -210,34 +212,40 @@ mod cli_tests {
 
     #[test]
     fn run_projects_from_env_with_no_json() -> Result<(), Box<dyn Error>> {
-        env::set_var("HOME", "/non/existing/path");
         Command::cargo_bin(GTM_CMD)?
+            .env("HOME", "/non/existing/path")
             .arg("projects")
             .assert()
-            // .failure()
-            // .stdout(predicate::str::is_empty())
-            .stderr(predicate::str::is_empty());
+            .failure()
+            .stdout(predicate::str::is_empty());
         Ok(())
     }
 
     #[test]
     fn run_projects_from_env_with_invalid_json() -> Result<(), Box<dyn Error>> {
-        let _home = create_config_file(b"No JSON data here")?;
+        let home = create_config_file(b"No JSON data here")?;
         Command::cargo_bin(GTM_CMD)?
+            .env("HOME", home.path())
             .arg("projects")
             .assert()
-            // .failure()
-            // .stdout(predicate::str::is_empty())
-            .stderr(predicate::str::is_empty());
+            .failure()
+            .stdout(predicate::str::is_empty());
         Ok(())
     }
 
     #[test]
-    fn file_project() -> Result<(), Box<dyn std::error::Error>> {
-        let mut cmd = Command::cargo_bin(GTM_CMD)?;
-        cmd.arg("commits").assert().failure();
-        // .stderr(predicate::str::contains("No such file or directory"));
-
+    fn run_commits_no_args() -> Result<(), Box<dyn std::error::Error>> {
+        let home = create_config_file(b"{}")?;
+        Command::cargo_bin(GTM_CMD)?
+            .env("HOME", home.path())
+            .arg("commits")
+            .assert()
+            .success()
+            .stdout(predicate::function(|out| {
+                let result: Vec<Commit> = serde_json::from_slice(out).unwrap();
+                result.len() == 0
+            }))
+            .stderr(predicate::str::is_empty());
         Ok(())
     }
 }

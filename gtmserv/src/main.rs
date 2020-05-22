@@ -15,7 +15,7 @@ use gtmserv::{get_notes, FileEvent, Timeline, WorkdirStatus};
 use std::fmt::Display;
 use std::{
     collections::HashMap,
-    fs,
+    fs, io,
     ops::Try,
     path::PathBuf,
     process::{ExitCode, Termination},
@@ -81,6 +81,7 @@ impl<E> Try for GtmResult<E> {
 enum GtmError {
     Git(git2::Error),
     Parse(chrono::ParseError, String),
+    Io(io::Error, PathBuf),
 }
 
 impl Termination for GtmResult<GtmError> {
@@ -112,6 +113,7 @@ impl Display for GtmError {
         match self {
             GtmError::Git(err) => write!(f, "Git2 error: {}", err),
             GtmError::Parse(err, field) => write!(f, "Could not parse {} argument: {}", field, err),
+            GtmError::Io(err, path) => write!(f, "Io error {:?} : {}", path, err),
         }
     }
 }
@@ -135,8 +137,9 @@ fn config_path() -> Option<PathBuf> {
     Some(path)
 }
 
-fn from_config() -> InitProjects {
-    InitProjects::from_file(config_path().unwrap()).unwrap()
+fn from_config() -> Result<InitProjects, GtmError> {
+    let path = config_path().unwrap();
+    InitProjects::from_file(&path).map_err(|e| GtmError::Io(e, path))
 }
 
 fn parse_arg_date(date: &Option<String>, field: &str, days: i64) -> Result<i64, GtmError> {
@@ -164,7 +167,7 @@ fn main() -> GtmResult<GtmError> {
             let to_date = parse_arg_date(&to_date, "to", 1)?;
 
             let mut notes = Vec::new();
-            for project in from_config().get_project_list() {
+            for project in from_config()?.get_project_list() {
                 let path = PathBuf::from(project.as_str());
                 let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
                 let repo = Repository::open(project.to_owned())?;
@@ -175,14 +178,14 @@ fn main() -> GtmResult<GtmError> {
             println!("{}", json);
         }
         GtmCommand::Projects => {
-            let projects = from_config();
+            let projects = from_config()?;
             let projects: Vec<&String> = projects.get_project_list().collect();
             let json = serde_json::to_string(&projects).unwrap();
             println!("{}", json);
         }
         GtmCommand::Status => {
             let mut wd = HashMap::new();
-            for project in from_config().get_project_list() {
+            for project in from_config()?.get_project_list() {
                 let mut path = PathBuf::new();
                 path.push(project.to_owned());
                 path.push(".gtm");
