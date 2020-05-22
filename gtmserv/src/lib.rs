@@ -1,13 +1,13 @@
 #![feature(int_error_matching)]
 
-use chrono::{FixedOffset, NaiveDate};
-use git2::{Error, Repository};
+use chrono::{DateTime, FixedOffset, TimeZone};
+use git2::Repository;
 use regex::Regex;
 use serde::Serialize;
 use std::{
-    collections::HashMap,
+    collections::{hash_map, HashMap},
     fs::File,
-    io::{BufRead, Cursor},
+    io::{self, BufRead, Cursor},
     num::IntErrorKind,
     path::Path,
 };
@@ -29,7 +29,29 @@ type Filepath = String;
 /// The keys are the repository path of the working directory of the
 /// git repository.
 /// The values indicates the date when the git repo was `init` by gtm.
-type InitProjects = HashMap<Filepath, String>;
+pub struct InitProjects(HashMap<Filepath, String>);
+
+impl InitProjects {
+    pub fn from_file<P: AsRef<Path>>(filename: P) -> Result<Self, io::Error> {
+        let file = File::open(filename)?;
+        let map = serde_json::from_reader(file)?;
+        Ok(InitProjects(map))
+    }
+
+    /// Return how many projects are being initialized.
+    pub fn len(self: &Self) -> usize {
+        self.0.len()
+    }
+
+    pub fn contains_project(self: &Self, project_path: &str) -> bool {
+        self.0.contains_key(project_path)
+    }
+
+    ///
+    pub fn get_project_list(self: &Self) -> hash_map::Keys<'_, String, String> {
+        self.0.keys()
+    }
+}
 
 #[derive(PartialEq, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
@@ -96,7 +118,6 @@ pub struct Commit {
 ///     "2020-05-20 00:24:02 -03:00");
 /// ```
 pub fn format_time(time: git2::Time) -> String {
-    use chrono::TimeZone;
     FixedOffset::east(time.offset_minutes() * 60)
         .timestamp(time.seconds(), 0)
         .to_string()
@@ -116,32 +137,6 @@ impl Commit {
             note,
         }
     }
-}
-
-pub fn read_projects<P: AsRef<Path>>(filename: P) -> Result<InitProjects, std::io::Error> {
-    let file = File::open(filename)?;
-    let ps = serde_json::from_reader(file)?;
-    Ok(ps)
-}
-
-pub fn get_projects(init_projects: &InitProjects) -> Vec<String> {
-    let mut result = Vec::new();
-    for k in init_projects.keys() {
-        result.push(k.to_owned());
-    }
-
-    result
-}
-
-pub fn fetch_projects() -> Option<Vec<String>> {
-    let mut path = dirs::home_dir()?;
-    path.push(".git-time-metric");
-    path.push("project.json");
-    let init_projects = match read_projects(path) {
-        Ok(value) => value,
-        Err(_err) => return None,
-    };
-    Some(get_projects(&init_projects))
 }
 
 #[derive(PartialEq, Debug)]
@@ -417,20 +412,43 @@ pub fn parse_commit_note(message: &str) -> Result<CommitNote, CommitNoteParseErr
     Ok(commit)
 }
 
-pub fn get_commits(_path: &str) -> Result<(), Error> {
+pub fn get_commits(_path: &str) -> Result<(), git2::Error> {
     // let repo = Repository::open(path)?;
     // let nt = repo.notes(Some("refs/notes/gtm-data")).unwrap();
     Ok(())
 }
 
-/// Parses a date in `%Y-%m-%d` format.
-///
-/// ```
-/// assert_eq!(gtmserv::parse_date("2020-05-20"), Ok(1589932800));
-/// ```
-pub fn parse_date(date: &str) -> chrono::ParseResult<i64> {
-    let date = NaiveDate::parse_from_str(date, "%Y-%m-%d")?;
-    Ok(date.and_hms(0, 0, 0).timestamp())
+type UnixEpoch = i64;
+
+pub struct NotesFilter {
+    from_date: Option<UnixEpoch>,
+    to_date: Option<UnixEpoch>,
+    needle: Option<String>,
+}
+
+impl NotesFilter {
+    pub fn new() -> Self {
+        Self {
+            from_date: None,
+            to_date: None,
+            needle: None,
+        }
+    }
+
+    pub fn from_date<T: TimeZone>(self: &mut Self, date: DateTime<T>) -> &mut Self {
+        self.from_date = Some(date.timestamp());
+        self
+    }
+
+    pub fn to_date<T: TimeZone>(self: &mut Self, date: DateTime<T>) -> &mut Self {
+        self.to_date = Some(date.timestamp());
+        self
+    }
+
+    pub fn needle<T: TimeZone>(self: &mut Self, needle: String) -> &mut Self {
+        self.needle = Some(needle);
+        self
+    }
 }
 
 pub fn get_notes(
@@ -440,7 +458,7 @@ pub fn get_notes(
     from_date: i64,
     to_date: i64,
     search_message: &Option<String>,
-) -> Result<(), Error> {
+) -> Result<(), git2::Error> {
     let notes = repo.notes(Some(GTM_REFS))?;
 
     for note in notes {
