@@ -21,6 +21,7 @@ mod init_projects_tests {
     }
 
     #[test]
+    #[cfg_attr(target_os="windows", ignore)]
     fn init_projects_with_non_existing_file() {
         assert_error(
             InitProjects::from_file("/non/existing/path"),
@@ -177,6 +178,7 @@ mod cli_tests {
     }
 
     #[test]
+    #[cfg(windowss)]
     fn run_projects_from_env_with_empty_json() -> Result<(), Box<dyn Error>> {
         let home = create_config_file(b"{}")?;
         Command::cargo_bin(GTM_CMD)?
