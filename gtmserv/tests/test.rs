@@ -178,7 +178,7 @@ mod cli_tests {
     }
 
     #[test]
-    #[cfg(windowss)]
+    #[cfg_attr(target_os="windows", ignore)]
     fn run_projects_from_env_with_empty_json() -> Result<(), Box<dyn Error>> {
         let home = create_config_file(b"{}")?;
         Command::cargo_bin(GTM_CMD)?
@@ -196,6 +196,7 @@ mod cli_tests {
     }
 
     #[test]
+    #[cfg_attr(target_os="windows", ignore)]
     fn run_projects_from_env_with_json() -> Result<(), Box<dyn Error>> {
         let home = create_config_file(init_projects_tests::PROJECT_JSON)?;
         Command::cargo_bin(GTM_CMD)?
@@ -236,6 +237,7 @@ mod cli_tests {
     }
 
     #[test]
+    #[cfg_attr(target_os="windows", ignore)]
     fn run_commits_no_args() -> Result<(), Box<dyn std::error::Error>> {
         let home = create_config_file(b"{}")?;
         Command::cargo_bin(GTM_CMD)?
