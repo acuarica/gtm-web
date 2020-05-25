@@ -245,13 +245,13 @@ text/src/char.ts:90,1585918800:90,r",
                                 "1585922400".to_string() => 400,
                                 "1585929600".to_string() => 40,
                             },
-                            status: "r".to_string(),
+                            status: "r",
                         },
                         FileNote {
                             source_file: "text/src/char.ts",
                             time_spent: 90,
                             timeline: hashmap! { "1585918800".to_string() => 90, },
-                            status: "r".to_string(),
+                            status: "r",
                         }
                     ],
                 }

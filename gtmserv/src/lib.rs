@@ -66,7 +66,7 @@ type Seconds = u32;
 ///             "1585861200".to_owned() => 60,
 ///             "1585875600".to_owned() => 90,
 ///         },
-///         status: "r".to_owned(),
+///         status: "r",
 ///     };
 /// let from_json = serde_json::from_str(r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60,"1585875600":90},"Status":"r"}"#);
 /// assert_eq!(file_note, from_json.unwrap());
@@ -75,7 +75,7 @@ pub struct FileNote<'a> {
     pub source_file: &'a str,
     pub time_spent: Seconds,
     pub timeline: HashMap<String, Seconds>,
-    pub status: String,
+    pub status: &'a str,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
@@ -239,7 +239,7 @@ pub enum FileNoteParseError {
 ///             "1585861200".to_owned() => 60,
 ///             "1585875600".to_owned() => 90,
 ///         },
-///         status: "m".to_owned(),
+///         status: "m",
 ///     }
 /// );
 ///
@@ -257,7 +257,7 @@ pub enum FileNoteParseError {
 ///     "1585918800".to_owned() => 1629,
 ///     "1585929600".to_owned() => 80,
 ///   },
-///   status: "m".to_string(),
+///   status: "m",
 /// });
 /// ```
 pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a>, FileNoteParseError> {
@@ -273,7 +273,7 @@ pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a>, FileNote
         .next_back()
         .ok_or_else(|| FileNoteParseError::NotEnoughEntries)?
     {
-        s @ "m" | s @ "r" | s @ "d" => s.to_owned(),
+        s @ "m" | s @ "r" | s @ "d" => s,
         got => {
             return Err(FileNoteParseError::StatusNotRecognized {
                 got: got.to_owned(),
@@ -384,13 +384,13 @@ pub enum CommitNoteParseError {
 ///                         "1585922400".to_string() => 400,
 ///                         "1585929600".to_string() => 40,
 ///                     },
-///                     status: "r".to_string(),
+///                     status: "r",
 ///                 },
 ///                 gtmserv::FileNote {
 ///                     source_file: "text/src/char.ts",
 ///                     time_spent: 90,
 ///                     timeline: hashmap! { "1585918800".to_string() => 90, },
-///                     status: "r".to_string(),
+///                     status: "r",
 ///                 }
 ///             ],
 ///         }
@@ -420,7 +420,7 @@ pub enum CommitNoteParseError {
 ///             source_file: "demo/demo.ts",
 ///             time_spent: 60,
 ///             timeline: hashmap! { "1585918800".to_string() => 60 },
-///             status: "r".to_string(),
+///             status: "r",
 ///         }
 ///     );
 /// ```
@@ -786,7 +786,7 @@ impl<'a> Timeline<'a> {
         for (fp, tl) in fs {
             let note = FileNote {
                 source_file: fp,
-                status: "r".to_string(),
+                status: "r",
                 time_spent: tl.0,
                 timeline: tl.1,
             };
