@@ -1,14 +1,13 @@
 #![feature(int_error_matching)]
 
 use chrono::{DateTime, FixedOffset, TimeZone};
-use git2::Repository;
+use git2::{Note, Repository};
 use regex::Regex;
-use serde::Serialize;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{
     collections::{hash_map, HashMap},
     fs::File,
-    io::{self, BufRead, Cursor},
+    io,
     num::IntErrorKind,
     path::Path,
 };
@@ -19,8 +18,6 @@ extern crate lazy_static;
 extern crate chrono;
 
 pub const GTM_REFS: &str = "refs/notes/gtm-data";
-
-type Seconds = u32;
 
 type Filepath = String;
 
@@ -54,10 +51,12 @@ impl InitProjects {
     }
 }
 
+type Seconds = u32;
+
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct FileNote {
-    pub source_file: Filepath,
+pub struct FileNote<'a> {
+    pub source_file: &'a str,
     pub time_spent: Seconds,
     pub timeline: HashMap<Filepath, Seconds>,
     pub status: String,
@@ -65,14 +64,15 @@ pub struct FileNote {
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct CommitNote {
+pub struct CommitNote<'a> {
     pub version: u32,
     pub total: Seconds,
-    pub files: Vec<FileNote>,
+    #[serde(borrow)]
+    pub files: Vec<FileNote<'a>>,
 }
 
-impl CommitNote {
-    fn new(version: u32, total: Seconds) -> CommitNote {
+impl CommitNote<'_> {
+    fn new<'a>(version: u32, total: Seconds) -> CommitNote<'a> {
         CommitNote {
             version,
             total,
@@ -83,15 +83,15 @@ impl CommitNote {
 
 #[derive(PartialEq, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct WorkdirStatus {
+pub struct WorkdirStatus<'a> {
     pub total: Seconds,
     pub label: String,
-    pub commit_note: CommitNote,
+    pub commit_note: CommitNote<'a>,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct Commit {
+pub struct Commit<'a> {
     pub author: String,
     pub date: String,
     pub when: String,
@@ -99,7 +99,8 @@ pub struct Commit {
     pub subject: String,
     pub message: String,
     pub project: String,
-    pub note: CommitNote,
+    #[serde(borrow)]
+    pub note: CommitNote<'a>,
 }
 
 /// Formats a git2 date time in RFC 822 format.
@@ -124,8 +125,8 @@ pub fn format_time(time: git2::Time) -> String {
         .to_string()
 }
 
-impl Commit {
-    pub fn new(commit: &git2::Commit, project: String, note: CommitNote) -> Commit {
+impl Commit<'_> {
+    pub fn new<'a>(commit: &git2::Commit, project: String, note: CommitNote<'a>) -> Commit<'a> {
         let text = |msg: Option<&str>| msg.unwrap_or("<invalid utf-8>").to_string();
         Commit {
             author: text(commit.author().name()),
@@ -189,7 +190,7 @@ pub enum FileNoteParseError {
 /// assert_eq!(
 ///     gtmserv::parse_file_note("src/file.ts:150,1585861200:60,1585875600:90,m").unwrap(),
 ///     gtmserv::FileNote {
-///         source_file: "src/file.ts".to_owned(),
+///         source_file: "src/file.ts",
 ///         time_spent: 150,
 ///         timeline: hashmap! {
 ///             "1585861200".to_owned() => 60,
@@ -203,7 +204,7 @@ pub enum FileNoteParseError {
 ///  gtmserv::parse_file_note("comment/src/comment.ts:2797,1585861200:354,1585875600:50,1585879200:240,1585908000:444,1585918800:1629,1585929600:80,m")
 ///   .unwrap(),
 ///  gtmserv::FileNote {
-///   source_file: "comment/src/comment.ts".to_string(),
+///   source_file: "comment/src/comment.ts",
 ///   time_spent: 2797,
 ///   timeline: hashmap! {
 ///     "1585861200".to_owned() => 354,
@@ -216,7 +217,7 @@ pub enum FileNoteParseError {
 ///   status: "m".to_string(),
 /// });
 /// ```
-pub fn parse_file_note(file_entry: &str) -> Result<FileNote, FileNoteParseError> {
+pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a>, FileNoteParseError> {
     let parts: Vec<&str> = file_entry.split(',').collect();
     if parts.len() < 3 {
         return Err(FileNoteParseError::NotEnoughEntries);
@@ -233,7 +234,7 @@ pub fn parse_file_note(file_entry: &str) -> Result<FileNote, FileNoteParseError>
             return Err(FileNoteParseError::InvalidTimelineFormat);
         }
         timeline.insert(
-            timeline_entry[0].to_string(),
+            timeline_entry[0].to_owned(),
             match timeline_entry[1].parse::<Seconds>() {
                 Err(err) => {
                     return Err(FileNoteParseError::InvalidTimespent {
@@ -246,7 +247,7 @@ pub fn parse_file_note(file_entry: &str) -> Result<FileNote, FileNoteParseError>
     }
 
     let note = FileNote {
-        source_file: file_name[0].to_string(),
+        source_file: file_name[0],
         time_spent: match file_name[1].parse::<Seconds>() {
             Err(err) => {
                 return Err(FileNoteParseError::InvalidTotalTimespent {
@@ -328,7 +329,7 @@ pub enum CommitNoteParseError {
 ///             total: 213,
 ///             files: vec![
 ///                 gtmserv::FileNote {
-///                     source_file: "closebrackets/src/closebrackets.ts".to_string(),
+///                     source_file: "closebrackets/src/closebrackets.ts",
 ///                     time_spent: 950,
 ///                     timeline: hashmap! {
 ///                         "1585918800".to_string() => 510,
@@ -338,7 +339,7 @@ pub enum CommitNoteParseError {
 ///                     status: "r".to_string(),
 ///                 },
 ///                 gtmserv::FileNote {
-///                     source_file: "text/src/char.ts".to_string(),
+///                     source_file: "text/src/char.ts",
 ///                     time_spent: 90,
 ///                     timeline: hashmap! { "1585918800".to_string() => 90, },
 ///                     status: "r".to_string(),
@@ -368,28 +369,21 @@ pub enum CommitNoteParseError {
 ///     assert_eq!(
 ///         note.files[3],
 ///         gtmserv::FileNote {
-///             source_file: "demo/demo.ts".to_string(),
+///             source_file: "demo/demo.ts",
 ///             time_spent: 60,
 ///             timeline: hashmap! { "1585918800".to_string() => 60 },
 ///             status: "r".to_string(),
 ///         }
 ///     );
 /// ```
-pub fn parse_commit_note(message: &str) -> Result<CommitNote, CommitNoteParseError> {
+pub fn parse_commit_note<'a>(message: &'a str) -> Result<CommitNote<'a>, CommitNoteParseError> {
     lazy_static! {
         static ref VERSION_RE: Regex = Regex::new(r"\[ver:(\d+),total:(\d+)\]").unwrap();
     }
-    let mut lines = Cursor::new(message).lines();
+    let mut lines = message.lines();
     let mut commit = match lines.next() {
         None => return Err(CommitNoteParseError::EmptyNote),
-        Some(first) => match VERSION_RE
-            .captures_iter(
-                &first
-                    .expect("Could not read from cursor, aborting")
-                    .to_owned(),
-            )
-            .next()
-        {
+        Some(first) => match VERSION_RE.captures_iter(&first.to_owned()).next() {
             None => return Err(CommitNoteParseError::InvalidHeader),
             Some(parts) => CommitNote {
                 version: match parts[1].parse::<u32>() {
@@ -405,7 +399,7 @@ pub fn parse_commit_note(message: &str) -> Result<CommitNote, CommitNoteParseErr
         },
     };
     for line in lines {
-        match parse_file_note(&line.unwrap()) {
+        match parse_file_note(line) {
             Err(err) => return Err(CommitNoteParseError::InvalidFile { err }),
             Ok(entry) => commit.files.push(entry),
         };
@@ -452,40 +446,56 @@ impl NotesFilter {
     }
 }
 
-pub fn get_notes(
-    result: &mut Vec<Commit>,
-    repo: &Repository,
+#[derive(Debug)]
+pub struct GitCommitNote<'a> {
+    pub commit: Commit<'a>,
+    note: git2::Note<'a>,
+}
+
+pub fn get_notes<'r, F>(
+    mut with: F,
+    repo: &'r Repository,
     project: String,
     from_date: i64,
     to_date: i64,
     search_message: &Option<String>,
-) -> Result<(), git2::Error> {
+) -> Result<(), git2::Error>
+where
+    F: FnMut(GitCommitNote<'r>) -> (),
+{
     let notes = repo.notes(Some(GTM_REFS))?;
 
-    for note in notes {
-        let p = note.unwrap();
-        let note = repo.find_note(Some(GTM_REFS), p.1)?;
-        if let Some(message) = note.message() {
-            let commit = repo.find_commit(p.1)?;
-            let time = commit.time().seconds() + commit.time().offset_minutes() as i64 * 60;
+    for note_assoc in notes {
+        let p = note_assoc.unwrap();
+        let commit = repo.find_commit(p.1)?;
+        let time = commit.time().seconds() + commit.time().offset_minutes() as i64 * 60;
 
-            let f = |msg: &String| {
-                if let Some(message) = commit.message() {
-                    message.to_lowercase().contains(msg.to_lowercase().as_str())
-                } else {
-                    true
-                }
-            };
+        let f = |msg: &String| {
+            if let Some(message) = commit.message() {
+                message.to_lowercase().contains(msg.to_lowercase().as_str())
+            } else {
+                true
+            }
+        };
 
-            if time >= from_date
-                && time <= to_date
-                && match search_message {
-                    None => true,
-                    Some(msg) => f(msg),
-                }
-            {
-                if let Ok(commit_note) = parse_commit_note(message) {
-                    result.push(Commit::new(&commit, project.to_owned(), commit_note));
+        if time >= from_date
+            && time <= to_date
+            && match search_message {
+                None => true,
+                Some(msg) => f(msg),
+            }
+        {
+            // let message: &'r str = note.message().as_ref().unwrap();
+            // parse_commit_note(np.as_ref().unwrap().message().as_ref().unwrap()).unwrap()
+            let note = repo.find_note(Some(GTM_REFS), p.1)?;
+            // let note_message = unsafe { (&note as *const Note).as_ref().unwrap().message() };
+            let note_message = unsafe { (*(&note as *const Note)).message() };
+            if let Some(note_message) = note_message {
+                if let Ok(commit_note) = parse_commit_note(note_message) {
+                    with(GitCommitNote {
+                        commit: Commit::new(&commit, project.to_owned(), commit_note),
+                        note,
+                    });
                 }
             }
         }
@@ -504,7 +514,7 @@ impl FileEvent {
     pub fn new(timestamp: u64, filename: &str) -> FileEvent {
         FileEvent {
             timestamp,
-            filename: filename.to_string(),
+            filename: filename.to_owned(),
         }
     }
 }
@@ -546,22 +556,18 @@ pub fn down_to_hour(timestamp: u64) -> u64 {
     (timestamp / 3600) * 3600
 }
 
-pub struct Timeline {
-    timeline: HashMap<u64, TimelineBin>,
-}
-
 /// ```
 /// assert_eq!("", "");
 /// ```
-pub struct TimelineBin {
-    filemap: HashMap<Filepath, usize>,
+pub struct TimelineBin<'a> {
+    filemap: HashMap<&'a str, usize>,
     count: usize,
 }
 
-impl TimelineBin {
+impl<'a> TimelineBin<'a> {
     /// Creates a new `TimelineBin`.
     /// When created, the bin will be empty, *i.e.*, there are no files in it.
-    pub fn new() -> TimelineBin {
+    pub fn new() -> TimelineBin<'a> {
         TimelineBin {
             filemap: HashMap::new(),
             count: 0,
@@ -570,9 +576,9 @@ impl TimelineBin {
 
     /// ```
     /// let mut bin = gtmserv::TimelineBin::new();
-    /// bin.append("src/main.rs".to_owned());
+    /// bin.append("src/main.rs");
     /// ```
-    pub fn append(self: &mut Self, filepath: Filepath) {
+    pub fn append(self: &mut Self, filepath: &'a str) {
         self.count += 1;
         let count = self.filemap.entry(filepath).or_insert(0);
         *count += 1;
@@ -580,17 +586,17 @@ impl TimelineBin {
 
     /// ```
     /// let mut bin = gtmserv::TimelineBin::new();
-    /// bin.append("src/main.rs".to_owned());
-    /// assert_eq!(bin.timespent("src/main.rs".to_owned()), 60);
+    /// bin.append("src/main.rs");
+    /// assert_eq!(bin.timespent("src/main.rs"), 60);
     /// ```
     ///
     /// When the file is not present in the bin, panics.
     ///
     /// ```should_panic
     /// let mut bin = gtmserv::TimelineBin::new();
-    /// bin.timespent("src/not-present.rs".to_owned());
+    /// bin.timespent("src/not-present.rs");
     /// ```
-    pub fn timespent(self: &Self, filepath: Filepath) -> Seconds {
+    pub fn timespent(self: &Self, filepath: &str) -> Seconds {
         let count = self
             .filemap
             .get(&filepath)
@@ -599,8 +605,12 @@ impl TimelineBin {
     }
 }
 
-impl Timeline {
-    fn new() -> Timeline {
+pub struct Timeline<'a> {
+    timeline: HashMap<u64, TimelineBin<'a>>,
+}
+
+impl<'a> Timeline<'a> {
+    fn new() -> Timeline<'a> {
         Timeline {
             timeline: HashMap::new(),
         }
@@ -610,23 +620,25 @@ impl Timeline {
     ///
     /// ```
     /// use gtmserv::*;
-    /// Timeline::from_events(vec![
+    /// let events = vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673601, "test/test1.ts"),
-    /// ]);
+    /// ];
+    /// Timeline::from_events(&events);
     /// ```
     ///
     /// The events in the list must be ordered by timestamp.
     ///
     /// ```should_panic
     /// use gtmserv::*;
-    /// Timeline::from_events(vec![
+    /// let events = vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673601, "test/test1.ts"),
     ///     FileEvent::new(1589673600, "test/test2.ts"),
-    /// ]);
+    /// ];
+    /// Timeline::from_events(&events);
     /// ```
-    pub fn from_events(events: Vec<FileEvent>) -> Timeline {
+    pub fn from_events(events: &'a Vec<FileEvent>) -> Timeline<'a> {
         let mut timeline = Timeline::new();
         let mut prevepoch = 0;
         for event in events {
@@ -639,15 +651,15 @@ impl Timeline {
     }
 
     /// Adds a new event to this timeline.
-    fn append(self: &mut Self, event: FileEvent) {
+    fn append(self: &mut Self, event: &'a FileEvent) {
         let minute = down_to_minute(event.timestamp);
         let bin = self.timeline.entry(minute).or_insert_with(TimelineBin::new);
-        (*bin).append(event.filename.to_owned());
+        (*bin).append(event.filename.as_str());
     }
 
     /// ```
     /// use gtmserv::*;
-    /// let map = Timeline::from_events(vec![
+    /// let events = vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673494, "src/file2.ts"),
     ///     FileEvent::new(1589673601, "test/test1.ts"),
@@ -655,22 +667,23 @@ impl Timeline {
     ///     FileEvent::new(1589673658, "assets/logo.png"),
     ///     FileEvent::new(1589673732, "assets/main.css"),
     ///     FileEvent::new(1589673854, "src/file2.ts"),
-    /// ]);
+    /// ];
+    /// let map = Timeline::from_events(&events);
     ///
     /// let bin = map.get(&1589673480).unwrap();
-    /// assert_eq!(bin.timespent("src/file1.ts".to_string()), 30);
-    /// assert_eq!(bin.timespent("src/file2.ts".to_string()), 30);
+    /// assert_eq!(bin.timespent("src/file1.ts"), 30);
+    /// assert_eq!(bin.timespent("src/file2.ts"), 30);
     ///
     /// let bin = map.get(&1589673600).unwrap();
-    /// assert_eq!(bin.timespent("test/test1.ts".to_string()), 20);
-    /// assert_eq!(bin.timespent("test/test2.ts".to_string()), 20);
-    /// assert_eq!(bin.timespent("assets/logo.png".to_string()), 20);
+    /// assert_eq!(bin.timespent("test/test1.ts"), 20);
+    /// assert_eq!(bin.timespent("test/test2.ts"), 20);
+    /// assert_eq!(bin.timespent("assets/logo.png"), 20);
     ///
     /// let bin = map.get(&1589673720).unwrap();
-    /// assert_eq!(bin.timespent("assets/main.css".to_string()), 60);
+    /// assert_eq!(bin.timespent("assets/main.css"), 60);
     ///
     /// let bin = map.get(&1589673840).unwrap();
-    /// assert_eq!(bin.timespent("src/file2.ts".to_string()), 60);
+    /// assert_eq!(bin.timespent("src/file2.ts"), 60);
     /// ```
     pub fn get(self: &Self, timestamp: &u64) -> Option<&TimelineBin> {
         self.timeline.get(timestamp)
@@ -679,27 +692,27 @@ impl Timeline {
     ///
     /// ```
     /// use gtmserv::*;
-    ///
-    /// let map = Timeline::from_events(vec![
+    /// let events = vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673494, "src/file2.ts"),
     ///     FileEvent::new(1589673601, "test/test1.ts"),
     ///     FileEvent::new(1589673632, "test/test2.ts"),
     ///     FileEvent::new(1589673658, "assets/logo.png"),
     ///     FileEvent::new(1589673732, "assets/main.css"),
-    /// ]);
+    /// ];
+    /// let map = Timeline::from_events(&events);
     ///
     /// let bin = map.get(&1589673480).unwrap();
-    /// assert_eq!(bin.timespent("src/file1.ts".to_string()), 30);
-    /// assert_eq!(bin.timespent("src/file2.ts".to_string()), 30);
+    /// assert_eq!(bin.timespent("src/file1.ts"), 30);
+    /// assert_eq!(bin.timespent("src/file2.ts"), 30);
     ///
     /// let bin = map.get(&1589673600).unwrap();
-    /// assert_eq!(bin.timespent("test/test1.ts".to_string()), 20);
-    /// assert_eq!(bin.timespent("test/test2.ts".to_string()), 20);
-    /// assert_eq!(bin.timespent("assets/logo.png".to_string()), 20);
+    /// assert_eq!(bin.timespent("test/test1.ts"), 20);
+    /// assert_eq!(bin.timespent("test/test2.ts"), 20);
+    /// assert_eq!(bin.timespent("assets/logo.png"), 20);
     ///
     /// let bin = map.get(&1589673720).unwrap();
-    /// assert_eq!(bin.timespent("assets/main.css".to_string()), 60);
+    /// assert_eq!(bin.timespent("assets/main.css"), 60);
     ///
     /// let commit_note = map.commit_note();
     /// assert_eq!(commit_note.total, 180);
@@ -707,13 +720,13 @@ impl Timeline {
     ///     &parse_file_note("test/test1.ts:20,1589673600:20,r").unwrap()
     ///     ));
     /// ```
-    pub fn commit_note(self) -> CommitNote {
+    pub fn commit_note(self) -> CommitNote<'a> {
         let mut cn = CommitNote::new(1, 0);
         let mut fs = HashMap::new();
-        for (ts, bin) in self.timeline {
+        for (ts, bin) in &self.timeline {
             for (f, _count) in &bin.filemap {
-                let (timespent, e) = fs.entry(f.to_owned()).or_insert((0, HashMap::new()));
-                let h = down_to_hour(ts).to_string();
+                let (timespent, e) = fs.entry(f).or_insert((0, HashMap::new()));
+                let h = down_to_hour(*ts).to_string();
                 let t = (*e).entry(h).or_insert(0);
                 let seconds = bin.timespent(f.to_owned());
                 *timespent += seconds;

@@ -6,15 +6,13 @@
 extern crate serde_derive;
 extern crate serde_json;
 
-use ansi_term::ANSIString;
-use ansi_term::Colour::Red;
+use ansi_term::{ANSIString, Colour::Red};
 use chrono::{Duration, NaiveDate, Utc};
-use git2::*;
-use gtmserv::InitProjects;
-use gtmserv::{get_notes, FileEvent, Timeline, WorkdirStatus};
-use std::fmt::Display;
+use git2::Repository;
+use gtmserv::{get_notes, FileEvent, InitProjects, Timeline, WorkdirStatus};
+use io::BufWriter;
 use std::{
-    collections::HashMap,
+    fmt::Display,
     fs, io,
     ops::Try,
     path::PathBuf,
@@ -163,19 +161,39 @@ fn main() -> GtmResult<GtmError> {
             to_date,
             message,
         } => {
+            use serde::ser::{SerializeSeq, Serializer};
+
+            let out = std::io::stdout();
+            let out = BufWriter::with_capacity(1024 * 1024, out);
+            let mut ser = serde_json::Serializer::new(out);
+            let mut seq = ser.serialize_seq(None).unwrap();
+
             let from_date = parse_arg_date(&from_date, "from", 0)?;
             let to_date = parse_arg_date(&to_date, "to", 1)?;
 
-            let mut notes = Vec::new();
+            // let mut notes = Vec::new();
             for project in from_config()?.get_project_list() {
                 let path = PathBuf::from(project.as_str());
                 let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
                 let repo = Repository::open(project.to_owned())?;
-                get_notes(&mut notes, &repo, pkey, from_date, to_date, &message).unwrap();
+                get_notes(
+                    |c| {
+                        // let json = serde_json::to_string(&c.commit).unwrap();
+                        // println!("{}", json);
+                        seq.serialize_element(&c.commit).expect("Could not serialize commit");
+                    }, // notes.push(cn)
+                    &repo,
+                    pkey,
+                    from_date,
+                    to_date,
+                    &message,
+                )
+                .unwrap();
             }
+            seq.end().expect("Could not end serialize commits");
 
-            let json = serde_json::to_string(&notes).unwrap();
-            println!("{}", json);
+            // let json = serde_json::to_string(&notes).unwrap();
+            // println!("{}", json);
         }
         GtmCommand::Projects => {
             let projects = from_config()?;
@@ -184,7 +202,12 @@ fn main() -> GtmResult<GtmError> {
             println!("{}", json);
         }
         GtmCommand::Status => {
-            let mut wd = HashMap::new();
+            use serde::ser::{SerializeMap, Serializer};
+
+            // let mut wd = HashMap::new();
+            let out = std::io::stdout();
+            let mut ser = serde_json::Serializer::new(out);
+            let mut map = ser.serialize_map(None).expect("Could not start serialize workdir status");
             for project in from_config()?.get_project_list() {
                 let mut path = PathBuf::new();
                 path.push(project.to_owned());
@@ -204,7 +227,7 @@ fn main() -> GtmResult<GtmError> {
                     }
                 }
                 events.sort_by_key(|k| k.timestamp);
-                let cn = Timeline::from_events(events).commit_note();
+                let cn = Timeline::from_events(&events).commit_note();
                 let ws = WorkdirStatus {
                     total: cn.total,
                     label: "TBD".to_string(),
@@ -213,10 +236,12 @@ fn main() -> GtmResult<GtmError> {
 
                 let path = PathBuf::from(project.as_str());
                 let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
-                wd.insert(pkey, ws);
+                // wd.insert(pkey, ws);
+                map.serialize_entry(&pkey, &ws).expect("Could not serialize workdir status");
             }
-            let json = serde_json::to_string(&wd).unwrap();
-            println!("{}", json);
+            map.end().expect("Could not end serialize workdir status");
+            // let json = serde_json::to_string(&wd).unwrap();
+            // println!("{}", json);
         }
     };
 
