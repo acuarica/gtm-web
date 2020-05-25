@@ -96,7 +96,7 @@ mod parse_notes_tests {
     use test::Bencher;
 
     #[bench]
-    fn bb(b: &mut Bencher) {
+    fn parse_commit_note_bench(b: &mut Bencher) {
         let message = "[ver:1,total:4037]
  comment/src/comment.ts:2797,1585861200:354,1585875600:50,1585879200:240,1585908000:444,1585918800:1629,1585929600:80,m
  closebrackets/src/closebrackets.ts:950,1585918800:510,1585922400:400,1585929600:40,r
@@ -241,16 +241,16 @@ text/src/char.ts:90,1585918800:90,r",
                             source_file: "closebrackets/src/closebrackets.ts",
                             time_spent: 950,
                             timeline: hashmap! {
-                                "1585918800".to_string() => 510,
-                                "1585922400".to_string() => 400,
-                                "1585929600".to_string() => 40,
+                                "1585918800" => 510,
+                                "1585922400" => 400,
+                                "1585929600" => 40,
                             },
                             status: "r",
                         },
                         FileNote {
                             source_file: "text/src/char.ts",
                             time_spent: 90,
-                            timeline: hashmap! { "1585918800".to_string() => 90, },
+                            timeline: hashmap! { "1585918800" => 90, },
                             status: "r",
                         }
                     ],
@@ -384,7 +384,7 @@ mod cli_tests {
             .assert()
             .success()
             .stdout(predicate::function(|out| {
-                let result: Vec<Commit> = serde_json::from_slice(out).unwrap();
+                let result: Vec<Commit<&str>> = serde_json::from_slice(out).unwrap();
                 result.len() == 0
             }))
             .stderr(predicate::str::is_empty());
