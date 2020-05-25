@@ -55,10 +55,26 @@ type Seconds = u32;
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
+///
+/// ```
+/// #[macro_use] extern crate maplit;
+/// use gtmserv::FileNote;
+/// let file_note = FileNote {
+///         source_file: "src/main.ts",
+///         time_spent: 150,
+///         timeline: hashmap! {
+///             "1585861200".to_owned() => 60,
+///             "1585875600".to_owned() => 90,
+///         },
+///         status: "r".to_owned(),
+///     };
+/// let from_json = serde_json::from_str(r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60,"1585875600":90},"Status":"r"}"#);
+/// assert_eq!(file_note, from_json.unwrap());
+/// ```
 pub struct FileNote<'a> {
     pub source_file: &'a str,
     pub time_spent: Seconds,
-    pub timeline: HashMap<Filepath, Seconds>,
+    pub timeline: HashMap<String, Seconds>,
     pub status: String,
 }
 
@@ -141,6 +157,23 @@ impl Commit<'_> {
     }
 }
 
+/// Parses a key-value in "key:value" format.
+///
+/// ```
+/// use gtmserv::parse_key_value;
+/// assert_eq!(parse_key_value("src/file.ts:somevalue").unwrap(), ("src/file.ts", "somevalue"));
+/// assert_eq!(parse_key_value("src/file.ts:some:value").unwrap(), ("src/file.ts", "some:value"));
+/// assert_eq!(parse_key_value(":").unwrap(), ("", ""));
+/// assert_eq!(parse_key_value(""), None);
+/// assert_eq!(parse_key_value("keynovalue"), None);
+/// ```
+pub fn parse_key_value(text: &str) -> Option<(&str, &str)> {
+    let mut key_value_parts = text.splitn(2, ':');
+    let key = key_value_parts.next()?;
+    let value = key_value_parts.next()?;
+    Some((key, value))
+}
+
 #[derive(PartialEq, Debug)]
 /// These are the kinds of parsing errors detected
 /// when parsing a `FileNote`.
@@ -148,19 +181,27 @@ pub enum FileNoteParseError {
     /// Occurs when there are less than 3 components to parse.
     ///
     /// ```
-    /// assert_eq!(gtmserv::parse_file_note(""), Err(gtmserv::FileNoteParseError::NotEnoughEntries));
-    /// assert_eq!(gtmserv::parse_file_note("src/file.ts:2797"), Err(gtmserv::FileNoteParseError::NotEnoughEntries));
-    /// assert_eq!(gtmserv::parse_file_note("src/file.ts:2797,m"), Err(gtmserv::FileNoteParseError::NotEnoughEntries));
+    /// use gtmserv::*;
+    /// assert_eq!(parse_file_note("src/file.ts:2797"), Err(FileNoteParseError::NotEnoughEntries));
+    /// assert_eq!(parse_file_note("src/file.ts:2797,m"), Err(FileNoteParseError::NotEnoughEntries));
     /// ```
     NotEnoughEntries,
 
     /// Occurs when it is not possible to parse the file path of this note.
+    ///
     /// ```
-    /// assert_eq!(gtmserv::parse_file_note("src/file.ts2797,1585861200:354,m"), Err(gtmserv::FileNoteParseError::UnrecognizedFilepath));
+    /// use gtmserv::*;
+    /// assert_eq!(parse_file_note("src/file.ts2797,1585861200:354,m"), Err(FileNoteParseError::UnrecognizedFilepath));
+    /// assert_eq!(parse_file_note(""), Err(FileNoteParseError::UnrecognizedFilepath));
     /// ```
     UnrecognizedFilepath,
 
+    /// Occurs when it is not possible to parse a timeline entry of this file note.
     ///
+    /// ```
+    /// use gtmserv::*;
+    /// assert_eq!(parse_file_note("src/file.ts:2797,1585861200;354,m"), Err(FileNoteParseError::InvalidTimelineFormat));
+    /// ```
     InvalidTimelineFormat,
 
     ///
@@ -171,14 +212,16 @@ pub enum FileNoteParseError {
     /// ```
     /// #![feature(int_error_matching)]
     /// use std::num::IntErrorKind;
-    /// assert_eq!(gtmserv::parse_file_note("src/file.ts:123abc,1585861200:354,m"), Err(gtmserv::FileNoteParseError::InvalidTotalTimespent { kind: IntErrorKind::InvalidDigit }));
+    /// use gtmserv::*;
+    /// assert_eq!(parse_file_note("src/file.ts:123abc,1585861200:354,m"), Err(FileNoteParseError::InvalidTotalTimespent { kind: IntErrorKind::InvalidDigit }));
     /// ```
     InvalidTotalTimespent { kind: IntErrorKind },
 
     /// Occurs when the status of the parsed file note is not recognized.
     ///
     /// ```
-    /// assert_eq!(gtmserv::parse_file_note("src/file.ts:123,1585861200:354,a"), Err(gtmserv::FileNoteParseError::StatusNotRecognized { got: "a".to_owned() }));
+    /// use gtmserv::*;
+    /// assert_eq!(parse_file_note("src/file.ts:123,1585861200:354,a"), Err(FileNoteParseError::StatusNotRecognized { got: "a".to_owned() }));
     /// ```
     StatusNotRecognized { got: String },
 }
@@ -218,24 +261,33 @@ pub enum FileNoteParseError {
 /// });
 /// ```
 pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a>, FileNoteParseError> {
-    let parts: Vec<&str> = file_entry.split(',').collect();
-    if parts.len() < 3 {
-        return Err(FileNoteParseError::NotEnoughEntries);
-    }
-    let file_name: Vec<&str> = parts[0].split(':').collect();
-    if file_name.len() < 2 {
-        return Err(FileNoteParseError::UnrecognizedFilepath);
-    }
+    let mut parts = file_entry.split(',');
+    let (file_name, time_spent) = parse_key_value(
+        parts
+            .next()
+            .ok_or_else(|| FileNoteParseError::NotEnoughEntries)?,
+    )
+    .ok_or_else(|| FileNoteParseError::UnrecognizedFilepath)?;
+
+    let status = match parts
+        .next_back()
+        .ok_or_else(|| FileNoteParseError::NotEnoughEntries)?
+    {
+        s @ "m" | s @ "r" | s @ "d" => s.to_owned(),
+        got => {
+            return Err(FileNoteParseError::StatusNotRecognized {
+                got: got.to_owned(),
+            })
+        }
+    };
 
     let mut timeline = HashMap::new();
-    for i in 1..parts.len() - 1 {
-        let timeline_entry: Vec<&str> = parts[i].split(':').collect();
-        if timeline_entry.len() != 2 {
-            return Err(FileNoteParseError::InvalidTimelineFormat);
-        }
+    for time_entry in parts {
+        let (epoch, seconds) =
+            parse_key_value(time_entry).ok_or_else(|| FileNoteParseError::InvalidTimelineFormat)?;
         timeline.insert(
-            timeline_entry[0].to_owned(),
-            match timeline_entry[1].parse::<Seconds>() {
+            epoch.to_owned(),
+            match seconds.parse::<Seconds>() {
                 Err(err) => {
                     return Err(FileNoteParseError::InvalidTimespent {
                         kind: err.kind().to_owned(),
@@ -245,10 +297,13 @@ pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a>, FileNote
             },
         );
     }
+    if timeline.len() == 0 {
+        return Err(FileNoteParseError::NotEnoughEntries);
+    }
 
     let note = FileNote {
-        source_file: file_name[0],
-        time_spent: match file_name[1].parse::<Seconds>() {
+        source_file: file_name,
+        time_spent: match time_spent.parse::<Seconds>() {
             Err(err) => {
                 return Err(FileNoteParseError::InvalidTotalTimespent {
                     kind: err.kind().to_owned(),
@@ -257,14 +312,7 @@ pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a>, FileNote
             Ok(value) => value,
         },
         timeline,
-        status: match *parts.last().unwrap() {
-            s @ "m" | s @ "r" | s @ "d" => s.to_owned(),
-            got => {
-                return Err(FileNoteParseError::StatusNotRecognized {
-                    got: got.to_owned(),
-                })
-            }
-        },
+        status,
     };
     Ok(note)
 }
@@ -381,9 +429,9 @@ pub fn parse_commit_note<'a>(message: &'a str) -> Result<CommitNote<'a>, CommitN
         static ref VERSION_RE: Regex = Regex::new(r"\[ver:(\d+),total:(\d+)\]").unwrap();
     }
     let mut lines = message.lines();
-    let mut commit = match lines.next() {
+    let mut commit_note = match lines.next() {
         None => return Err(CommitNoteParseError::EmptyNote),
-        Some(first) => match VERSION_RE.captures_iter(&first.to_owned()).next() {
+        Some(first) => match VERSION_RE.captures_iter(first).next() {
             None => return Err(CommitNoteParseError::InvalidHeader),
             Some(parts) => CommitNote {
                 version: match parts[1].parse::<u32>() {
@@ -401,10 +449,10 @@ pub fn parse_commit_note<'a>(message: &'a str) -> Result<CommitNote<'a>, CommitN
     for line in lines {
         match parse_file_note(line) {
             Err(err) => return Err(CommitNoteParseError::InvalidFile { err }),
-            Ok(entry) => commit.files.push(entry),
+            Ok(entry) => commit_note.files.push(entry),
         };
     }
-    Ok(commit)
+    Ok(commit_note)
 }
 
 pub fn get_commits(_path: &str) -> Result<(), git2::Error> {
