@@ -266,7 +266,7 @@ pub enum FileNoteParseError {
 /// ```
 /// #[macro_use] extern crate maplit;
 /// use gtmserv::*;
-/// 
+///
 /// assert_eq!(
 ///     parse_file_note("src/file.ts:150,1585861200:60,1585875600:90,m").unwrap(),
 ///     FileNote {
@@ -338,14 +338,11 @@ pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a, epoch>, F
 
     let note = FileNote {
         source_file: file_name,
-        time_spent: match time_spent.parse::<seconds>() {
-            Err(err) => {
-                return Err(FileNoteParseError::InvalidTotalTimespent {
-                    kind: err.kind().to_owned(),
-                })
+        time_spent: time_spent.parse::<seconds>().map_err(|err| {
+            FileNoteParseError::InvalidTotalTimespent {
+                kind: err.kind().to_owned(),
             }
-            Ok(value) => value,
-        },
+        })?,
         timeline,
         status,
     };
