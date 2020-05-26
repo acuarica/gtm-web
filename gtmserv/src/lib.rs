@@ -5,9 +5,8 @@ use git2::{Note, Repository};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::{
-    collections::{hash_map, HashMap},
+    collections::{hash_map, BTreeMap, HashMap},
     fs::File,
-    hash::Hash,
     io,
     num::IntErrorKind,
     path::Path,
@@ -66,7 +65,7 @@ type seconds = u32;
 /// assert_eq!(serde_json::to_string(&FileNote {
 ///         source_file: "src/main.ts",
 ///         time_spent: 150,
-///         timeline: hashmap! { "1585861200" => 60 },
+///         timeline: btreemap! { "1585861200" => 60 },
 ///         status: "r",
 ///     }).unwrap(),
 ///     r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60},"Status":"r"}"#
@@ -82,7 +81,7 @@ type seconds = u32;
 /// assert_eq!(serde_json::to_string(&FileNote {
 ///         source_file: "src/main.ts",
 ///         time_spent: 150,
-///         timeline: hashmap! { 1585861200 => 60 },
+///         timeline: btreemap! { 1585861200 => 60 },
 ///         status: "r",
 ///     }).unwrap(),
 ///     r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60},"Status":"r"}"#
@@ -98,28 +97,28 @@ type seconds = u32;
 /// assert_eq!(FileNote {
 ///         source_file: "src/main.ts",
 ///         time_spent: 150,
-///         timeline: hashmap! { "1585861200" => 60, "1585875600" => 90 },
+///         timeline: btreemap! { "1585861200" => 60, "1585875600" => 90 },
 ///         status: "r",
 ///     },
 ///     serde_json::from_str(r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60,"1585875600":90},"Status":"r"}"#).unwrap());
 /// ```
-pub struct FileNote<'a, K: PartialEq + Eq + Hash> {
+pub struct FileNote<'a, K: Ord> {
     pub source_file: &'a str,
     pub time_spent: seconds,
-    pub timeline: HashMap<K, seconds>,
+    pub timeline: BTreeMap<K, seconds>,
     pub status: &'a str,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct CommitNote<'a, K: PartialEq + Eq + Hash> {
+pub struct CommitNote<'a, K: Ord> {
     pub version: u32,
     pub total: seconds,
     #[serde(borrow)]
     pub files: Vec<FileNote<'a, K>>,
 }
 
-impl<K: PartialEq + Eq + Hash> CommitNote<'_, K> {
+impl<K: Ord> CommitNote<'_, K> {
     fn new<'a>(version: u32, total: seconds) -> CommitNote<'a, K> {
         CommitNote {
             version,
@@ -131,7 +130,7 @@ impl<K: PartialEq + Eq + Hash> CommitNote<'_, K> {
 
 #[derive(PartialEq, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct WorkdirStatus<'a, K: PartialEq + Eq + Hash> {
+pub struct WorkdirStatus<'a, K: Ord> {
     pub total: seconds,
     pub label: String,
     pub commit_note: CommitNote<'a, K>,
@@ -139,7 +138,7 @@ pub struct WorkdirStatus<'a, K: PartialEq + Eq + Hash> {
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct Commit<'a, K: PartialEq + Eq + Hash> {
+pub struct Commit<'a, K: Ord> {
     pub author: String,
     pub date: String,
     pub when: String,
@@ -173,7 +172,7 @@ pub fn format_time(time: git2::Time) -> String {
         .to_string()
 }
 
-impl<K: PartialEq + Eq + Hash> Commit<'_, K> {
+impl<K: Ord> Commit<'_, K> {
     pub fn new<'a>(
         commit: &git2::Commit,
         project: String,
@@ -267,37 +266,37 @@ pub enum FileNoteParseError {
 /// ```
 /// #[macro_use] extern crate maplit;
 /// use gtmserv::*;
+/// 
 /// assert_eq!(
 ///     parse_file_note("src/file.ts:150,1585861200:60,1585875600:90,m").unwrap(),
 ///     FileNote {
 ///         source_file: "src/file.ts",
 ///         time_spent: 150,
-///         timeline: hashmap! {
-///             "1585861200" => 60,
-///             "1585875600" => 90,
+///         timeline: btreemap! {
+///             1585861200 => 60,
+///             1585875600 => 90,
 ///         },
 ///         status: "m",
 ///     }
 /// );
 ///
 /// assert_eq!(
-///  parse_file_note("comment/src/comment.ts:2797,1585861200:354,1585875600:50,1585879200:240,1585908000:444,1585918800:1629,1585929600:80,m")
-///   .unwrap(),
+///  parse_file_note("comment/src/comment.ts:2797,1585861200:354,1585875600:50,1585879200:240,1585908000:444,1585918800:1629,1585929600:80,m").unwrap(),
 ///  FileNote {
 ///   source_file: "comment/src/comment.ts",
 ///   time_spent: 2797,
-///   timeline: hashmap! {
-///     "1585861200" => 354,
-///     "1585875600" => 50,
-///     "1585879200" => 240,
-///     "1585908000" => 444,
-///     "1585918800" => 1629,
-///     "1585929600" => 80,
+///   timeline: btreemap! {
+///     1585861200 => 354,
+///     1585875600 => 50,
+///     1585879200 => 240,
+///     1585908000 => 444,
+///     1585918800 => 1629,
+///     1585929600 => 80,
 ///   },
 ///   status: "m",
 /// });
 /// ```
-pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a, &str>, FileNoteParseError> {
+pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a, epoch>, FileNoteParseError> {
     let mut parts = file_entry.split(',');
     let (file_name, time_spent) = parse_key_value(
         parts
@@ -318,20 +317,19 @@ pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a, &str>, Fi
         }
     };
 
-    let mut timeline = HashMap::new();
+    let mut timeline = BTreeMap::new();
     for time_entry in parts {
         let (epoch, seconds) =
             parse_key_value(time_entry).ok_or_else(|| FileNoteParseError::InvalidTimelineFormat)?;
         timeline.insert(
-            epoch,
-            match seconds.parse::<seconds>() {
-                Err(err) => {
-                    return Err(FileNoteParseError::InvalidTimespent {
-                        kind: err.kind().to_owned(),
-                    })
-                }
-                Ok(value) => value,
-            },
+            epoch
+                .parse::<epoch>()
+                .map_err(|_| FileNoteParseError::InvalidTimelineFormat)?,
+            seconds
+                .parse::<seconds>()
+                .map_err(|err| FileNoteParseError::InvalidTimespent {
+                    kind: err.kind().to_owned(),
+                })?,
         );
     }
     if timeline.len() == 0 {
@@ -416,17 +414,17 @@ pub enum CommitNoteParseError {
 ///                 gtmserv::FileNote {
 ///                     source_file: "closebrackets/src/closebrackets.ts",
 ///                     time_spent: 950,
-///                     timeline: hashmap! {
-///                         "1585918800" => 510,
-///                         "1585922400" => 400,
-///                         "1585929600" => 40,
+///                     timeline: btreemap! {
+///                         1585918800 => 510,
+///                         1585922400 => 400,
+///                         1585929600 => 40,
 ///                     },
 ///                     status: "r",
 ///                 },
 ///                 gtmserv::FileNote {
 ///                     source_file: "text/src/char.ts",
 ///                     time_spent: 90,
-///                     timeline: hashmap! { "1585918800" => 90, },
+///                     timeline: btreemap! { 1585918800 => 90, },
 ///                     status: "r",
 ///                 }
 ///             ],
@@ -456,14 +454,14 @@ pub enum CommitNoteParseError {
 ///         gtmserv::FileNote {
 ///             source_file: "demo/demo.ts",
 ///             time_spent: 60,
-///             timeline: hashmap! { "1585918800" => 60 },
+///             timeline: btreemap! { 1585918800 => 60 },
 ///             status: "r",
 ///         }
 ///     );
 /// ```
 pub fn parse_commit_note<'a>(
     message: &'a str,
-) -> Result<CommitNote<'a, &'a str>, CommitNoteParseError> {
+) -> Result<CommitNote<'a, epoch>, CommitNoteParseError> {
     lazy_static! {
         static ref VERSION_RE: Regex = Regex::new(r"\[ver:(\d+),total:(\d+)\]").unwrap();
     }
@@ -536,7 +534,7 @@ impl NotesFilter {
 
 #[derive(Debug)]
 pub struct GitCommitNote<'a> {
-    pub commit: Commit<'a, &'a str>,
+    pub commit: Commit<'a, epoch>,
     note: git2::Note<'a>,
 }
 
@@ -806,7 +804,7 @@ impl<'a> Timeline<'a> {
     /// let commit_note = map.commit_note();
     /// assert_eq!(commit_note.total, 180);
     /// assert!(commit_note.files.contains(
-    ///     &FileNote{ source_file: "test/test1.ts", time_spent: 20, timeline: hashmap! { 1589673600=>20}, status: "r" }
+    ///     &FileNote{ source_file: "test/test1.ts", time_spent: 20, timeline: btreemap! { 1589673600=>20}, status: "r" }
     ///     ));
     /// ```
     pub fn commit_note(self) -> CommitNote<'a, epoch> {
@@ -814,7 +812,7 @@ impl<'a> Timeline<'a> {
         let mut fs = HashMap::new();
         for (ts, bin) in &self.timeline {
             for (f, _count) in &bin.filemap {
-                let (timespent, e) = fs.entry(f).or_insert((0, HashMap::new()));
+                let (timespent, e) = fs.entry(f).or_insert((0, BTreeMap::new()));
                 let h = down_to_hour(*ts);
                 let t = (*e).entry(h).or_insert(0);
                 let seconds = bin.timespent(f.to_owned());
