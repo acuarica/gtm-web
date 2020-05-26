@@ -1,4 +1,5 @@
 import App from './App.svelte'
+import Settings from './Settings.svelte';
 import { WebService, DelayService, FailureService } from './web'
 import { WorkdirStatusList, Commit, CommitsFilter } from '@gtm/notes'
 
@@ -15,6 +16,8 @@ export default [
       fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => t.service.fetchCommits(filter),
       fetchProjectList: (): Promise<string[]> => t.service.fetchProjectList(),
       fetchWorkdirStatus: (): Promise<WorkdirStatusList> => t.service.fetchWorkdirStatus(),
+      settingsView: Settings,
+      settingsViewProps: { versions: { 'gtm': 'ver1', 'node': 'ver2', 'svelte': 'ver3', 'electron': 'ver4' } },
     }
   }
 })

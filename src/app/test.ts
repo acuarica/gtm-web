@@ -1,16 +1,20 @@
 import DashboardCardTest from './DashboardCard-test';
+import SettingsTest from './Settings-test';
 import CommitTest from './Commit-test';
 import ProjectTest from './Project-test';
 import HomeTest from './Home-test';
+import NavbarTest from './Navbar-test';
 import AppTest from './App-test';
 
 console.debug('Initializing component tests')
 
 const suites = {
   'DashboardCard': DashboardCardTest,
+  'Settings': SettingsTest,
   'Commit': CommitTest,
   'Project': ProjectTest,
   'Home': HomeTest,
+  'Navbar': NavbarTest,
   'App': AppTest,
 }
 

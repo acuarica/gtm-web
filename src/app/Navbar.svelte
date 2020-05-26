@@ -7,12 +7,12 @@
   import SearchBox from "./SearchBox.svelte";
   import DatePicker from "./DatePicker.svelte";
   import DateRangePicker from "./DateRangePicker.svelte";
-  import ChartPalettePicker from "./ChartPalettePicker.svelte";
 
   import logo from "../../assets/gtm-logo.png";
   export let title = "";
   export let handleRangeChange;
   export let settingsView;
+  export let settingsViewProps;
 
   let isOpen = false;
   let toggleSettings = false;
@@ -20,14 +20,8 @@
 
 {#if toggleSettings}
   <div class="bg-gray-600 p-4">
-    <h4 class="text-white">Settings</h4>
-    <form>
-      <div class="form-group2">
-        <label class="text-light">Color Pallette for Charts</label>
-        <ChartPalettePicker classes="form-control4" />
-      </div>
-    </form>
-    <svelte:component this={settingsView} />
+    <h3 class="text-white">Settings</h3>
+    <svelte:component this={settingsView} {...settingsViewProps} />
   </div>
 {/if}
 
