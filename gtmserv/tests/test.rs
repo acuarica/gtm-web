@@ -387,7 +387,7 @@ mod cli_tests {
             .assert()
             .success()
             .stdout(predicate::function(|out| {
-                let result: Vec<Commit<&str>> = serde_json::from_slice(out).unwrap();
+                let result: Vec<Commit> = serde_json::from_slice(out).unwrap();
                 result.len() == 0
             }))
             .stderr(predicate::str::is_empty());

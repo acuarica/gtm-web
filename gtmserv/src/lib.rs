@@ -51,12 +51,24 @@ impl InitProjects {
     }
 }
 
+/// Represents a Unix epoch (timestamp), *i.e.,*,
+/// number of seconds elapsed since January 1st, 1970, UTC.
+#[allow(non_camel_case_types)]
+type epoch = i64;
+
 #[allow(non_camel_case_types)]
 type seconds = u32;
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
+/// Contains the access timeline of a file within a commit note.
+/// The sum of all timeline entries should be equal to the `time_spent` field.
+///
+/// # Serialization and Deserialization
+///
 /// Serialization and deserialization use pascal case.
+/// Because the `FileNote` struct uses `BTreeMap` to hold the file timeline,
+/// the order of timeline entries is preserved when serializing and deserializing.
 ///
 /// ```
 /// #[macro_use] extern crate maplit;
@@ -65,30 +77,15 @@ type seconds = u32;
 /// assert_eq!(serde_json::to_string(&FileNote {
 ///         source_file: "src/main.ts",
 ///         time_spent: 150,
-///         timeline: btreemap! { "1585861200" => 60 },
+///         timeline: btreemap! { 1585861200 => 60, 1585875600 => 90 },
 ///         status: "r",
 ///     }).unwrap(),
-///     r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60},"Status":"r"}"#
+///     r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60,"1585875600":90},"Status":"r"}"#
 /// );
 /// ```
 ///
-/// If the timeline key is of type `epoch`, then it will be serialized as `&str`.
-///
-/// ```
-/// #[macro_use] extern crate maplit;
-/// use gtmserv::*;
-///
-/// assert_eq!(serde_json::to_string(&FileNote {
-///         source_file: "src/main.ts",
-///         time_spent: 150,
-///         timeline: btreemap! { 1585861200 => 60 },
-///         status: "r",
-///     }).unwrap(),
-///     r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60},"Status":"r"}"#
-/// );
-/// ```
-///
-/// Deserialization using `&str` as timeline keys.
+/// Note that when using deserialization in JSON format,
+/// timeline keys will be automatically converted from `&str` keys.
 ///
 /// ```
 /// #[macro_use] extern crate maplit;
@@ -97,29 +94,31 @@ type seconds = u32;
 /// assert_eq!(FileNote {
 ///         source_file: "src/main.ts",
 ///         time_spent: 150,
-///         timeline: btreemap! { "1585861200" => 60, "1585875600" => 90 },
+///         timeline: btreemap! { 1585861200 => 60, 1585875600 => 90 },
 ///         status: "r",
 ///     },
-///     serde_json::from_str(r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60,"1585875600":90},"Status":"r"}"#).unwrap());
+///     serde_json::from_str(
+///         r#"{"SourceFile":"src/main.ts","TimeSpent":150,"Timeline":{"1585861200":60,"1585875600":90},"Status":"r"}"#
+///     ).unwrap());
 /// ```
-pub struct FileNote<'a, K: Ord> {
+pub struct FileNote<'a> {
     pub source_file: &'a str,
     pub time_spent: seconds,
-    pub timeline: BTreeMap<K, seconds>,
+    pub timeline: BTreeMap<epoch, seconds>,
     pub status: &'a str,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct CommitNote<'a, K: Ord> {
+pub struct CommitNote<'a> {
     pub version: u32,
     pub total: seconds,
     #[serde(borrow)]
-    pub files: Vec<FileNote<'a, K>>,
+    pub files: Vec<FileNote<'a>>,
 }
 
-impl<K: Ord> CommitNote<'_, K> {
-    fn new<'a>(version: u32, total: seconds) -> CommitNote<'a, K> {
+impl CommitNote<'_> {
+    fn new<'a>(version: u32, total: seconds) -> CommitNote<'a> {
         CommitNote {
             version,
             total,
@@ -130,15 +129,15 @@ impl<K: Ord> CommitNote<'_, K> {
 
 #[derive(PartialEq, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct WorkdirStatus<'a, K: Ord> {
+pub struct WorkdirStatus<'a> {
     pub total: seconds,
     pub label: String,
-    pub commit_note: CommitNote<'a, K>,
+    pub commit_note: CommitNote<'a>,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct Commit<'a, K: Ord> {
+pub struct Commit<'a> {
     pub author: String,
     pub date: String,
     pub when: String,
@@ -147,7 +146,7 @@ pub struct Commit<'a, K: Ord> {
     pub message: String,
     pub project: String,
     #[serde(borrow)]
-    pub note: CommitNote<'a, K>,
+    pub note: CommitNote<'a>,
 }
 
 /// Formats a git2 date time in RFC 822 format.
@@ -172,12 +171,8 @@ pub fn format_time(time: git2::Time) -> String {
         .to_string()
 }
 
-impl<K: Ord> Commit<'_, K> {
-    pub fn new<'a>(
-        commit: &git2::Commit,
-        project: String,
-        note: CommitNote<'a, K>,
-    ) -> Commit<'a, K> {
+impl Commit<'_> {
+    pub fn new<'a>(commit: &git2::Commit, project: String, note: CommitNote<'a>) -> Commit<'a> {
         let text = |msg: Option<&str>| msg.unwrap_or("<invalid utf-8>").to_string();
         Commit {
             author: text(commit.author().name()),
@@ -296,7 +291,7 @@ pub enum FileNoteParseError {
 ///   status: "m",
 /// });
 /// ```
-pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a, epoch>, FileNoteParseError> {
+pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a>, FileNoteParseError> {
     let mut parts = file_entry.split(',');
     let (file_name, time_spent) = parse_key_value(
         parts
@@ -456,9 +451,7 @@ pub enum CommitNoteParseError {
 ///         }
 ///     );
 /// ```
-pub fn parse_commit_note<'a>(
-    message: &'a str,
-) -> Result<CommitNote<'a, epoch>, CommitNoteParseError> {
+pub fn parse_commit_note<'a>(message: &'a str) -> Result<CommitNote<'a>, CommitNoteParseError> {
     lazy_static! {
         static ref VERSION_RE: Regex = Regex::new(r"\[ver:(\d+),total:(\d+)\]").unwrap();
     }
@@ -495,9 +488,6 @@ pub fn get_commits(_path: &str) -> Result<(), git2::Error> {
     Ok(())
 }
 
-#[allow(non_camel_case_types)]
-type epoch = i64;
-
 pub struct NotesFilter {
     from_date: Option<epoch>,
     to_date: Option<epoch>,
@@ -531,7 +521,7 @@ impl NotesFilter {
 
 #[derive(Debug)]
 pub struct GitCommitNote<'a> {
-    pub commit: Commit<'a, epoch>,
+    pub commit: Commit<'a>,
     note: git2::Note<'a>,
 }
 
@@ -804,7 +794,7 @@ impl<'a> Timeline<'a> {
     ///     &FileNote{ source_file: "test/test1.ts", time_spent: 20, timeline: btreemap! { 1589673600=>20}, status: "r" }
     ///     ));
     /// ```
-    pub fn commit_note(self) -> CommitNote<'a, epoch> {
+    pub fn commit_note(self) -> CommitNote<'a> {
         let mut cn = CommitNote::new(1, 0);
         let mut fs = HashMap::new();
         for (ts, bin) in &self.timeline {
