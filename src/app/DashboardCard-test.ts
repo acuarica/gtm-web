@@ -1,6 +1,5 @@
 import DashboardCard from './DashboardCard.svelte';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default [{
   component: DashboardCard,
   name: 'Full card',
