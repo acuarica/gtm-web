@@ -5,7 +5,7 @@ use git2::{Note, Repository};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::{
-    collections::{hash_map, BTreeMap, HashMap},
+    collections::{btree_map, BTreeMap, HashMap},
     fs::File,
     io,
     num::IntErrorKind,
@@ -27,7 +27,7 @@ type Filepath = String;
 /// The keys are the repository path of the working directory of the
 /// git repository.
 /// The values indicates the date when the git repo was `init` by gtm.
-pub struct InitProjects(HashMap<Filepath, String>);
+pub struct InitProjects(BTreeMap<Filepath, String>);
 
 impl InitProjects {
     pub fn from_file<P: AsRef<Path>>(filename: P) -> Result<Self, io::Error> {
@@ -46,7 +46,7 @@ impl InitProjects {
     }
 
     ///
-    pub fn get_project_list(self: &Self) -> hash_map::Keys<'_, String, String> {
+    pub fn get_project_list(self: &Self) -> btree_map::Keys<'_, String, String> {
         self.0.keys()
     }
 }
