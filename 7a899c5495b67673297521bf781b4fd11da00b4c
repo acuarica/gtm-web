@@ -1,0 +1,9 @@
+[ver:1,total:780]
+gtmserv/src/main.rs:255,1590512400:180,1590516000:75,r
+src/dev/main.ts:214,1590516000:214,m
+.gtm/terminal.app:195,1590512400:150,1590516000:45,r
+src/app/test.ts:32,1590516000:32,r
+gtmserv/src/lib.rs:30,1590512400:30,r
+src/app/App-test.ts:27,1590516000:27,r
+src/app/web.ts:15,1590516000:15,r
+gtmserv/tests/test.rs:12,1590516000:12,r
