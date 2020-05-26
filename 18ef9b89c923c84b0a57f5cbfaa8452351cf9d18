@@ -1,0 +1,7 @@
+[ver:1,total:1300]
+gtmserv/tests/test.rs:460,1590447600:60,1590451200:320,1590498000:80,m
+gtmserv/src/main.rs:395,1590498000:395,r
+src/desktop/preload.ts:230,1590498000:230,r
+src/app/DatePicker.svelte:120,1590498000:120,r
+gtmserv/src/lib.rs:60,1590498000:60,r
+src/desktop/Settings.svelte:35,1590498000:35,r
