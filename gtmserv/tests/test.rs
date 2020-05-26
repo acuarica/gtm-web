@@ -108,11 +108,7 @@ mod parse_notes_tests {
  node_modules/w3c-keyname/index.d.ts:20,1585922400:20,r
  CHANGELOG.md:20,1585918800:20,r";
 
-        b.iter(|| {
-            // for _i in 0..100 {
-            parse_commit_note(message)
-            // }
-        });
+        b.iter(|| parse_commit_note(message));
     }
 }
 
