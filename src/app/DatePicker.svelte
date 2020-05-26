@@ -24,7 +24,8 @@
       moment()
         .subtract(1, "year")
         .endOf("year")
-    ]
+    ],
+    "Beginning of Time": [moment(new Date(1970, 1, 1)), moment()]
   };
 
   const dispatch = createEventDispatcher();
@@ -154,7 +155,8 @@
       on:keydown={e => {
         if (e.keyCode === 27) showDatepicker = false;
       }}
-      class="px-3 py-0 leading-none focus:outline-none text-gray-700 cursor-pointer"
+      class="px-3 py-0 leading-none focus:outline-none text-gray-700
+      cursor-pointer"
       placeholder="Select date" />
 
     <svg
@@ -180,11 +182,11 @@
       style="width: 25rem">
 
       <div class="flex divide-x">
-        <div style="width: 7.5rem">
+        <div style="width: 9rem">
           {#each Object.entries(ranges) as [text, range]}
             <button
-              class="block text-gray-800 focus:outline-none hover:bg-blue-200 rounded pt-1
-              px-2"
+              class="block text-gray-800 focus:outline-none hover:bg-blue-200
+              rounded pt-1 px-2"
               type="button"
               on:click={() => selectRange(text, range)}>
               {text}
