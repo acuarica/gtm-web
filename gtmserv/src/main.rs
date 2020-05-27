@@ -9,7 +9,12 @@ extern crate serde_json;
 use ansi_term::{ANSIString, Colour::Red};
 use chrono::{Duration, NaiveDate, Utc};
 use git2::Repository;
-use gtmserv::{get_notes, FileEvent, InitProjects, Timeline, WorkdirStatus};
+use gtmserv::{
+    get_notes,
+    projects::InitProjects,
+    status::{FileEvent, Timeline},
+    WorkdirStatus,
+};
 use io::BufWriter;
 use std::{
     fmt::Display,
@@ -180,7 +185,8 @@ fn main() -> GtmResult<GtmError> {
                     |c| {
                         // let json = serde_json::to_string(&c.commit).unwrap();
                         // println!("{}", json);
-                        seq.serialize_element(&c.commit).expect("Could not serialize commit");
+                        seq.serialize_element(&c.commit)
+                            .expect("Could not serialize commit");
                     }, // notes.push(cn)
                     &repo,
                     pkey,
@@ -207,7 +213,9 @@ fn main() -> GtmResult<GtmError> {
             // let mut wd = HashMap::new();
             let out = std::io::stdout();
             let mut ser = serde_json::Serializer::new(out);
-            let mut map = ser.serialize_map(None).expect("Could not start serialize workdir status");
+            let mut map = ser
+                .serialize_map(None)
+                .expect("Could not start serialize workdir status");
             for project in from_config()?.get_project_list() {
                 let mut path = PathBuf::new();
                 path.push(project.to_owned());
@@ -237,7 +245,8 @@ fn main() -> GtmResult<GtmError> {
                 let path = PathBuf::from(project.as_str());
                 let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
                 // wd.insert(pkey, ws);
-                map.serialize_entry(&pkey, &ws).expect("Could not serialize workdir status");
+                map.serialize_entry(&pkey, &ws)
+                    .expect("Could not serialize workdir status");
             }
             map.end().expect("Could not end serialize workdir status");
             // let json = serde_json::to_string(&wd).unwrap();

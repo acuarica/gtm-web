@@ -8,10 +8,10 @@ extern crate maplit;
 
 mod init_projects_tests {
 
-    use gtmserv::InitProjects;
     use io::Write;
     use std::io;
     use tempfile::NamedTempFile;
+    use gtmserv::projects::InitProjects;
 
     pub(crate) const PROJECT_JSON: &[u8] =
         br#"{"/path/to/emacs.d":"2020-05-04T04:39:54.911709457+02:00",
@@ -92,7 +92,7 @@ mod init_projects_tests {
 
 mod parse_notes_tests {
 
-    use gtmserv::parse_commit_note;
+    use gtmserv::parse::parse_commit_note;
     use test::Bencher;
 
     #[bench]
@@ -122,7 +122,7 @@ mod parse_notes_tests {
 mod notes_tests {
 
     use git2::{Oid, Repository, Signature};
-    use gtmserv::{get_notes, parse_commit_note, CommitNote, FileNote, GTM_REFS};
+    use gtmserv::{get_notes, parse::parse_commit_note, CommitNote, FileNote, GTM_REFS};
     use std::error::Error;
     use tempfile::{tempdir, TempDir};
 
