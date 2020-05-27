@@ -51,7 +51,7 @@ impl InitProjects {
     }
 }
 
-/// Represents a Unix epoch (timestamp), *i.e.,*, number of non-leap
+/// Represents a Unix epoch (timestamp), *i.e.*, number of non-leap
 /// seconds elapsed since January 1st, 1970, 0:00:00 UTC.
 #[allow(non_camel_case_types)]
 type epoch = i64;
