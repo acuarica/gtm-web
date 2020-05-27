@@ -1,0 +1,5 @@
+[ver:1,total:600]
+gtmserv/tests/test.rs:240,1590530400:180,1590537600:60,r
+.gtm/terminal.app:180,1590530400:180,r
+gtmserv/src/lib.rs:150,1590530400:150,m
+src/app/DashboardCard-test.ts:30,1590530400:30,r
