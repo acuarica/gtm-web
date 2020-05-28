@@ -84,7 +84,7 @@ pub struct CommitNote<'a> {
 }
 
 impl CommitNote<'_> {
-    fn new<'a>(version: u32, total: seconds) -> CommitNote<'a> {
+    pub fn new<'a>(version: u32, total: seconds) -> CommitNote<'a> {
         CommitNote {
             version,
             total,
@@ -140,13 +140,17 @@ pub fn format_time(time: git2::Time) -> String {
 impl Commit<'_> {
     pub fn new<'a>(commit: &git2::Commit, project: String, note: CommitNote<'a>) -> Commit<'a> {
         let text = |msg: Option<&str>| msg.unwrap_or("<invalid utf-8>").to_string();
+        let mut msg = commit
+            .message()
+            .unwrap_or("<invalid utf-8>")
+            .splitn(2, "\n\n");
         Commit {
             author: text(commit.author().name()),
             date: format_time(commit.time()),
             when: format_time(commit.author().when()),
             hash: commit.id().to_string(),
-            subject: text(commit.summary()),
-            message: text(commit.message()),
+            subject: msg.next().unwrap().to_owned(),
+            message: msg.next().unwrap_or("").to_owned(),
             project,
             note,
         }

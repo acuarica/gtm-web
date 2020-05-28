@@ -8,10 +8,10 @@ extern crate maplit;
 
 mod init_projects_tests {
 
+    use gtmserv::projects::InitProjects;
     use io::Write;
     use std::io;
     use tempfile::NamedTempFile;
-    use gtmserv::projects::InitProjects;
 
     pub(crate) const PROJECT_JSON: &[u8] =
         br#"{"/path/to/emacs.d":"2020-05-04T04:39:54.911709457+02:00",
@@ -122,7 +122,7 @@ mod parse_notes_tests {
 mod notes_tests {
 
     use git2::{Oid, Repository, Signature};
-    use gtmserv::{get_notes, parse::parse_commit_note, CommitNote, FileNote, GTM_REFS};
+    use gtmserv::{get_notes, parse::parse_commit_note, Commit, CommitNote, FileNote, GTM_REFS};
     use std::error::Error;
     use tempfile::{tempdir, TempDir};
 
@@ -130,7 +130,6 @@ mod notes_tests {
         _tempdir: TempDir,
         repo: Repository,
         sig: Signature<'repo>,
-        commit_count: usize,
     }
 
     impl<'repo> TempRepo<'repo> {
@@ -145,39 +144,47 @@ mod notes_tests {
                 _tempdir: tempdir,
                 repo,
                 sig,
-                commit_count: 0,
             })
         }
 
-        fn commit(self: &mut Self) -> Result<Oid, git2::Error> {
+        fn commit(self: &mut Self, message: &str) -> Result<TempOid, git2::Error> {
             let tree_id = {
                 let mut index = self.repo.index()?;
                 index.write_tree()?
             };
 
             let tree = self.repo.find_tree(tree_id)?;
-            self.commit_count += 1;
             let parent: Vec<git2::Commit> = match self.repo.head() {
                 Ok(r) => vec![r.peel_to_commit()?],
                 Err(_) => vec![],
             };
             let parent: Vec<&git2::Commit> = parent.iter().map(|e| e).collect();
 
-            self.repo.commit(
-                Some("HEAD"),
+            Ok(TempOid(
+                self.repo.commit(
+                    Some("HEAD"),
+                    &self.sig,
+                    &self.sig,
+                    message,
+                    &tree,
+                    parent.as_slice(),
+                )?,
+                &&self.repo,
                 &self.sig,
-                &self.sig,
-                &format!("Created temp commit no. {}", self.commit_count),
-                &tree,
-                parent.as_slice(),
-            )
+            ))
+        }
+    }
+
+    struct TempOid<'repo>(Oid, &'repo Repository, &'repo Signature<'repo>);
+
+    impl<'repo> TempOid<'repo> {
+        fn note(&self, note: &str) -> Result<Oid, git2::Error> {
+            self.1
+                .note(&self.2, &self.2, Some(GTM_REFS), self.0, note, false)
         }
 
-        fn annotated_commit(self: &mut Self, note: &str) -> Result<Oid, git2::Error> {
-            let oid = self.commit()?;
-            self.repo
-                .note(&self.sig, &self.sig, Some(GTM_REFS), oid, note, false)?;
-            Ok(oid)
+        fn as_commit(&self) -> Result<git2::Commit<'repo>, git2::Error> {
+            self.1.find_commit(self.0)
         }
     }
 
@@ -185,7 +192,7 @@ mod notes_tests {
     fn test_no_notes_commit() -> Result<(), Box<dyn Error>> {
         let mut repo = TempRepo::new()?;
         for _ in 0..100 {
-            repo.commit()?;
+            repo.commit("asdf")?;
         }
 
         assert!(get_notes(|_| (), &repo.repo, "test".to_owned(), 0, 2589945042, &None).is_err());
@@ -195,7 +202,7 @@ mod notes_tests {
     #[test]
     fn test_no_files_commit_note() -> Result<(), Box<dyn Error>> {
         let mut repo = TempRepo::new()?;
-        repo.annotated_commit("[ver:1,total:0]")?;
+        repo.commit("Message")?.note("[ver:1,total:0]")?;
 
         let mut cs = Vec::new();
         get_notes(
@@ -214,7 +221,7 @@ mod notes_tests {
     fn test_notes() -> Result<(), Box<dyn Error>> {
         let mut repo = TempRepo::new()?;
         for _ in 0..10 {
-            repo.annotated_commit(
+            repo.commit("Message")?.note(
                 "[ver:2,total:213]
 closebrackets/src/closebrackets.ts:950,1585918800:510,1585922400:400,1585929600:40,r
 text/src/char.ts:90,1585918800:90,r",
@@ -260,6 +267,17 @@ text/src/char.ts:90,1585918800:90,r",
                 }
             );
         }
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_commit_message() -> Result<(), Box<dyn Error>> {
+        let mut repo = TempRepo::new()?;
+        let commit = repo.commit("Commit message subject\n\nCommit message body.")?.as_commit()?;
+        let commit = Commit::new(&commit, "asdf".to_owned(), CommitNote::new(1, 0));
+        assert_eq!(commit.subject, "Commit message subject");
+        assert_eq!(commit.message, "Commit message body.");
 
         Ok(())
     }
