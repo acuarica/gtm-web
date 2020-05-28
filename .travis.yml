@@ -62,7 +62,7 @@ deploy:
       # - dist/gtm-dash-0.1.0.dmg
       # - "dist/gtm-dash Setup 0.1.0.exe"
       - dist/gtm-dash-${TRAVIS_TAG}.${APP_EXT}
-    prerelease: true
+    # prerelease: true
     overwrite: true
     on:
       tags: true
