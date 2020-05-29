@@ -1,4 +1,5 @@
 import App from '../app/App.svelte'
+import Settings from '../app/Settings.svelte';
 import { Commit, CommitsFilter, WorkdirStatusList } from '@gtm/notes';
 import { WebService } from '../app/web';
 
@@ -12,5 +13,7 @@ new App({
     fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => service.fetchCommits(filter),
     fetchProjectList: (): Promise<string[]> => service.fetchProjectList(),
     fetchWorkdirStatus: (): Promise<WorkdirStatusList> => service.fetchWorkdirStatus(),
+    settingsView: Settings,
+    settingsViewProps: { versions: {} },
   },
 });

@@ -1,4 +1,5 @@
 import App from '../app/App.svelte'
+import Settings from '../app/Settings.svelte'
 import { MockService } from '@gtm/mock';
 import { Commit, WorkdirStatusList } from '../../@notes';
 
@@ -22,5 +23,7 @@ new App({
     fetchWorkdirStatus: async (): Promise<WorkdirStatusList> => {
       return (await service).fetchWorkdirStatus()
     },
+    settingsView: Settings,
+    settingsViewProps: { versions: { 'gtm': 'demo' } },
   },
 });
