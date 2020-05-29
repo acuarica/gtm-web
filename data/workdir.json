@@ -1,0 +1,574 @@
+{
+  "codemirror.next": {
+    "Total": 13632,
+    "Label": "3h 47m 12s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": "demo/demo.ts",
+          "TimeSpent": 6230,
+          "Timeline": {
+            "1587038400": 765,
+            "1587042000": 180,
+            "1587247200": 150,
+            "1587254400": 12,
+            "1587261600": 30,
+            "1587276000": 24,
+            "1587506400": 180,
+            "1587510000": 1240,
+            "1587513600": 1324,
+            "1587517200": 780,
+            "1587520800": 60,
+            "1587571200": 758,
+            "1587574800": 169,
+            "1587578400": 224,
+            "1587582000": 15,
+            "1587589200": 50,
+            "1587592800": 24,
+            "1587650400": 40,
+            "1587661200": 155,
+            "1587996000": 50
+          },
+          "Status": "m"
+        },
+        {
+          "SourceFile": "commands/src/commands.ts",
+          "TimeSpent": 2770,
+          "Timeline": {
+            "1587517200": 300,
+            "1587520800": 1668,
+            "1587553200": 600,
+            "1587556800": 75,
+            "1587571200": 22,
+            "1587574800": 90,
+            "1587661200": 15
+          },
+          "Status": "m"
+        },
+        {
+          "SourceFile": "demo/index.html",
+          "TimeSpent": 1962,
+          "Timeline": {
+            "1587038400": 160,
+            "1587254400": 30,
+            "1587261600": 60,
+            "1587506400": 240,
+            "1587510000": 20,
+            "1587513600": 1050,
+            "1587520800": 90,
+            "1587571200": 237,
+            "1587589200": 40,
+            "1587661200": 35
+          },
+          "Status": "m"
+        },
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 1002,
+          "Timeline": {
+            "1587661200": 420,
+            "1587690000": 60,
+            "1587776400": 240,
+            "1587816000": 72,
+            "1587996000": 210
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "package.json",
+          "TimeSpent": 540,
+          "Timeline": {
+            "1587690000": 290,
+            "1587787200": 30,
+            "1587816000": 40,
+            "1587996000": 180
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "view/src/editorview.ts",
+          "TimeSpent": 465,
+          "Timeline": {
+            "1587661200": 20,
+            "1587996000": 445
+          },
+          "Status": "m"
+        },
+        {
+          "SourceFile": "tsconfig.json",
+          "TimeSpent": 195,
+          "Timeline": {
+            "1587690000": 15,
+            "1587787200": 180
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "view/package.json",
+          "TimeSpent": 144,
+          "Timeline": {
+            "1587816000": 144
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "tsconfig.base.json",
+          "TimeSpent": 125,
+          "Timeline": {
+            "1587690000": 55,
+            "1587787200": 30,
+            "1587996000": 40
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "view/src/docview.ts",
+          "TimeSpent": 64,
+          "Timeline": {
+            "1587996000": 64
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "view/src/contentview.ts",
+          "TimeSpent": 49,
+          "Timeline": {
+            "1587996000": 49
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": ".gitignore",
+          "TimeSpent": 20,
+          "Timeline": {
+            "1587996000": 20
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "view/test/test.ts",
+          "TimeSpent": 20,
+          "Timeline": {
+            "1587816000": 20
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "view/src/blockview.ts",
+          "TimeSpent": 12,
+          "Timeline": {
+            "1587996000": 12
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "comment/test/test-comment.ts",
+          "TimeSpent": 12,
+          "Timeline": {
+            "1587816000": 12
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "text/test/test-text.ts",
+          "TimeSpent": 12,
+          "Timeline": {
+            "1587816000": 12
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "view/src/dom.ts",
+          "TimeSpent": 10,
+          "Timeline": {
+            "1587996000": 10
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "emacs.d": {
+    "Total": 60,
+    "Label": "1m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 60,
+          "Timeline": {
+            "1587499200": 60
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "essentia-report": {
+    "Total": 2700,
+    "Label": "45m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 2182,
+          "Timeline": {
+            "1585778400": 210,
+            "1585782000": 480,
+            "1585785600": 180,
+            "1586214000": 300,
+            "1586217600": 60,
+            "1586977200": 562,
+            "1586980800": 330,
+            "1586991600": 60
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "report.js",
+          "TimeSpent": 149,
+          "Timeline": {
+            "1586977200": 149
+          },
+          "Status": "d"
+        },
+        {
+          "SourceFile": "src/main/scala/com/gitlab/acuarica/essentia/report/v3/Report.java",
+          "TimeSpent": 100,
+          "Timeline": {
+            "1586977200": 100
+          },
+          "Status": "d"
+        },
+        {
+          "SourceFile": ".gitignore",
+          "TimeSpent": 60,
+          "Timeline": {
+            "1585778400": 30,
+            "1586977200": 30
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "package.json",
+          "TimeSpent": 40,
+          "Timeline": {
+            "1586977200": 40
+          },
+          "Status": "d"
+        },
+        {
+          "SourceFile": "main.js",
+          "TimeSpent": 30,
+          "Timeline": {
+            "1586980800": 30
+          },
+          "Status": "d"
+        },
+        {
+          "SourceFile": "hola.html",
+          "TimeSpent": 27,
+          "Timeline": {
+            "1586977200": 27
+          },
+          "Status": "d"
+        },
+        {
+          "SourceFile": "resources.js",
+          "TimeSpent": 22,
+          "Timeline": {
+            "1586977200": 22
+          },
+          "Status": "d"
+        },
+        {
+          "SourceFile": "src/main/scala/com/gitlab/acuarica/essentia/report/Report.scala",
+          "TimeSpent": 20,
+          "Timeline": {
+            "1586977200": 20
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "src/main/scala/com/gitlab/acuarica/essentia/report/Pdf.scala",
+          "TimeSpent": 20,
+          "Timeline": {
+            "1586977200": 20
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "renderer.js",
+          "TimeSpent": 20,
+          "Timeline": {
+            "1586977200": 20
+          },
+          "Status": "d"
+        },
+        {
+          "SourceFile": "index.html",
+          "TimeSpent": 18,
+          "Timeline": {
+            "1586977200": 18
+          },
+          "Status": "d"
+        },
+        {
+          "SourceFile": "README.md",
+          "TimeSpent": 12,
+          "Timeline": {
+            "1586977200": 12
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "gtm": {
+    "Total": 6780,
+    "Label": "1h 53m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 5054,
+          "Timeline": {
+            "1587592800": 180,
+            "1587603600": 180,
+            "1587632400": 30,
+            "1587650400": 180,
+            "1587661200": 180,
+            "1587726000": 420,
+            "1587729600": 300,
+            "1587776400": 360,
+            "1587866400": 180,
+            "1587909600": 720,
+            "1587913200": 180,
+            "1587916800": 180,
+            "1587974400": 150,
+            "1587996000": 360,
+            "1587999600": 390,
+            "1588010400": 180,
+            "1588014000": 180,
+            "1588017600": 284,
+            "1588039200": 180,
+            "1588042800": 180,
+            "1588100400": 60
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "report/web.go",
+          "TimeSpent": 730,
+          "Timeline": {
+            "1587628800": 330,
+            "1587632400": 370,
+            "1587974400": 30
+          },
+          "Status": "m"
+        },
+        {
+          "SourceFile": "../../../../../Users/luigi/go/src/github.com/git-time-metric/gtm/report/web.go",
+          "TimeSpent": 562,
+          "Timeline": {
+            "1587999600": 165,
+            "1588017600": 397
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "../../../../../Users/luigi/go/src/github.com/git-time-metric/gtm/command/web.go",
+          "TimeSpent": 234,
+          "Timeline": {
+            "1587999600": 75,
+            "1588017600": 159
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "../../../../../Users/luigi/go/src/github.com/git-time-metric/gtm/scm/git.go",
+          "TimeSpent": 170,
+          "Timeline": {
+            "1587628800": 30,
+            "1587632400": 140
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "../../../../../Users/luigi/go/src/github.com/git-time-metric/gtm/project/index.go",
+          "TimeSpent": 30,
+          "Timeline": {
+            "1587999600": 30
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "home": {
+    "Total": 420,
+    "Label": "7m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 420,
+          "Timeline": {
+            "1586977200": 180,
+            "1587042000": 240
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "java-cast-inspection": {
+    "Total": 60,
+    "Label": "1m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 60,
+          "Timeline": {
+            "1585782000": 60
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "java-cast-queries": {
+    "Total": 360,
+    "Label": "6m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 360,
+          "Timeline": {
+            "1585782000": 180,
+            "1586214000": 180
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "notes": {
+    "Total": 420,
+    "Label": "7m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 420,
+          "Timeline": {
+            "1587499200": 180,
+            "1587945600": 180,
+            "1587956400": 60
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "vscode-lgtm-ql": {
+    "Total": 360,
+    "Label": "6m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 360,
+          "Timeline": {
+            "1585782000": 240,
+            "1586214000": 120
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "web": {
+    "Total": 1860,
+    "Label": "31m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": "src/App.svelte",
+          "TimeSpent": 1395,
+          "Timeline": {
+            "1588122000": 1395
+          },
+          "Status": "m"
+        },
+        {
+          "SourceFile": "src/components/Navbar.svelte",
+          "TimeSpent": 115,
+          "Timeline": {
+            "1588122000": 115
+          },
+          "Status": "m"
+        },
+        {
+          "SourceFile": "src/components/Summary.svelte",
+          "TimeSpent": 110,
+          "Timeline": {
+            "1588122000": 110
+          },
+          "Status": "m"
+        },
+        {
+          "SourceFile": "src/components/Timeline.svelte",
+          "TimeSpent": 110,
+          "Timeline": {
+            "1588122000": 110
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "src/components/DateRangePicker.svelte",
+          "TimeSpent": 60,
+          "Timeline": {
+            "1588122000": 60
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 40,
+          "Timeline": {
+            "1588122000": 40
+          },
+          "Status": "r"
+        },
+        {
+          "SourceFile": "package.json",
+          "TimeSpent": 30,
+          "Timeline": {
+            "1588122000": 30
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  },
+  "work": {
+    "Total": 360,
+    "Label": "6m  0s",
+    "CommitNote": {
+      "Files": [
+        {
+          "SourceFile": ".gtm/terminal.app",
+          "TimeSpent": 360,
+          "Timeline": {
+            "1587499200": 180,
+            "1587938400": 180
+          },
+          "Status": "r"
+        }
+      ]
+    }
+  }
+}
