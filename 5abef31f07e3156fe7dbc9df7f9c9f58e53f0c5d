@@ -1,0 +1,14 @@
+[ver:1,total:1680]
+.gtm/terminal.app:902,1590706800:100,1590710400:762,1590714000:40,r
+src/demo/demo.ts:277,1590710400:177,1590714000:100,m
+src/dev/main.ts:123,1590710400:113,1590714000:10,m
+README.md:90,1590710400:90,r
+src/app/App-test.ts:62,1590710400:62,r
+.travis.yml:60,1590710400:60,r
+src/demo/index.html:50,1590710400:20,1590714000:30,r
+src/dev/index.html:30,1590714000:30,r
+@mock/mock.ts:30,1590714000:30,r
+../../../.git/modules/#forks/gtm/modules/web/TAG_EDITMSG:20,1590706800:20,d
+src/desktop/main.ts:15,1590710400:15,r
+src/app/ChartPalettePicker.svelte:12,1590710400:12,r
+src/app/App.svelte:9,1590710400:9,r
