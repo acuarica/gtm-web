@@ -1,24 +1,90 @@
+#![feature(async_closure)]
 
-use std::{convert::Infallible, net::SocketAddr};
-use hyper::{Body, Request, Response, Server};
-use hyper::service::{make_service_fn, service_fn};
+use gtmserv::clone::clone_repo;
+use hyper::{
+    service::{make_service_fn, service_fn},
+    Body, Method, Request, Response, Server, StatusCode,
+};
+use std::{
+    error::Error,
+    net::{Ipv4Addr, SocketAddr},
+};
+use structopt::StructOpt;
 
-async fn handle(_: Request<Body>) -> Result<Response<Body>, Infallible> {
-    Ok(Response::new("Hello, World!".into()))
+#[derive(StructOpt)]
+#[cfg_attr(debug_assertions, structopt(version = env!("GTM_VERSION")))]
+/// The gtm Dashboard server
+///
+/// Returns gtm time data for the specified services.
+/// All data returned is in JSON format.
+struct Args {
+    /// Returns commits with gtm time data
+    #[structopt(short, long)]
+    addr: Option<String>,
+
+    #[structopt(short, long)]
+    port: Option<u16>,
+
+    #[structopt(short, long)]
+    datadir: String,
+}
+
+async fn handle(
+    datadir: String,
+    req: Request<Body>,
+) -> Result<Response<Body>, Box<dyn Error + Send + Sync>> {
+    let mut response = Response::new(Body::empty());
+
+    match (req.method(), req.uri().path()) {
+        (&Method::GET, "/") => {
+            *response.body_mut() = Body::from("Try POSTing data to /echo");
+        }
+        (&Method::POST, "/v1/clone") => {
+            let url = hyper::body::to_bytes(req).await?;
+            let url: &str = std::str::from_utf8(&*url)?;
+            println!("Cloning repository `{:?}` into {}", url, datadir);
+            match clone_repo(url, datadir) {
+                Ok(_repo) => *response.body_mut() = Body::from("Try POSTing data to /echo"),
+                Err(err) => *response.body_mut() = Body::from(format!("Clone error: {:?}", err)),
+            };
+            // let mut data: serde_json::Value = serde_json::from_reader(whole_body.reader())?;
+            // let body = serde_json::from_slice(&req.into_body())?;
+            // let url: String=  req.into_body().
+        }
+        _ => {
+            *response.status_mut() = StatusCode::NOT_FOUND;
+        }
+    };
+
+    Ok(response)
 }
 
 #[tokio::main]
-async fn main() {
-    // let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+async fn main() -> Result<(), Box<dyn Error>> {
+    let args = Args::from_args();
+    let addr = match args.addr {
+        None => Ipv4Addr::new(0, 0, 0, 0),
+        Some(s) => s.parse::<Ipv4Addr>()?,
+    };
+    let port = args.port.unwrap_or(3000);
 
-    let make_svc = make_service_fn(|_conn| async {
-        Ok::<_, Infallible>(service_fn(handle))
+    println!("Binding to address: {:?}:{}", addr, port);
+    println!("Datadir to clone into: {}", args.datadir);
+    let addr = SocketAddr::from((addr, port));
+    let datadir = args.datadir;
+    let make_service = make_service_fn(move |_conn| {
+        let datadir = datadir.clone();
+        async move {
+            Ok::<_, Box<dyn Error + Send + Sync>>(service_fn(move |req: Request<Body>| {
+                handle(datadir.to_owned(), req)
+            }))
+        }
     });
-
-    let server = Server::bind(&addr).serve(make_svc);
+    let server = Server::bind(&addr).serve(make_service);
 
     if let Err(e) = server.await {
         eprintln!("server error: {}", e);
     }
+
+    Ok(())
 }
