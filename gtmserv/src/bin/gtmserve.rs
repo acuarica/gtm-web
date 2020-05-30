@@ -1,10 +1,12 @@
 #![feature(async_closure)]
 
-use gtmserv::clone::clone_repo;
+use git2::Repository;
+use gtmserv::{clone::clone_repo, get_notes};
 use hyper::{
     service::{make_service_fn, service_fn},
     Body, Method, Request, Response, Server, StatusCode,
 };
+use serde::ser::{SerializeSeq, Serializer};
 use std::{
     error::Error,
     net::{Ipv4Addr, SocketAddr},
@@ -50,6 +52,25 @@ async fn handle(
             // let mut data: serde_json::Value = serde_json::from_reader(whole_body.reader())?;
             // let body = serde_json::from_slice(&req.into_body())?;
             // let url: String=  req.into_body().
+        }
+        (&Method::GET, "/v1/data/commits") => {
+            let repo = Repository::open(format!("{}/{}", datadir, "git-clone-repo")).unwrap();
+            let mut out = Vec::new();
+            let mut ser = serde_json::Serializer::new(&mut out);
+            let mut seq = ser.serialize_seq(None).unwrap();
+            get_notes(
+                |c| {
+                    seq.serialize_element(&c.commit)
+                        .expect("Could not serialize commit");
+                },
+                &repo,
+                "sdfsdf".to_owned(),
+                0,
+                10000000000000,
+                &None,
+            )?;
+            seq.end().expect("Could not end serialize commits");
+            *response.body_mut() = Body::from(out);
         }
         _ => {
             *response.status_mut() = StatusCode::NOT_FOUND;
