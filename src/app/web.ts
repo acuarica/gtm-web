@@ -9,7 +9,7 @@ export class WebService implements GtmService {
   }
 
   fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
-    let args = `/data/commits?from=${filter.start}&to=${filter.end}`
+    let args = `/v1/data/commits?from=${filter.start}&to=${filter.end}`
     if (filter.message) {
       args += `&message=${filter.message}`
     }
@@ -17,12 +17,12 @@ export class WebService implements GtmService {
   }
 
   async fetchProjectList(): Promise<string[]> {
-    const value = await this.fetchurl<string[]>('/data/projects')
+    const value = await this.fetchurl<string[]>('/v1/data/projects')
     return value.map((p: string) => p.substring(p.lastIndexOf('/') + 1))
   }
 
   fetchWorkdirStatus(): Promise<WorkdirStatusList> {
-    return this.fetchurl('/data/status')
+    return this.fetchurl('/v1/data/status')
   }
 
   private async fetchurl<T>(url: string): Promise<T> {
