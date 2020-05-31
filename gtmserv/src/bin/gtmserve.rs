@@ -1,7 +1,7 @@
 #![feature(async_closure)]
 
 use git2::Repository;
-use gtmserv::{clone::clone_repo, get_notes};
+use gtmserv::{clone::clone_repo, get_notes, NotesFilter};
 use hyper::{
     service::{make_service_fn, service_fn},
     Body, Method, Request, Response, Server, StatusCode,
@@ -65,9 +65,7 @@ async fn handle(
                 },
                 &repo,
                 "sdfsdf".to_owned(),
-                0,
-                10000000000000,
-                &None,
+                &NotesFilter::no_filter(),
             )?;
             seq.end().expect("Could not end serialize commits");
             *response.body_mut() = Body::from(out);

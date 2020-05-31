@@ -122,7 +122,9 @@ mod parse_notes_tests {
 mod notes_tests {
 
     use git2::{Oid, Repository, Signature};
-    use gtmserv::{get_notes, parse::parse_commit_note, Commit, CommitNote, FileNote, GTM_REFS};
+    use gtmserv::{
+        get_notes, parse::parse_commit_note, Commit, CommitNote, FileNote, NotesFilter, GTM_REFS,
+    };
     use std::error::Error;
     use tempfile::{tempdir, TempDir};
 
@@ -195,7 +197,13 @@ mod notes_tests {
             repo.commit("asdf")?;
         }
 
-        assert!(get_notes(|_| (), &repo.repo, "test".to_owned(), 0, 2589945042, &None).is_err());
+        assert!(get_notes(
+            |_| (),
+            &repo.repo,
+            "test".to_owned(),
+            &NotesFilter::no_filter()
+        )
+        .is_err());
         Ok(())
     }
 
@@ -209,9 +217,7 @@ mod notes_tests {
             |cn| cs.push(cn),
             &repo.repo,
             "test".to_owned(),
-            0,
-            2589945042,
-            &None,
+            &NotesFilter::no_filter(),
         )?;
         assert_eq!(cs.len(), 1);
         Ok(())
@@ -235,9 +241,7 @@ text/src/char.ts:90,1585918800:90,r",
             },
             &repo.repo,
             "test".to_owned(),
-            0,
-            2589945042,
-            &None,
+            &NotesFilter::no_filter(),
         )?;
         assert_eq!(commits.len(), 10);
         for c in commits {
@@ -274,7 +278,9 @@ text/src/char.ts:90,1585918800:90,r",
     #[test]
     fn test_commit_message() -> Result<(), Box<dyn Error>> {
         let mut repo = TempRepo::new()?;
-        let commit = repo.commit("Commit message subject\n\nCommit message body.")?.as_commit()?;
+        let commit = repo
+            .commit("Commit message subject\n\nCommit message body.")?
+            .as_commit()?;
         let commit = Commit::new(&commit, "asdf".to_owned(), CommitNote::new(1, 0));
         assert_eq!(commit.subject, "Commit message subject");
         assert_eq!(commit.message, "Commit message body.");

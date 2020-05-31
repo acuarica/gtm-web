@@ -20,7 +20,7 @@ pub fn clone_repo<P: AsRef<Path>>(url: &str, into: P) -> Result<Repository, git2
 mod tests {
 
     use super::clone_repo;
-    use crate::get_notes;
+    use crate::{get_notes, NotesFilter};
     use std::error::Error;
     use tempfile::tempdir;
 
@@ -35,16 +35,12 @@ mod tests {
         let mut notes = Vec::new();
         get_notes(
             |c| {
-                // let json = serde_json::to_string(&c.commit).unwrap();
-                // println!("{}", json);
                 println!("{:?}", c.commit);
                 notes.push(c.commit);
-            }, // notes.push(cn)
+            },
             &repo,
             "sdfsdf".to_owned(),
-            0,
-            10000000000000,
-            &None,
+            &NotesFilter::no_filter(),
         )?;
         assert_ne!(notes.len(), 0);
 

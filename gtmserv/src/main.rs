@@ -7,13 +7,13 @@ extern crate serde_derive;
 extern crate serde_json;
 
 use ansi_term::{ANSIString, Colour::Red};
-use chrono::{Duration, NaiveDate, Utc};
-use git2::Repository;
+use chrono::{Duration, NaiveDate};
 use gtmserv::{
-    get_notes,
+    epoch,
     projects::InitProjects,
+    services::{config_path, write_commits, write_project_list},
     status::{FileEvent, Timeline},
-    WorkdirStatus,
+    NotesFilter, WorkdirStatus,
 };
 use io::BufWriter;
 use std::{
@@ -133,27 +133,26 @@ impl From<git2::Error> for GtmError {
     }
 }
 
-fn config_path() -> Option<PathBuf> {
-    let mut path = dirs::home_dir()?;
-    path.push(".git-time-metric");
-    path.push("project.json");
-    Some(path)
-}
-
 fn from_config() -> Result<InitProjects, GtmError> {
     let path = config_path().unwrap();
     InitProjects::from_file(&path).map_err(|e| GtmError::Io(e, path))
 }
 
-fn parse_arg_date(date: &Option<String>, field: &str, days: i64) -> Result<i64, GtmError> {
+fn parse_arg_date(
+    date: &Option<String>,
+    field: &str,
+    days: i64,
+) -> Result<Option<epoch>, GtmError> {
     Ok(match date {
-        None => Utc::now().timestamp(),
-        Some(date) => NaiveDate::parse_from_str(date, "%Y-%m-%d")
-            .map_err(|e| GtmError::Parse(e, field.to_owned()))?
-            .checked_add_signed(Duration::days(days))
-            .unwrap()
-            .and_hms(0, 0, 0)
-            .timestamp(),
+        None => None,
+        Some(date) => Some(
+            NaiveDate::parse_from_str(date, "%Y-%m-%d")
+                .map_err(|e| GtmError::Parse(e, field.to_owned()))?
+                .checked_add_signed(Duration::days(days))
+                .unwrap()
+                .and_hms(0, 0, 0)
+                .timestamp(),
+        ),
     })
 }
 
@@ -166,46 +165,24 @@ fn main() -> GtmResult<GtmError> {
             to_date,
             message,
         } => {
-            use serde::ser::{SerializeSeq, Serializer};
-
-            let out = std::io::stdout();
-            let out = BufWriter::with_capacity(1024 * 1024, out);
-            let mut ser = serde_json::Serializer::new(out);
-            let mut seq = ser.serialize_seq(None).unwrap();
-
             let from_date = parse_arg_date(&from_date, "from", 0)?;
             let to_date = parse_arg_date(&to_date, "to", 1)?;
-
-            // let mut notes = Vec::new();
-            for project in from_config()?.get_project_list() {
-                let path = PathBuf::from(project.as_str());
-                let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
-                let repo = Repository::open(project.to_owned())?;
-                get_notes(
-                    |c| {
-                        // let json = serde_json::to_string(&c.commit).unwrap();
-                        // println!("{}", json);
-                        seq.serialize_element(&c.commit)
-                            .expect("Could not serialize commit");
-                    }, // notes.push(cn)
-                    &repo,
-                    pkey,
+            let out = std::io::stdout();
+            let mut writer = BufWriter::with_capacity(1024 * 1024, out);
+            write_commits(
+                &mut writer,
+                from_config()?.get_project_list(),
+                &NotesFilter {
                     from_date,
                     to_date,
-                    &message,
-                )
-                .unwrap();
-            }
-            seq.end().expect("Could not end serialize commits");
-
-            // let json = serde_json::to_string(&notes).unwrap();
-            // println!("{}", json);
+                    needle: message,
+                },
+            )?;
         }
         GtmCommand::Projects => {
-            let projects = from_config()?;
-            let projects: Vec<&String> = projects.get_project_list().collect();
-            let json = serde_json::to_string(&projects).unwrap();
-            println!("{}", json);
+            let out = std::io::stdout();
+            let writer = BufWriter::with_capacity(1024 * 1024, out);
+            write_project_list(writer, &from_config()?);
         }
         GtmCommand::Status => {
             use serde::ser::{SerializeMap, Serializer};

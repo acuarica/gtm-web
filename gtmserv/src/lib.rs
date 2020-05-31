@@ -13,15 +13,16 @@ extern crate chrono;
 
 pub const GTM_REFS: &str = "refs/notes/gtm-data";
 
+pub mod clone;
 pub mod parse;
 pub mod projects;
+pub mod services;
 pub mod status;
-pub mod clone;
 
 /// Represents a Unix epoch (timestamp), *i.e.*, number of non-leap
 /// seconds elapsed since January 1st, 1970, 0:00:00 UTC.
 #[allow(non_camel_case_types)]
-type epoch = i64;
+pub type epoch = i64;
 
 #[allow(non_camel_case_types)]
 type seconds = u32;
@@ -165,13 +166,13 @@ pub fn get_commits(_path: &str) -> Result<(), git2::Error> {
 }
 
 pub struct NotesFilter {
-    from_date: Option<epoch>,
-    to_date: Option<epoch>,
-    needle: Option<String>,
+    pub from_date: Option<epoch>,
+    pub to_date: Option<epoch>,
+    pub needle: Option<String>,
 }
 
 impl NotesFilter {
-    pub fn new() -> Self {
+    pub fn no_filter() -> Self {
         Self {
             from_date: None,
             to_date: None,
@@ -179,19 +180,32 @@ impl NotesFilter {
         }
     }
 
-    pub fn from_date<T: TimeZone>(self: &mut Self, date: DateTime<T>) -> &mut Self {
+    pub fn from_date<T: TimeZone>(&mut self, date: DateTime<T>) -> &mut Self {
         self.from_date = Some(date.timestamp());
         self
     }
 
-    pub fn to_date<T: TimeZone>(self: &mut Self, date: DateTime<T>) -> &mut Self {
+    pub fn to_date<T: TimeZone>(&mut self, date: DateTime<T>) -> &mut Self {
         self.to_date = Some(date.timestamp());
         self
     }
 
-    pub fn needle<T: TimeZone>(self: &mut Self, needle: String) -> &mut Self {
+    pub fn needle<T: TimeZone>(&mut self, needle: String) -> &mut Self {
         self.needle = Some(needle);
         self
+    }
+
+    fn filter(&self, commit: &git2::Commit) -> bool {
+        let time = commit.time().seconds() + commit.time().offset_minutes() as i64 * 60;
+        self.from_date.map_or(true, |from| time >= from)
+            && self.to_date.map_or(true, |to| time <= to)
+            && self.needle.as_ref().map_or(true, |msg: &String| {
+                if let Some(message) = commit.message() {
+                    message.to_lowercase().contains(msg.to_lowercase().as_str())
+                } else {
+                    true
+                }
+            })
     }
 }
 
@@ -205,9 +219,7 @@ pub fn get_notes<'r, F>(
     mut with: F,
     repo: &'r Repository,
     project: String,
-    from_date: i64,
-    to_date: i64,
-    search_message: &Option<String>,
+    filter: &NotesFilter,
 ) -> Result<(), git2::Error>
 where
     F: FnMut(GitCommitNote<'r>) -> (),
@@ -217,27 +229,9 @@ where
     for note_assoc in notes {
         let p = note_assoc.unwrap();
         let commit = repo.find_commit(p.1)?;
-        let time = commit.time().seconds() + commit.time().offset_minutes() as i64 * 60;
 
-        let f = |msg: &String| {
-            if let Some(message) = commit.message() {
-                message.to_lowercase().contains(msg.to_lowercase().as_str())
-            } else {
-                true
-            }
-        };
-
-        if time >= from_date
-            && time <= to_date
-            && match search_message {
-                None => true,
-                Some(msg) => f(msg),
-            }
-        {
-            // let message: &'r str = note.message().as_ref().unwrap();
-            // parse_commit_note(np.as_ref().unwrap().message().as_ref().unwrap()).unwrap()
+        if filter.filter(&commit) {
             let note = repo.find_note(Some(GTM_REFS), p.1)?;
-            // let note_message = unsafe { (&note as *const Note).as_ref().unwrap().message() };
             let note_message = unsafe { (*(&note as *const Note)).message() };
             if let Some(note_message) = note_message {
                 if let Ok(commit_note) = parse_commit_note(note_message) {
