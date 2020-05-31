@@ -72,6 +72,11 @@ async fn handle(
             seq.end().expect("Could not end serialize commits");
             *response.body_mut() = Body::from(out);
         }
+        (&Method::GET, "/v1/data/projects") => {
+            let projects: Vec<&str> = vec!["test-project"];
+            let json = serde_json::to_string(&projects).unwrap();
+            *response.body_mut() = Body::from(json);
+        }
         _ => {
             *response.status_mut() = StatusCode::NOT_FOUND;
         }
