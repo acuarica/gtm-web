@@ -80,6 +80,19 @@ export const configs = {
     }
   },
 
+  dash: {
+    input: 'src/dev/main.js',
+    output: {
+      dir: 'dist/dash',
+      format: 'iife',
+      name: 'app',
+    },
+    plugins: [
+      ...plugins(false),
+      production && terser.terser(),
+    ]
+  },
+
   demo: {
     input: 'src/demo/index.html',
     output: {
