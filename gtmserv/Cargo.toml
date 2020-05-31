@@ -19,6 +19,7 @@ ansi_term = "0.12.1"
 atty = "0.2.14"
 hyper = "0.13"
 tokio = { version = "0.2", features = ["full"] }
+web-view = { version = "0.5.4", features = ["edge"] }
 
 [dev-dependencies]
 tempfile = "3"
