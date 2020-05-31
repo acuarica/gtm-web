@@ -126,7 +126,7 @@
               <DashboardCard
                 title="Could not get gtm projects"
                 body="Make sure gtm is installed"
-                footer="Got error: {JSON.stringify(error)}" />
+                footer="Got error: {error}" />
             </Box>
           {/await}
         </div>

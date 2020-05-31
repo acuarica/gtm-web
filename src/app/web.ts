@@ -60,6 +60,32 @@ export class DelayService implements GtmService {
   }
 
 }
+export class RejectService implements GtmService {
+
+  getVersion(): Promise<string | null> {
+    throw new Error('No version found in FailureService');
+  }
+
+  async fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
+    return this.reject(`commits ${JSON.stringify(filter)}`)
+  }
+
+  async fetchProjectList(): Promise<string[]> {
+    return this.reject('project list')
+  }
+
+  async fetchWorkdirStatus(): Promise<WorkdirStatusList> {
+    return this.reject('workdir status')
+  }
+
+  private reject<T>(service: string): Promise<T> {
+    return new Promise(function (_, reject) {
+      reject({ reason: 'Testing with FailureService', service: service })
+    })
+  }
+
+}
+
 export class FailureService implements GtmService {
 
   getVersion(): Promise<string | null> {
@@ -78,10 +104,8 @@ export class FailureService implements GtmService {
     return this.fail('workdir status')
   }
 
-  private fail<T>(service: string): Promise<T> {
-    return new Promise(function (_, reject) {
-      reject({ reason: 'Testing with FailureService', service: service })
-    })
+  private async fail<T>(service: string): Promise<T> {
+    return await fetch(service).then(r => r.json())
   }
 
 }
