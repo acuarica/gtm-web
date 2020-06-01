@@ -5,7 +5,7 @@ import { Commit, WorkdirStatusList, CommitsFilter } from '@gtm/notes';
 import * as path from 'path';
 import { spawn } from 'child_process';
 
-const gtmservpath = path.join(__dirname, 'gtmserv')
+const gtmservpath = path.join(__dirname, 'gtmcli')
 console.info('Path to gtmserv:', gtmservpath)
 
 window.addEventListener('DOMContentLoaded', async () => {

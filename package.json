@@ -13,11 +13,11 @@
     "@gtm"
   ],
   "type": "module",
-  "main": "dist/gtm-dash/main.js",
+  "main": "dist/electron/main.js",
   "build": {
     "appId": "gtm-dash",
     "files": [
-      "dist/gtm-dash/**/*",
+      "dist/electron/**/*",
       "package.json"
     ],
     "asar": false,
@@ -53,7 +53,7 @@
     "build": "tsc && rollup --config",
     "test": "mocha @*/*-test.js",
     "dist": "electron-builder",
-    "start": "electron dist/gtm-dash/main.js",
+    "start": "electron dist/electron/main.js",
     "clean": "rm -rfv @*/*.js src/**/*.js dist",
     "gtm": "target/debug/gtmcli"
   },
