@@ -1,4 +1,4 @@
-import Commit from '../app/Commit.svelte';
+import Commit from './Commit.svelte';
 
 export default [{
   component: Commit,

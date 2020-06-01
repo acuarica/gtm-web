@@ -37,26 +37,39 @@ const plugins = (extract) => [
 
 export const configs = {
 
+  app: {
+    input: '@app/app.js',
+    output: {
+      dir: 'dist/app',
+      format: 'iife',
+      name: 'app',
+    },
+    plugins: [
+      ...plugins(false),
+      production && terser.terser(),
+    ]
+  },
+
   dev: {
     output: {
       dir: 'dist/dev',
       sourcemap: true,
       format: 'es',
       plugins: [
-        !production && livereload('dist/dev'),
+        !production && livereload('dist/test'),
       ]
     },
     preserveModules: true,
     plugins: [
       ...plugins(false),
-      ...['dev/index', 'app/test'].map(f => html({ inputPath: `src/${f}.html` })),
+      ...['test'].map(f => html({ inputPath: `@app/${f}.html` })),
     ],
     watch: {
       clearScreen: false
     }
   },
 
-  app: {
+  appdesktop: {
     input: ['main', 'preload'].map(f => `src/desktop/${f}.js`),
     output: {
       dir: 'dist/gtm-dash',
@@ -78,19 +91,6 @@ export const configs = {
     watch: {
       clearScreen: false
     }
-  },
-
-  dash: {
-    input: 'src/dev/main.js',
-    output: {
-      dir: 'dist/dash',
-      format: 'iife',
-      name: 'app',
-    },
-    plugins: [
-      ...plugins(false),
-      production && terser.terser(),
-    ]
   },
 
   demo: {
