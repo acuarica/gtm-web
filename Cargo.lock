@@ -299,8 +299,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "gtmserv"
-version = "0.1.0"
+name = "gtm"
+version = "0.1.1"
 dependencies = [
  "ansi_term 0.12.1",
  "assert_cmd",

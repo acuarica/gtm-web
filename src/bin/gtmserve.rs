@@ -1,7 +1,7 @@
 #![feature(async_closure)]
 
 use git2::Repository;
-use gtmserv::{clone::clone_repo, get_notes, NotesFilter};
+use gtm::{clone::clone_repo, get_notes, NotesFilter};
 use hyper::{
     service::{make_service_fn, service_fn},
     Body, Method, Request, Response, Server, StatusCode,

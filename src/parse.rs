@@ -5,7 +5,7 @@ use std::{collections::BTreeMap, num::IntErrorKind};
 /// Parses a key-value in "key:value" format.
 ///
 /// ```
-/// use gtmserv::parse::*;
+/// use gtm::parse::*;
 /// assert_eq!(parse_key_value("src/file.ts:somevalue").unwrap(), ("src/file.ts", "somevalue"));
 /// assert_eq!(parse_key_value("src/file.ts:some:value").unwrap(), ("src/file.ts", "some:value"));
 /// assert_eq!(parse_key_value(":").unwrap(), ("", ""));
@@ -26,7 +26,7 @@ pub enum FileNoteParseError {
     /// Occurs when there are less than 3 components to parse.
     ///
     /// ```
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_file_note("src/file.ts:2797"), Err(FileNoteParseError::NotEnoughEntries));
     /// assert_eq!(parse_file_note("src/file.ts:2797,m"), Err(FileNoteParseError::NotEnoughEntries));
     /// ```
@@ -35,7 +35,7 @@ pub enum FileNoteParseError {
     /// Occurs when it is not possible to parse the file path of this note.
     ///
     /// ```
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_file_note("src/file.ts2797,1585861200:354,m"), Err(FileNoteParseError::UnrecognizedFilepath));
     /// assert_eq!(parse_file_note(""), Err(FileNoteParseError::UnrecognizedFilepath));
     /// ```
@@ -44,7 +44,7 @@ pub enum FileNoteParseError {
     /// Occurs when it is not possible to parse a timeline entry of this file note.
     ///
     /// ```
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_file_note("src/file.ts:2797,1585861200;354,m"), Err(FileNoteParseError::InvalidTimelineFormat));
     /// ```
     InvalidTimelineFormat,
@@ -57,7 +57,7 @@ pub enum FileNoteParseError {
     /// ```
     /// #![feature(int_error_matching)]
     /// use std::num::IntErrorKind;
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_file_note("src/file.ts:123abc,1585861200:354,m"), Err(FileNoteParseError::InvalidTotalTimespent { kind: IntErrorKind::InvalidDigit }));
     /// ```
     InvalidTotalTimespent { kind: IntErrorKind },
@@ -65,7 +65,7 @@ pub enum FileNoteParseError {
     /// Occurs when the status of the parsed file note is not recognized.
     ///
     /// ```
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_file_note("src/file.ts:123,1585861200:354,a"), Err(FileNoteParseError::StatusNotRecognized { got: "a".to_owned() }));
     /// ```
     StatusNotRecognized { got: String },
@@ -75,7 +75,7 @@ pub enum FileNoteParseError {
 ///
 /// ```
 /// #[macro_use] extern crate maplit;
-/// use gtmserv::{*, parse::*};
+/// use gtm::{*, parse::*};
 ///
 /// assert_eq!(
 ///     parse_file_note("src/file.ts:150,1585861200:60,1585875600:90,m").unwrap(),
@@ -163,13 +163,13 @@ pub fn parse_file_note<'a>(file_entry: &'a str) -> Result<FileNote<'a>, FileNote
 /// Represents the errors reported by `parse_commit_note`.
 pub enum CommitNoteParseError {
     /// ```
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_commit_note(""), Err(CommitNoteParseError::EmptyNote));
     /// ```
     EmptyNote,
 
     /// ```
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_commit_note("[]"), Err(CommitNoteParseError::InvalidHeader));
     /// assert_eq!(parse_commit_note("[ver:1total:213]"), Err(CommitNoteParseError::InvalidHeader));
     /// assert_eq!(parse_commit_note("[ver:1,total:a]"), Err(CommitNoteParseError::InvalidHeader));
@@ -177,13 +177,13 @@ pub enum CommitNoteParseError {
     InvalidHeader,
 
     /// ```
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_commit_note("[ver:9123456789,total:213]"), Err(CommitNoteParseError::InvalidVersion));
     /// ```
     InvalidVersion,
 
     /// ```
-    /// use gtmserv::parse::*;
+    /// use gtm::parse::*;
     /// assert_eq!(parse_commit_note("[ver:1,total:9123456789]"), Err(CommitNoteParseError::InvalidTotal));
     /// ```
     InvalidTotal,
@@ -200,7 +200,7 @@ pub enum CommitNoteParseError {
 /// Parses an empty `CommitNote`, *i.e.*, with no files, only header.
 ///
 /// ```
-/// use gtmserv::{*, parse::*};
+/// use gtm::{*, parse::*};
 /// assert_eq!(
 ///     parse_commit_note("[ver:2,total:123]").unwrap(),
 ///     CommitNote {
@@ -215,7 +215,7 @@ pub enum CommitNoteParseError {
 ///
 /// ```
 /// #[macro_use] extern crate maplit;
-/// use gtmserv::{*, parse::*};
+/// use gtm::{*, parse::*};
 /// assert_eq!(
 ///         parse_commit_note(
 ///             "[ver:2,total:213]
@@ -251,7 +251,7 @@ pub enum CommitNoteParseError {
 ///
 /// ```
 /// #[macro_use] extern crate maplit;
-/// use gtmserv::{*, parse::*};
+/// use gtm::{*, parse::*};
 /// let note = parse_commit_note("[ver:1,total:4037]
 /// comment/src/comment.ts:2797,1585861200:354,1585875600:50,1585879200:240,1585908000:444,1585918800:1629,1585929600:80,m
 /// closebrackets/src/closebrackets.ts:950,1585918800:510,1585922400:400,1585929600:40,r

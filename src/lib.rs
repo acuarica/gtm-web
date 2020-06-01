@@ -40,7 +40,7 @@ type seconds = u32;
 ///
 /// ```
 /// #[macro_use] extern crate maplit;
-/// use gtmserv::*;
+/// use gtm::*;
 ///
 /// assert_eq!(serde_json::to_string(&FileNote {
 ///         source_file: "src/main.ts",
@@ -57,7 +57,7 @@ type seconds = u32;
 ///
 /// ```
 /// #[macro_use] extern crate maplit;
-/// use gtmserv::*;
+/// use gtm::*;
 ///
 /// assert_eq!(FileNote {
 ///         source_file: "src/main.ts",
@@ -122,7 +122,7 @@ pub struct Commit<'a> {
 ///
 /// ```
 /// use git2::Time;
-/// use gtmserv::format_time;
+/// use gtm::format_time;
 /// assert_eq!(
 ///     format_time(Time::new(1589945042, 0)),
 ///     "2020-05-20 03:24:02 +00:00");

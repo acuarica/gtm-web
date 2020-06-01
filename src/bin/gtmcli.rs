@@ -8,7 +8,7 @@ extern crate serde_json;
 
 use ansi_term::{ANSIString, Colour::Red};
 use chrono::{Duration, NaiveDate};
-use gtmserv::{
+use gtm::{
     epoch,
     projects::InitProjects,
     services::{config_path, write_commits, write_project_list},
@@ -31,7 +31,7 @@ use structopt::StructOpt;
 ///
 /// Returns gtm time data for the specified services.
 /// All data returned is in JSON format.
-enum GtmCommand {
+enum Args {
     /// Returns commits with gtm time data
     Commits {
         #[structopt(short, long)]
@@ -157,10 +157,10 @@ fn parse_arg_date(
 }
 
 fn main() -> GtmResult<GtmError> {
-    let command = GtmCommand::from_args();
+    let command = Args::from_args();
 
     match command {
-        GtmCommand::Commits {
+        Args::Commits {
             from_date,
             to_date,
             message,
@@ -179,12 +179,12 @@ fn main() -> GtmResult<GtmError> {
                 },
             )?;
         }
-        GtmCommand::Projects => {
+        Args::Projects => {
             let out = std::io::stdout();
             let writer = BufWriter::with_capacity(1024 * 1024, out);
             write_project_list(writer, &from_config()?);
         }
-        GtmCommand::Status => {
+        Args::Status => {
             use serde::ser::{SerializeMap, Serializer};
 
             // let mut wd = HashMap::new();

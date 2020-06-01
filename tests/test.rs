@@ -8,7 +8,7 @@ extern crate maplit;
 
 mod init_projects_tests {
 
-    use gtmserv::projects::InitProjects;
+    use gtm::projects::InitProjects;
     use io::Write;
     use std::io;
     use tempfile::NamedTempFile;
@@ -92,7 +92,7 @@ mod init_projects_tests {
 
 mod parse_notes_tests {
 
-    use gtmserv::parse::parse_commit_note;
+    use gtm::parse::parse_commit_note;
     use test::Bencher;
 
     #[bench]
@@ -122,7 +122,7 @@ mod parse_notes_tests {
 mod notes_tests {
 
     use git2::{Oid, Repository, Signature};
-    use gtmserv::{
+    use gtm::{
         get_notes, parse::parse_commit_note, Commit, CommitNote, FileNote, NotesFilter, GTM_REFS,
     };
     use std::error::Error;
@@ -321,7 +321,7 @@ mod cli_tests {
     use crate::init_projects_tests;
     use crate::init_projects_tests::PROJECT_JSON;
     use assert_cmd::Command;
-    use gtmserv::Commit;
+    use gtm::Commit;
     use predicates::prelude::*;
     use std::collections::HashMap;
     use std::error::Error;

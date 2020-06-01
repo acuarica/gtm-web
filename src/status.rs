@@ -24,14 +24,14 @@ impl FileEvent {
 /// # Examples
 ///
 /// ```
-/// use gtmserv::status::*;
+/// use gtm::status::*;
 /// assert_eq!(down_to_minute(1589673494), 1589673480);
 /// ```
 ///
 /// If a Unix epoch is already down to the minute, `down_to_minute` returns the same value.
 ///
 /// ```
-/// use gtmserv::status::*;
+/// use gtm::status::*;
 /// assert_eq!(down_to_minute(1589920680), 1589920680);
 /// ```
 pub fn down_to_minute(timestamp: epoch) -> epoch {
@@ -44,14 +44,14 @@ pub fn down_to_minute(timestamp: epoch) -> epoch {
 /// # Examples
 ///
 /// ```
-/// use gtmserv::status::*;
+/// use gtm::status::*;
 /// assert_eq!(down_to_hour(1589673494), 1589670000);
 /// ```
 ///
 /// If a Unix epoch is already down to the hour, `down_to_hour` returns the same value.
 ///
 /// ```
-/// use gtmserv::status::*;
+/// use gtm::status::*;
 /// assert_eq!(down_to_hour(1589918400), 1589918400);
 /// ```
 pub fn down_to_hour(timestamp: epoch) -> epoch {
@@ -77,7 +77,7 @@ impl<'a> TimelineBin<'a> {
     }
 
     /// ```
-    /// use gtmserv::status::*;
+    /// use gtm::status::*;
     /// let mut bin = TimelineBin::new();
     /// bin.append("src/main.rs");
     /// ```
@@ -88,7 +88,7 @@ impl<'a> TimelineBin<'a> {
     }
 
     /// ```
-    /// use gtmserv::status::*;
+    /// use gtm::status::*;
     /// let mut bin = TimelineBin::new();
     /// bin.append("src/main.rs");
     /// assert_eq!(bin.timespent("src/main.rs"), 60);
@@ -97,7 +97,7 @@ impl<'a> TimelineBin<'a> {
     /// When the file is not present in the bin, panics.
     ///
     /// ```should_panic
-    /// use gtmserv::status::*;
+    /// use gtm::status::*;
     /// let mut bin = TimelineBin::new();
     /// bin.timespent("src/not-present.rs");
     /// ```
@@ -124,7 +124,7 @@ impl<'a> Timeline<'a> {
     /// Creates a `Timeline` from a list of file events.
     ///
     /// ```
-    /// use gtmserv::status::*;
+    /// use gtm::status::*;
     /// let events = vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673601, "test/test1.ts"),
@@ -135,7 +135,7 @@ impl<'a> Timeline<'a> {
     /// The events in the list must be ordered by timestamp.
     ///
     /// ```should_panic
-    /// use gtmserv::status::*;
+    /// use gtm::status::*;
     /// let events = vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673601, "test/test1.ts"),
@@ -163,7 +163,7 @@ impl<'a> Timeline<'a> {
     }
 
     /// ```
-    /// use gtmserv::status::*;
+    /// use gtm::status::*;
     /// let events = vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673494, "src/file2.ts"),
@@ -197,7 +197,7 @@ impl<'a> Timeline<'a> {
     ///
     /// ```
     /// #[macro_use] extern crate maplit;
-    /// use gtmserv::{*, status::*};
+    /// use gtm::{*, status::*};
     /// let events = vec![
     ///     FileEvent::new(1589673491, "src/file1.ts"),
     ///     FileEvent::new(1589673494, "src/file2.ts"),

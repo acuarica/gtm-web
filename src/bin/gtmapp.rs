@@ -1,4 +1,8 @@
-use gtmserv::{projects::InitProjects, services::{write_commits, config_path}, NotesFilter};
+use gtm::{
+    projects::InitProjects,
+    services::{config_path, write_commits},
+    NotesFilter,
+};
 use hyper::{
     service::{make_service_fn, service_fn},
     Body, Method, Request, Response, Server, StatusCode,
