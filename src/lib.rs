@@ -166,27 +166,28 @@ pub fn get_commits(_path: &str) -> Result<(), git2::Error> {
 }
 
 pub struct NotesFilter {
-    pub from_date: Option<epoch>,
-    pub to_date: Option<epoch>,
+    pub from: Option<epoch>,
+    pub to: Option<epoch>,
     pub needle: Option<String>,
 }
 
 impl NotesFilter {
-    pub fn no_filter() -> Self {
+
+    pub fn all() -> Self {
         Self {
-            from_date: None,
-            to_date: None,
+            from: None,
+            to: None,
             needle: None,
         }
     }
 
-    pub fn from_date<T: TimeZone>(&mut self, date: DateTime<T>) -> &mut Self {
-        self.from_date = Some(date.timestamp());
+    pub fn from<T: TimeZone>(&mut self, date: DateTime<T>) -> &mut Self {
+        self.from = Some(date.timestamp());
         self
     }
 
-    pub fn to_date<T: TimeZone>(&mut self, date: DateTime<T>) -> &mut Self {
-        self.to_date = Some(date.timestamp());
+    pub fn to<T: TimeZone>(&mut self, date: DateTime<T>) -> &mut Self {
+        self.to = Some(date.timestamp());
         self
     }
 
@@ -197,8 +198,8 @@ impl NotesFilter {
 
     fn filter(&self, commit: &git2::Commit) -> bool {
         let time = commit.time().seconds() + commit.time().offset_minutes() as i64 * 60;
-        self.from_date.map_or(true, |from| time >= from)
-            && self.to_date.map_or(true, |to| time <= to)
+        self.from.map_or(true, |from| time >= from)
+            && self.to.map_or(true, |to| time <= to)
             && self.needle.as_ref().map_or(true, |msg: &String| {
                 if let Some(message) = commit.message() {
                     message.to_lowercase().contains(msg.to_lowercase().as_str())
@@ -218,7 +219,7 @@ pub struct GitCommitNote<'a> {
 pub fn get_notes<'r, F>(
     mut with: F,
     repo: &'r Repository,
-    project: String,
+    project: &str,
     filter: &NotesFilter,
 ) -> Result<(), git2::Error>
 where

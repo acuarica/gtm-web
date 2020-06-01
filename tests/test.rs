@@ -8,9 +8,12 @@ extern crate maplit;
 
 mod init_projects_tests {
 
-    use gtm::projects::InitProjects;
+    use gtm::projects::Projects;
     use io::Write;
-    use std::io;
+    use std::{
+        io,
+        path::{Path, PathBuf},
+    };
     use tempfile::NamedTempFile;
 
     pub(crate) const PROJECT_JSON: &[u8] =
@@ -30,7 +33,7 @@ mod init_projects_tests {
     #[cfg_attr(target_os = "windows", ignore)]
     fn init_projects_with_non_existing_file() {
         assert_error(
-            InitProjects::from_file("/non/existing/path"),
+            Projects::from_file("/non/existing/path"),
             Some(2),
             io::ErrorKind::NotFound,
         );
@@ -41,7 +44,7 @@ mod init_projects_tests {
         let mut file = NamedTempFile::new()?;
         file.write(b"Non valid JSON")?;
         assert_error(
-            InitProjects::from_file(file.path()),
+            Projects::from_file(file.path()),
             None,
             io::ErrorKind::InvalidData,
         );
@@ -52,7 +55,7 @@ mod init_projects_tests {
     fn init_projects_from_json_file() -> Result<(), io::Error> {
         let mut file = NamedTempFile::new()?;
         file.write(PROJECT_JSON)?;
-        let ps = InitProjects::from_file(file.path()).unwrap();
+        let ps = Projects::from_file(file.path()).unwrap();
         assert_eq!(ps.len(), 4);
         assert!(ps.contains_project("/path/to/gtm"));
         Ok(())
@@ -62,7 +65,7 @@ mod init_projects_tests {
     fn init_projects_from_empty_json_file() -> Result<(), io::Error> {
         let mut file = NamedTempFile::new()?;
         file.write(b"{}")?;
-        assert_eq!(InitProjects::from_file(file.path()).unwrap().len(), 0);
+        assert_eq!(Projects::from_file(file.path()).unwrap().len(), 0);
         Ok(())
     }
 
@@ -70,12 +73,12 @@ mod init_projects_tests {
     fn get_init_project_list_from_json_file() -> Result<(), io::Error> {
         let mut file = NamedTempFile::new()?;
         file.write(PROJECT_JSON)?;
-        let ps = InitProjects::from_file(file.path()).unwrap();
-        let ps = ps.get_project_list();
+        let ps = Projects::from_file(file.path()).unwrap();
+        let ps = ps.keys();
         assert_eq!(ps.len(), 4);
         assert_eq!(
             {
-                let mut v = ps.into_iter().collect::<Vec<&String>>();
+                let mut v = ps.into_iter().collect::<Vec<&PathBuf>>();
                 v.sort();
                 v
             },
@@ -85,6 +88,9 @@ mod init_projects_tests {
                 "/path/to/gtm",
                 "/path/to/gtm/web"
             ]
+            .iter()
+            .map(Path::new)
+            .collect::<Vec<&Path>>()
         );
         Ok(())
     }
@@ -200,8 +206,8 @@ mod notes_tests {
         assert!(get_notes(
             |_| (),
             &repo.repo,
-            "test".to_owned(),
-            &NotesFilter::no_filter()
+            "test",
+            &NotesFilter::all()
         )
         .is_err());
         Ok(())
@@ -216,8 +222,8 @@ mod notes_tests {
         get_notes(
             |cn| cs.push(cn),
             &repo.repo,
-            "test".to_owned(),
-            &NotesFilter::no_filter(),
+            "test",
+            &NotesFilter::all(),
         )?;
         assert_eq!(cs.len(), 1);
         Ok(())
@@ -240,8 +246,8 @@ text/src/char.ts:90,1585918800:90,r",
                 commits.push(cn);
             },
             &repo.repo,
-            "test".to_owned(),
-            &NotesFilter::no_filter(),
+            "test",
+            &NotesFilter::all(),
         )?;
         assert_eq!(commits.len(), 10);
         for c in commits {

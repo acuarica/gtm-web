@@ -64,8 +64,8 @@ async fn handle(
                         .expect("Could not serialize commit");
                 },
                 &repo,
-                "sdfsdf".to_owned(),
-                &NotesFilter::no_filter(),
+                "sdfsdf",
+                &NotesFilter::all(),
             )?;
             seq.end().expect("Could not end serialize commits");
             *response.body_mut() = Body::from(out);

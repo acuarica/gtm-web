@@ -1,13 +1,13 @@
 use gtm::{
-    projects::InitProjects,
-    services::{config_path, write_commits},
+    projects::Projects,
+    services::{write_commits, write_workdir_status},
     NotesFilter,
 };
 use hyper::{
     service::{make_service_fn, service_fn},
     Body, Method, Request, Response, Server, StatusCode,
 };
-use std::{error::Error, net::SocketAddr, thread};
+use std::{error::Error, net::SocketAddr, thread, path::PathBuf};
 use web_view::*;
 
 async fn handle(req: Request<Body>) -> Result<Response<Body>, Box<dyn Error + Send + Sync>> {
@@ -25,19 +25,20 @@ async fn handle(req: Request<Body>) -> Result<Response<Body>, Box<dyn Error + Se
             *response.body_mut() = Body::from("Try POSTing data to /echo");
         }
         (&Method::GET, "/v1/data/commits") => {
-            let path = config_path().unwrap();
-            let projects = InitProjects::from_file(&path)?;
-            let projects = projects.get_project_list();
             let mut out = Vec::new();
-            write_commits(&mut out, projects, &NotesFilter::no_filter())?;
+            write_commits(&mut out, Projects::config()?.keys(), &NotesFilter::all())?;
             *response.body_mut() = Body::from(out);
         }
         (&Method::GET, "/v1/data/projects") => {
-            let path = config_path().unwrap();
-            let projects = InitProjects::from_file(&path)?;
-            let projects: Vec<&String> = projects.get_project_list().collect();
+            let projects = Projects::config()?;
+            let projects: Vec<&PathBuf> = projects.keys().collect();
             let json = serde_json::to_string(&projects).unwrap();
             *response.body_mut() = Body::from(json);
+        }
+        (&Method::GET, "/v1/data/status") => {
+            let mut out = Vec::new();
+            write_workdir_status(&mut out, Projects::config()?.keys());
+            *response.body_mut() = Body::from(out);
         }
         _ => {
             *response.status_mut() = StatusCode::NOT_FOUND;

@@ -39,8 +39,8 @@ mod tests {
                 notes.push(c.commit);
             },
             &repo,
-            "sdfsdf".to_owned(),
-            &NotesFilter::no_filter(),
+            "sdfsdf",
+            &NotesFilter::all(),
         )?;
         assert_ne!(notes.len(), 0);
 

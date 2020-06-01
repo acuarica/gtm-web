@@ -10,15 +10,14 @@ use ansi_term::{ANSIString, Colour::Red};
 use chrono::{Duration, NaiveDate};
 use gtm::{
     epoch,
-    projects::InitProjects,
-    services::{config_path, write_commits, write_project_list},
-    status::{FileEvent, Timeline},
-    NotesFilter, WorkdirStatus,
+    projects::Projects,
+    services::{write_commits, write_project_list, write_workdir_status},
+    NotesFilter,
 };
 use io::BufWriter;
 use std::{
     fmt::Display,
-    fs, io,
+    io,
     ops::Try,
     path::PathBuf,
     process::{ExitCode, Termination},
@@ -133,9 +132,9 @@ impl From<git2::Error> for GtmError {
     }
 }
 
-fn from_config() -> Result<InitProjects, GtmError> {
-    let path = config_path().unwrap();
-    InitProjects::from_file(&path).map_err(|e| GtmError::Io(e, path))
+fn from_config() -> Result<Projects, GtmError> {
+    let path = Projects::config_path().unwrap();
+    Projects::from_file(&path).map_err(|e| GtmError::Io(e, path))
 }
 
 fn parse_arg_date(
@@ -165,16 +164,16 @@ fn main() -> GtmResult<GtmError> {
             to_date,
             message,
         } => {
-            let from_date = parse_arg_date(&from_date, "from", 0)?;
-            let to_date = parse_arg_date(&to_date, "to", 1)?;
+            let from = parse_arg_date(&from_date, "from", 0)?;
+            let to = parse_arg_date(&to_date, "to", 1)?;
             let out = std::io::stdout();
             let mut writer = BufWriter::with_capacity(1024 * 1024, out);
             write_commits(
                 &mut writer,
-                from_config()?.get_project_list(),
+                from_config()?.keys(),
                 &NotesFilter {
-                    from_date,
-                    to_date,
+                    from,
+                    to,
                     needle: message,
                 },
             )?;
@@ -185,49 +184,9 @@ fn main() -> GtmResult<GtmError> {
             write_project_list(writer, &from_config()?);
         }
         Args::Status => {
-            use serde::ser::{SerializeMap, Serializer};
-
-            // let mut wd = HashMap::new();
             let out = std::io::stdout();
-            let mut ser = serde_json::Serializer::new(out);
-            let mut map = ser
-                .serialize_map(None)
-                .expect("Could not start serialize workdir status");
-            for project in from_config()?.get_project_list() {
-                let mut path = PathBuf::new();
-                path.push(project.to_owned());
-                path.push(".gtm");
-                let entries = fs::read_dir(path).unwrap();
-                let mut events = Vec::new();
-                for entry in entries {
-                    let entry = entry.unwrap();
-                    let path = entry.path();
-                    if !path.is_dir() && path.extension().unwrap() == "event" {
-                        let ts: &str = path.file_stem().unwrap().to_str().unwrap();
-                        let ts = ts.parse().unwrap();
-                        let filepath = fs::read_to_string(path).unwrap();
-                        let fe = FileEvent::new(ts, filepath.as_ref());
-                        // println!("{:?}", fe);
-                        events.push(fe);
-                    }
-                }
-                events.sort_by_key(|k| k.timestamp);
-                let cn = Timeline::from_events(&events).commit_note();
-                let ws = WorkdirStatus {
-                    total: cn.total,
-                    label: "TBD".to_string(),
-                    commit_note: cn,
-                };
-
-                let path = PathBuf::from(project.as_str());
-                let pkey = path.file_name().unwrap().to_str().unwrap().to_owned();
-                // wd.insert(pkey, ws);
-                map.serialize_entry(&pkey, &ws)
-                    .expect("Could not serialize workdir status");
-            }
-            map.end().expect("Could not end serialize workdir status");
-            // let json = serde_json::to_string(&wd).unwrap();
-            // println!("{}", json);
+            let mut writer = BufWriter::with_capacity(1024 * 1024, out);
+            write_workdir_status(&mut writer, from_config()?.keys());
         }
     };
 
