@@ -1,6 +1,6 @@
 import { GitService } from '@gtm/gtm'
-import App from '../app/App.svelte'
-import Settings from '../app/Settings.svelte'
+import App from '../../@app/App.svelte'
+import Settings from '../../@app/Settings.svelte'
 import { Commit, WorkdirStatusList, CommitsFilter } from '@gtm/notes';
 import * as path from 'path';
 import { spawn } from 'child_process';

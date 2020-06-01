@@ -1,5 +1,5 @@
-import App from '../app/App.svelte'
-import Settings from '../app/Settings.svelte'
+import App from '../../@app/App.svelte'
+import Settings from '../../@app/Settings.svelte'
 import { MockService } from '@gtm/mock';
 import { Commit, WorkdirStatusList } from '../../@notes';
 

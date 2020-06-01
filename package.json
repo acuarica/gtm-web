@@ -55,7 +55,7 @@
     "dist": "electron-builder",
     "start": "electron dist/gtm-dash/main.js",
     "clean": "rm -rfv @*/*.js src/**/*.js dist",
-    "gtm": "gtmserv/target/debug/gtmserv"
+    "gtm": "target/debug/gtmcli"
   },
   "devDependencies": {
     "chart.js": "^2.9.3",

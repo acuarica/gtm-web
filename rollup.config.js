@@ -62,17 +62,17 @@ export const configs = {
     preserveModules: true,
     plugins: [
       ...plugins(false),
-      ...['test'].map(f => html({ inputPath: `@app/${f}.html` })),
+      html({ inputPath: '@app/test.html' }),
     ],
     watch: {
       clearScreen: false
     }
   },
 
-  appdesktop: {
-    input: ['main', 'preload'].map(f => `src/desktop/${f}.js`),
+  electron: {
+    input: ['main', 'preload'].map(f => `web/electron/${f}.js`),
     output: {
-      dir: 'dist/gtm-dash',
+      dir: 'dist/electron',
       sourcemap: true,
       format: 'cjs',
     },
@@ -80,9 +80,9 @@ export const configs = {
       ...plugins(true),
       copy({
         targets: [
-          { src: 'src/desktop/index.html', dest: 'dist/gtm-dash' },
+          { src: 'web/electron/index.html', dest: 'dist/electron' },
           ...['', '.exe'].map(ext => {
-            return { src: `gtmserv/target/${production ? 'release' : 'debug'}/gtmserv${ext}`, dest: 'dist/gtm-dash' }
+            return { src: `target/${production ? 'release' : 'debug'}/gtmcli${ext}`, dest: 'dist/electron' }
           })
         ],
       }),
@@ -94,7 +94,7 @@ export const configs = {
   },
 
   demo: {
-    input: 'src/demo/index.html',
+    input: 'web/demo/index.html',
     output: {
       dir: 'dist/demo',
       format: 'iife',
