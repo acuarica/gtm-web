@@ -84,7 +84,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 </body>
 </html>
 "#,
-        script = include_str!("../../../dist/dash/main.js"),
+        script = include_str!("../../dist/app/app.js"),
         port = port,
     );
 
