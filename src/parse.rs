@@ -305,3 +305,30 @@ pub fn parse_commit_note<'a>(message: &'a str) -> Result<CommitNote<'a>, CommitN
     }
     Ok(commit_note)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::parse_commit_note;
+    use chrono::{DateTime, TimeZone, Utc};
+
+    #[test]
+    fn test() {
+        let message = r#"[ver:1,total:4080]
+.gtm/terminal.app:3169,1586977200:180,1587042000:360,1588255200:150,1589302800:180,1589587200:710,1589590800:120,1589594400:540,1589598000:425,1589601600:480,1590771600:24,r
+hola.txt:797,1589587200:310,1589598000:415,1589601600:60,1590771600:12,d
+../.git/modules/home/COMMIT_EDITMSG:60,1590771600:60,r
+.zprofile:42,1588255200:30,1590771600:12,m
+lala:12,1590771600:12,d"#;
+
+        let note = parse_commit_note(message).unwrap();
+        let ts: Vec<Vec<DateTime<Utc>>> = note
+            .files
+            .iter()
+            .map(|f| f.timeline.iter().map(|t| Utc.timestamp(*t.0, 0)).collect())
+            .collect();
+        println!("{:?}", note);
+        for entry in ts {
+            println!("{:?}", entry);
+        }
+    }
+}
