@@ -22,10 +22,10 @@ use structopt::StructOpt;
 struct Args {
     /// Returns commits with gtm time data
     #[structopt(short, long)]
-    addr: Option<String>,
+    addr: String,
 
     #[structopt(short, long)]
-    port: Option<u16>,
+    port: u16,
 
     #[structopt(short, long)]
     datadir: String,
@@ -86,15 +86,11 @@ async fn handle(
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::from_args();
-    let addr = match args.addr {
-        None => Ipv4Addr::new(0, 0, 0, 0),
-        Some(s) => s.parse::<Ipv4Addr>()?,
-    };
-    let port = args.port.unwrap_or(3000);
+    let addr = args.addr.parse::<Ipv4Addr>()?;
 
-    println!("Binding to address: {:?}:{}", addr, port);
+    println!("Binding to address: {:?}:{}", addr, args.port);
     println!("Datadir to clone into: {}", args.datadir);
-    let addr = SocketAddr::from((addr, port));
+    let addr = SocketAddr::from((addr, args.port));
     let datadir = args.datadir;
     let make_service = make_service_fn(move |_conn| {
         let datadir = datadir.clone();
