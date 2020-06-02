@@ -32,3 +32,8 @@ tempfile = "3"
 maplit = "1.0.2"
 assert_cmd = "1.0.1"
 predicates = "1.0.4"
+criterion = "0.3"
+
+[[bench]]
+name = "parse_bench"
+harness = false
