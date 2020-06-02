@@ -37,22 +37,10 @@ const plugins = (extract) => [
 
 export const configs = {
 
-  app: {
-    input: '@app/app.js',
+  test: {
+    input: '@app/test.html',
     output: {
-      dir: 'dist/app',
-      format: 'iife',
-      name: 'app',
-    },
-    plugins: [
-      ...plugins(false),
-      production && terser.terser(),
-    ]
-  },
-
-  dev: {
-    output: {
-      dir: 'dist/dev',
+      dir: 'dist/test',
       sourcemap: true,
       format: 'es',
       plugins: [
@@ -62,11 +50,25 @@ export const configs = {
     preserveModules: true,
     plugins: [
       ...plugins(false),
-      html({ inputPath: '@app/test.html' }),
+      html(),
     ],
     watch: {
       clearScreen: false
     }
+  },
+
+  web: {
+    input: 'web/dev/index.html',
+    output: {
+      dir: 'dist/web',
+      format: 'iife',
+      name: 'app',
+    },
+    plugins: [
+      ...plugins(false),
+      production && terser.terser(),
+      html(),
+    ]
   },
 
   electron: {
@@ -91,25 +93,6 @@ export const configs = {
     watch: {
       clearScreen: false
     }
-  },
-
-  demo: {
-    input: 'web/demo/index.html',
-    output: {
-      dir: 'dist/demo',
-      format: 'iife',
-      name: 'app',
-    },
-    plugins: [
-      ...plugins(false),
-      production && terser.terser(),
-      html(),
-      copy({
-        targets: [
-          { src: 'assets/data/', dest: 'dist/demo' },
-        ],
-      }),
-    ]
   },
 
 }
