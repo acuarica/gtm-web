@@ -18,6 +18,7 @@ pub mod parse;
 pub mod projects;
 pub mod services;
 pub mod status;
+pub mod oauth2;
 
 /// Represents a Unix epoch (timestamp), *i.e.*, number of non-leap
 /// seconds elapsed since January 1st, 1970, 0:00:00 UTC.
