@@ -8,7 +8,7 @@
   import DatePicker from "./DatePicker.svelte";
   import DateRangePicker from "./DateRangePicker.svelte";
 
-  import logo from "./gtm-logo.png";
+  import logo from "./assets/gtm-logo.png";
   export let title = "";
   export let handleRangeChange;
   export let settingsView;
