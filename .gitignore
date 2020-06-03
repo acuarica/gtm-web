@@ -4,3 +4,4 @@
 /target/
 /@*/*.js
 /web/**/*.js
+/.env.sh
