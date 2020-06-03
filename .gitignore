@@ -1,7 +1,6 @@
 /.gtm/
+/@*/*.js
 /dist/
 /node_modules/
 /target/
-/@*/*.js
-/web/**/*.js
 /.env.sh

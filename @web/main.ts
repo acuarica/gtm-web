@@ -1,7 +1,7 @@
-import App from '../../@app/App.svelte'
-import Settings from '../../@app/Settings.svelte';
+import App from '../@app/App.svelte'
+import Settings from '../@app/Settings.svelte';
 import { Commit, CommitsFilter, WorkdirStatusList } from '@gtm/notes';
-import { AuthWebService } from '../../@app/web';
+import { AuthWebService } from '../@app/web';
 
 console.debug('Creating main app with web service')
 

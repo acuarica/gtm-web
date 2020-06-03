@@ -58,7 +58,7 @@ export const configs = {
   },
 
   web: {
-    input: 'web/dev/index.html',
+    input: '@web/index.html',
     output: {
       dir: 'dist/web',
       format: 'iife',
@@ -72,7 +72,7 @@ export const configs = {
   },
 
   electron: {
-    input: ['main', 'preload'].map(f => `web/electron/${f}.js`),
+    input: ['main', 'preload'].map(f => `@electron/${f}.js`),
     output: {
       dir: 'dist/electron',
       sourcemap: true,
@@ -82,7 +82,7 @@ export const configs = {
       ...plugins(true),
       copy({
         targets: [
-          { src: 'web/electron/index.html', dest: 'dist/electron' },
+          { src: '@electron/index.html', dest: 'dist/electron' },
           ...['', '.exe'].map(ext => {
             return { src: `target/${production ? 'release' : 'debug'}/gtmcli${ext}`, dest: 'dist/electron' }
           })
