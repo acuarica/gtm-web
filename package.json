@@ -44,9 +44,6 @@
     },
     "publish": null
   },
-  "browserslist": [
-    "last 1 chrome versions"
-  ],
   "scripts": {
     "dev": "./make.js dev:test:web serve",
     "lint": "eslint \"**/*.ts\" *.js",
