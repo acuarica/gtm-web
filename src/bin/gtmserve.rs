@@ -1,7 +1,12 @@
 #![feature(async_closure)]
 
 use git2::Repository;
-use gtm::{clone::clone_repo, get_notes, oauth2::fetch_json, NotesFilter};
+use gtm::{
+    clone::clone_repo,
+    get_notes,
+    oauth2::{fetch_json, fetch_json2, GitHubAccessToken, GitHubRepo, QueryString},
+    NotesFilter,
+};
 use hyper::{
     service::{make_service_fn, service_fn},
     Body, Method, Request, Response, Server, StatusCode, Uri,
@@ -9,7 +14,6 @@ use hyper::{
 use log::*;
 use serde::ser::{SerializeSeq, Serializer};
 use std::{
-    collections::HashMap,
     error::Error,
     net::{Ipv4Addr, SocketAddr},
 };
@@ -46,15 +50,7 @@ async fn dispatch(
 
     match (req.method(), req.uri().path()) {
         (&Method::GET, "/v1/login/github") => {
-            let params: HashMap<String, String> = req
-                .uri()
-                .query()
-                .map(|v| {
-                    url::form_urlencoded::parse(v.as_bytes())
-                        .into_owned()
-                        .collect()
-                })
-                .unwrap_or_else(HashMap::new);
+            let params = req.parse_query();
             let client_id = "c0d72815c0f4d616112a";
             let client_secret = "0f42ddfea8ce3818a88c5affaf74a097c7235c1c";
             if let Some(code) = params.get("code") {
@@ -66,7 +62,7 @@ async fn dispatch(
                 );
                 let uri: Uri = url.parse()?;
                 trace!("URL to authenticate {:?}", uri);
-                let token = fetch_json(uri).await?;
+                let token: GitHubAccessToken = fetch_json(uri, "POST").await?;
                 return Ok(Response::builder()
                     .status(StatusCode::SEE_OTHER)
                     .header("Location", format!("/?access_token={}", token.access_token))
@@ -108,10 +104,27 @@ async fn dispatch(
             *response.body_mut() = Body::from(out);
         }
         (&Method::GET, "/v1/data/projects") => {
-            debug!("serving projects");
-            let projects: Vec<&str> = vec!["test-project"];
-            let json = serde_json::to_string(&projects).unwrap();
-            *response.body_mut() = Body::from(json);
+            let params = req.parse_query();
+            if let Some(token) = params.get("access_token") {
+                debug!("Fetch repos for token {}", token);
+                let projects: Vec<GitHubRepo> = fetch_json2(
+                    Request::builder()
+                        .method("GET")
+                        .uri("https://api.github.com/user/repos".parse::<Uri>()?)
+                        .header("User-Agent", "gtm Dashboard serve")
+                        .header("Accept", "application/json")
+                        .header("Authorization", format!("token {}", token))
+                        .body(Body::from(""))
+                        .expect("Request builder failed"),
+                )
+                .await?;
+                let projects: Vec<&String> = projects.iter().map(|r| &r.full_name).collect();
+                let json = serde_json::to_string(&projects).unwrap();
+                *response.body_mut() = Body::from(json);
+            } else {
+                warn!("Access token not found to fetch projects");
+                *response.status_mut() = StatusCode::NOT_FOUND;
+            }
         }
         (&Method::GET, _) => {
             let mut filename = req.uri().path();
