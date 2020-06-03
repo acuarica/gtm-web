@@ -1,6 +1,7 @@
 <script>
   import { hhmm } from "@gtm/notes";
   import Icon from "./Icon.svelte";
+  import { faCalendar } from "@fortawesome/free-solid-svg-icons/faCalendar";
   import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
   import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
   import { faFileCode } from "@fortawesome/free-solid-svg-icons/faFileCode";
@@ -14,8 +15,10 @@
 <div class="shadow-md p-2">
   <div class="flex justify-between">
     <div class="mb-2">
-      <span class="badge badge-pill badge-primary">{commit.Project}</span>
-      <span class="badge badge-pill abadge-light text-muted">
+      <span class="font-bold">{commit.Project}</span>
+      &nbsp;
+      <span
+        class="text-sm px-3 py-1 bg-gray-600 rounded-full">
         {commit.Author}
       </span>
     </div>
@@ -24,9 +27,10 @@
         <Icon class="mb-1 h-4" icon={faClock} />
         {hhmm(commit.timeSpent)}
       </small>
+      &nbsp;
       <small class="text-muted">
-        <i class="fa fa-calendar" />
-        &nbsp; {commit.When}
+        <Icon class="mb-1 h-4" icon={faCalendar} />
+        {commit.When}
       </small>
     </div>
   </div>
