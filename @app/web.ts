@@ -9,11 +9,11 @@ export class WebService implements GtmService {
   }
 
   fetchCommits(filter: CommitsFilter): Promise<Commit[]> {
-    let args = `/v1/data/commits?from=${filter.start}&to=${filter.end}`
+    let args = `from=${filter.start}&to=${filter.end}`
     if (filter.message) {
       args += `&message=${filter.message}`
     }
-    return this.fetchurl(args)
+    return this.fetchurl('/v1/data/commits', args)
   }
 
   async fetchProjectList(): Promise<string[]> {
@@ -25,10 +25,21 @@ export class WebService implements GtmService {
     return this.fetchurl('/v1/data/status')
   }
 
-  private async fetchurl<T>(url: string): Promise<T> {
-    return await fetch(this.host + url).then(r => r.json())
+  protected async fetchurl<T>(endpoint: string, args?: string): Promise<T> {
+    return await fetch(this.host + endpoint + (args == null ? '' : '?' + args)).then(r => r.json())
   }
 
+}
+
+export class AuthWebService extends WebService {
+
+  constructor(readonly token: string, host = '') {
+    super(host)
+  }
+
+  async fetchurl<T>(endpoint: string, args?: string): Promise<T> {
+    return await super.fetchurl<T>(endpoint, `access_token=${this.token}` + (args ? '&' + args : ''))
+  }
 }
 
 export class DelayService implements GtmService {
