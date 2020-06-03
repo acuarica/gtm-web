@@ -71,7 +71,7 @@
 </script>
 
 <div class="container antialiased serif h-screen">
-  <div class="flex flex-col h-full divide-y divide-divide-color">
+  <div class="flex flex-col h-full">
 
     <Navbar
       {title}
