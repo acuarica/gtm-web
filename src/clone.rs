@@ -1,4 +1,5 @@
 use git2::Repository;
+use log::*;
 use std::path::{Path, PathBuf};
 
 fn fetch_notes(repo: &Repository) -> Result<(), git2::Error> {
@@ -7,10 +8,21 @@ fn fetch_notes(repo: &Repository) -> Result<(), git2::Error> {
     Ok(())
 }
 
+///
+/// ```
+/// use gtm::clone::*;
+/// assert_eq!(url_path("http://localhost:8080/path/to/repo"), "http___localhost_8080_path_to_repo");
+/// ```
+///
+pub fn url_path(url: &str) -> String {
+    url.replace(":", "_").replace("/", "_")
+}
+
 pub fn clone_repo<P: AsRef<Path>>(url: &str, into: P) -> Result<Repository, git2::Error> {
     let mut path = PathBuf::new();
     path.push(into);
-    path.push("git-clone-repo");
+    path.push(url_path(url));
+    debug!("Cloning repo to {:?}", path);
     let repo = Repository::clone(url, path)?;
     fetch_notes(&repo)?;
     Ok(repo)

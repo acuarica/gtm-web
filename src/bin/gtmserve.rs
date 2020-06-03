@@ -2,9 +2,9 @@
 
 use git2::Repository;
 use gtm::{
-    clone::clone_repo,
+    clone::{clone_repo, url_path},
     get_notes,
-    oauth2::{fetch_json, fetch_json2, GitHubAccessToken, GitHubRepo, QueryString},
+    oauth2::{fetch_json, github_repos, GitHubAccessToken, GitHubRepo, QueryString},
     NotesFilter,
 };
 use hyper::{
@@ -74,50 +74,64 @@ async fn dispatch(
             }
         }
         (&Method::POST, "/v1/clone") => {
-            let url = hyper::body::to_bytes(req).await?;
-            let url: &str = std::str::from_utf8(&*url)?;
-            println!("Cloning repository `{:?}` into {}", url, args.datadir);
-            match clone_repo(url, &args.datadir) {
-                Ok(_repo) => *response.body_mut() = Body::from("Try POSTing data to /echo"),
-                Err(err) => *response.body_mut() = Body::from(format!("Clone error: {:?}", err)),
-            };
-            // let mut data: serde_json::Value = serde_json::from_reader(whole_body.reader())?;
-            // let body = serde_json::from_slice(&req.into_body())?;
-            // let url: String=  req.into_body().
+            let params = req.parse_query();
+            if let Some(token) = params.get("access_token") {
+                debug!("Fetching repos for token {}", token);
+                let repos: Vec<GitHubRepo> = github_repos(token).await?;
+                for repo in repos {
+                    let url = repo.clone_url;
+                    debug!("Cloning repository `{:?}` into {}", url, args.datadir);
+                    match clone_repo(&url, &args.datadir) {
+                        Ok(_repo) => *response.body_mut() = Body::from("Try POSTing data to /echo"),
+                        Err(err) => {
+                            *response.body_mut() = Body::from(format!("Clone error: {:?}", err))
+                        }
+                    };
+                }
+            } else {
+                warn!("Access token not found to fetch projects");
+                *response.status_mut() = StatusCode::NOT_FOUND;
+            }
         }
         (&Method::GET, "/v1/data/commits") => {
             debug!("serving commits");
-            let repo = Repository::open(format!("{}/{}", args.datadir, "git-clone-repo")).unwrap();
-            let mut out = Vec::new();
-            let mut ser = serde_json::Serializer::new(&mut out);
-            let mut seq = ser.serialize_seq(None).unwrap();
-            get_notes(
-                |c| {
-                    seq.serialize_element(&c.commit)
-                        .expect("Could not serialize commit");
-                },
-                &repo,
-                "sdfsdf",
-                &NotesFilter::all(),
-            )?;
-            seq.end().expect("Could not end serialize commits");
-            *response.body_mut() = Body::from(out);
+            let params = req.parse_query();
+            if let Some(token) = params.get("access_token") {
+                debug!("Fetching repos for token {}", token);
+                let repos: Vec<GitHubRepo> = github_repos(token).await?;
+                let mut out = Vec::new();
+                let mut ser = serde_json::Serializer::new(&mut out);
+                let mut seq = ser.serialize_seq(None).unwrap();
+                for ghrepo in repos {
+                    let url_path = url_path(&ghrepo.clone_url);
+                    if let Ok(repo) = Repository::open(format!("{}/{}", args.datadir, url_path)) {
+                        if let Err(_err) = get_notes(
+                            |c| {
+                                seq.serialize_element(&c.commit)
+                                    .expect("Could not serialize commit");
+                            },
+                            &repo,
+                            &ghrepo.full_name,
+                            &NotesFilter::all(),
+                        ) {
+                            debug!("No gtm-data for repo {}", ghrepo.full_name);
+                        }
+                    } else {
+                        warn!("Could not open repo {}", ghrepo.full_name);
+                    }
+                }
+                seq.end().expect("Could not end serialize commits");
+                *response.body_mut() = Body::from(out);
+            } else {
+                warn!("Access token not found to fetch projects");
+                *response.status_mut() = StatusCode::NOT_FOUND;
+            }
         }
         (&Method::GET, "/v1/data/projects") => {
             let params = req.parse_query();
             if let Some(token) = params.get("access_token") {
                 debug!("Fetch repos for token {}", token);
-                let projects: Vec<GitHubRepo> = fetch_json2(
-                    Request::builder()
-                        .method("GET")
-                        .uri("https://api.github.com/user/repos".parse::<Uri>()?)
-                        .header("User-Agent", "gtm Dashboard serve")
-                        .header("Accept", "application/json")
-                        .header("Authorization", format!("token {}", token))
-                        .body(Body::from(""))
-                        .expect("Request builder failed"),
-                )
-                .await?;
+                let projects: Vec<GitHubRepo> = github_repos(token).await?;
                 let projects: Vec<&String> = projects.iter().map(|r| &r.full_name).collect();
                 let json = serde_json::to_string(&projects).unwrap();
                 *response.body_mut() = Body::from(json);

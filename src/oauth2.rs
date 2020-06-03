@@ -1,13 +1,26 @@
 use bytes::buf::BufExt as _;
 use hyper::Body;
 use hyper::Client;
-use hyper::{body, Request};
+use hyper::{body, Request, Uri};
 use hyper_tls::HttpsConnector;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 use std::{str::from_utf8, io::Read};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
+
+pub async fn github_repos(token: &str) -> Result<Vec<GitHubRepo>> {
+    fetch_json2(
+        Request::builder()
+            .method("GET")
+            .uri("https://api.github.com/user/repos".parse::<Uri>()?)
+            .header("User-Agent", "gtm Dashboard serve")
+            .header("Accept", "application/json")
+            .header("Authorization", format!("token {}", token))
+            .body(Body::from(""))
+            .expect("Request builder failed"),
+    ).await
+}
 
 pub async fn fetch_json<T: DeserializeOwned>(url: hyper::Uri, method: &str) -> Result<T> {
     let https = HttpsConnector::new();
