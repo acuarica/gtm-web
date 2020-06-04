@@ -78,7 +78,7 @@
       {settingsView}
       on:search={handleSearch} />
 
-    <div class="flex flex-1 ">
+    <div class="flex flex-1">
       <div class="flex flex-row w-full divide-x divide-divide-color">
         <div class="hidden sm:block bg-sidebar p-3">
 
