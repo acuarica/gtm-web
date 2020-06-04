@@ -133,26 +133,24 @@ export class WebApp {
     const token = params['access_token']
     console.debug(token);
 
-    ((target: Element): void => {
-      if (token) {
-        const service = new AuthWebService(token);
-        new App({
-          target: target,
-          props: {
-            fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => service.fetchCommits(filter),
-            fetchProjectList: (): Promise<string[]> => service.fetchProjectList(),
-            fetchWorkdirStatus: (): Promise<WorkdirStatusList> => service.fetchWorkdirStatus(),
-            settingsView: Settings,
-            settingsViewProps: { versions: {} },
-          },
-        })
-      } else {
-        console.trace('Access token not set, going for login')
-        new Login({
-          target: target,
-        })
-      }
-    })(target)
+    if (token) {
+      const service = new AuthWebService(token);
+      new App({
+        target: target,
+        props: {
+          fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => service.fetchCommits(filter),
+          fetchProjectList: (): Promise<string[]> => service.fetchProjectList(),
+          fetchWorkdirStatus: (): Promise<WorkdirStatusList> => service.fetchWorkdirStatus(),
+          settingsView: Settings,
+          settingsViewProps: { versions: {} },
+        },
+      })
+    } else {
+      console.trace('Access token not set, going for login')
+      new Login({
+        target: target,
+      })
+    }
 
   }
 
