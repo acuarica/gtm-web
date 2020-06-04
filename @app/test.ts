@@ -1,12 +1,12 @@
-import DashboardCardTest from './DashboardCard-test';
-import SettingsTest from './Settings-test';
-import CommitTest from './Commit-test';
-import ProjectTest from './Project-test';
-import HomeTest from './Home-test';
-import NavbarTest from './Navbar-test';
-import AppTest from './App-test';
-import LoginTest from './Login-test';
-import WebTest from './Web-test';
+import DashboardCardTest from './DashboardCard-suite';
+import SettingsTest from './Settings-suite';
+import CommitTest from './Commit-suite';
+import ProjectTest from './Project-suite';
+import HomeTest from './Home-suite';
+import NavbarTest from './Navbar-suite';
+import AppTest from './App-suite';
+import LoginTest from './Login-suite';
+import WebTest from './Web-suite';
 
 console.debug('Initializing component tests')
 
