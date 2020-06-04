@@ -37,6 +37,7 @@ mod tests {
     use tempfile::tempdir;
 
     #[test]
+    #[ignore]
     fn test_clone() -> Result<(), Box<dyn Error>> {
         let tempdir = tempdir()?;
         let path = tempdir.path();

@@ -293,7 +293,7 @@ text/src/char.ts:90,1585918800:90,r",
 }
 mod cli_tests {
 
-    const GTM_CMD: &str = "gtmserv";
+    const GTM_CMD: &str = "gtmcli";
 
     use crate::init_projects_tests;
     use crate::init_projects_tests::PROJECT_JSON;

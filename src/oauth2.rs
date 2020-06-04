@@ -6,7 +6,7 @@ use hyper_tls::HttpsConnector;
 use log::*;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
-use std::{io::Read, str::from_utf8};
+use std::io::Read;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
@@ -42,7 +42,6 @@ pub async fn fetch_json<T: DeserializeOwned>(url: hyper::Uri, method: &str) -> R
 }
 
 pub async fn fetch_json2<T: DeserializeOwned>(req: Request<Body>) -> Result<T> {
-    error!("request");
     debug!("request");
     let https = HttpsConnector::new();
     let client = Client::builder().build::<_, hyper::Body>(https);
@@ -52,10 +51,7 @@ pub async fn fetch_json2<T: DeserializeOwned>(req: Request<Body>) -> Result<T> {
     let mut buffer = Vec::new();
     body.reader().read_to_end(&mut buffer)?;
 
-    // println!("{:?}", from_utf8(buffer.as_slice()));
     let object = serde_json::from_reader(buffer.as_slice())?;
-
-    // let object = serde_json::from_reader(body.reader())?;
     Ok(object)
 }
 
