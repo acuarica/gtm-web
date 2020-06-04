@@ -22,7 +22,7 @@ use tokio::fs::File;
 use tokio_util::codec::{BytesCodec, FramedRead};
 
 #[derive(StructOpt, Clone)]
-#[cfg_attr(debug_assertions, structopt(version = env!("GTM_VERSION")))]
+#[structopt(version = env!("GTM_VERSION"))]
 /// The gtm Dashboard server
 ///
 /// Returns gtm time data for the specified services.
@@ -168,7 +168,7 @@ async fn handle(
     args: Args,
     req: Request<Body>,
 ) -> Result<Response<Body>, Box<dyn Error + Send + Sync>> {
-    trace!("{} Request {:?}", req.method(), req.uri());
+    trace!("{:?} {} {:?}", req.version(), req.method(), req.uri());
     match dispatch(args, req).await {
         Err(err) => {
             error!("Error: {:?}", err);
@@ -180,12 +180,16 @@ async fn handle(
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    // pretty_env_logger::init();
     env_logger::init();
 
     let args = Args::from_args();
     let addr = args.addr.parse::<Ipv4Addr>()?;
 
+    info!(
+        "Starting {} {}",
+        env!("CARGO_PKG_NAME"),
+        env!("GTM_VERSION")
+    );
     info!("Binding to address: {:?}:{}", addr, args.port);
     info!("Data dir to clone into: {}", args.datadir);
     info!(
