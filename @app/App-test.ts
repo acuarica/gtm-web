@@ -17,8 +17,14 @@ export default [
       fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => t.service.fetchCommits(filter),
       fetchProjectList: (): Promise<string[]> => t.service.fetchProjectList(),
       fetchWorkdirStatus: (): Promise<WorkdirStatusList> => t.service.fetchWorkdirStatus(),
-      settingsView: Settings,
-      settingsViewProps: { versions: { 'gtm': 'ver1', 'node': 'ver2', 'svelte': 'ver3', 'electron': 'ver4' } },
+      settingsView: class extends Settings {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        constructor(opts: { target: Element; props?: Record<string, any> | undefined }) {
+          super({
+            ...opts, props: { versions: { 'gtm': 'ver1', 'node': 'ver2', 'svelte': 'ver3', 'electron': 'ver4' } }
+          })
+        }
+      },
     }
   }
 })

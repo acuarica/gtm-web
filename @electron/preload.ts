@@ -25,23 +25,26 @@ window.addEventListener('DOMContentLoaded', async () => {
       fetchWorkdirStatus: async (): Promise<WorkdirStatusList> => {
         return service.fetchWorkdirStatus()
       },
-      settingsView: Settings,
-      settingsViewProps: ((): { versions: { [id: string]: string | null } } => {
-        const versions: { [id: string]: string | null } = {
-          'gtm Service': version,
+
+      settingsView: class extends Settings {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        constructor(opts: { target: Element; props?: Record<string, any> | undefined }) {
+          const versions: { [id: string]: string | null } = {
+            'gtm Service': version,
+          }
+          const selectedComponents: { [id: string]: string } = {
+            node: 'Node.js',
+            chrome: 'Chromium',
+            electron: 'Electron',
+            v8: 'v8',
+          }
+          for (const key in selectedComponents) {
+            versions[selectedComponents[key]] =
+              process.versions[key as keyof NodeJS.ProcessVersions]
+          }
+          super({ ...opts, props: { versions: versions } })
         }
-        const selectedComponents: { [id: string]: string } = {
-          node: 'Node.js',
-          chrome: 'Chromium',
-          electron: 'Electron',
-          v8: 'v8',
-        }
-        for (const key in selectedComponents) {
-          versions[selectedComponents[key]] =
-            process.versions[key as keyof NodeJS.ProcessVersions]
-        }
-        return { versions: versions }
-      })()
+      }
 
     },
   })

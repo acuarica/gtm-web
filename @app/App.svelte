@@ -18,7 +18,6 @@
   export let fetchProjectList;
   export let fetchWorkdirStatus;
   export let settingsView;
-  export let settingsViewProps;
 
   let statsPromise = new Promise((_resolve, _reject) => {});
   let projectListPromise = new Promise((_resolve, _reject) => {});
@@ -77,7 +76,6 @@
       {title}
       {handleRangeChange}
       {settingsView}
-      {settingsViewProps}
       on:search={handleSearch} />
 
     <div class="flex flex-1 ">

@@ -12,7 +12,6 @@
   export let title = "";
   export let handleRangeChange;
   export let settingsView;
-  export let settingsViewProps;
 
   let isOpen = false;
   let toggleSettings = false;
@@ -21,7 +20,7 @@
 {#if toggleSettings}
   <div class="bg-gray-600 p-4">
     <h3 class="text-white">Settings</h3>
-    <svelte:component this={settingsView} {...settingsViewProps} />
+    <svelte:component this={settingsView} />
   </div>
 {/if}
 
