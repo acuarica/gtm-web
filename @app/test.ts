@@ -6,6 +6,7 @@ import HomeTest from './Home-test';
 import NavbarTest from './Navbar-test';
 import AppTest from './App-test';
 import LoginTest from './Login-test';
+import WebTest from './Web-test';
 
 console.debug('Initializing component tests')
 
@@ -18,6 +19,7 @@ const suites = {
   'Navbar': NavbarTest,
   'App': AppTest,
   'Login': LoginTest,
+  'Web': WebTest,
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

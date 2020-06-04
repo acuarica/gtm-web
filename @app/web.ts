@@ -1,3 +1,6 @@
+import App from '../@app/App.svelte'
+import Login from '../@app/Login.svelte'
+import Settings from '../@app/Settings.svelte';
 import { GtmService, Commit, CommitsFilter, WorkdirStatusList } from '@gtm/notes';
 
 export class WebService implements GtmService {
@@ -119,4 +122,47 @@ export class FailureService implements GtmService {
     return await fetch(service).then(r => r.json())
   }
 
+}
+
+export class WebApp {
+
+  constructor(search: string, target: Element) {
+    console.trace('Creating main web app with auth web service')
+
+    const params = this.getUrlParams(search)
+    const token = params['access_token']
+    console.debug(token);
+
+    ((target: Element): void => {
+      if (token) {
+        const service = new AuthWebService(token);
+        new App({
+          target: target,
+          props: {
+            fetchCommits: (filter: CommitsFilter): Promise<Commit[]> => service.fetchCommits(filter),
+            fetchProjectList: (): Promise<string[]> => service.fetchProjectList(),
+            fetchWorkdirStatus: (): Promise<WorkdirStatusList> => service.fetchWorkdirStatus(),
+            settingsView: Settings,
+            settingsViewProps: { versions: {} },
+          },
+        })
+      } else {
+        console.trace('Access token not set, going for login')
+        new Login({
+          target: target,
+        })
+      }
+    })(target)
+
+  }
+
+  private getUrlParams(search: string): { [key: string]: string } {
+    const hashes = search.slice(search.indexOf('?') + 1).split('&')
+    const params: { [key: string]: string } = {}
+    hashes.map(hash => {
+      const [key, val] = hash.split('=')
+      params[key] = decodeURIComponent(val)
+    })
+    return params
+  }
 }
