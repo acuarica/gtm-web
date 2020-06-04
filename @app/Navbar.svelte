@@ -1,14 +1,14 @@
 <script>
-  import Box from "./Box.svelte";
-  import Icon from "./Icon.svelte";
+  import logo from "./assets/gtm-logo.png";
   import { faTasks } from "@fortawesome/free-solid-svg-icons/faTasks";
   import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
   import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
+  import Box from "./Box.svelte";
+  import Icon from "./Icon.svelte";
   import SearchBox from "./SearchBox.svelte";
   import DatePicker from "./DatePicker.svelte";
   import DateRangePicker from "./DateRangePicker.svelte";
 
-  import logo from "./assets/gtm-logo.png";
   export let title = "";
   export let handleRangeChange;
   export let settingsView;
