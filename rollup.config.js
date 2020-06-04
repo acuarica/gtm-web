@@ -66,6 +66,7 @@ export const configs = {
     },
     plugins: [
       ...plugins(false),
+        !production && livereload('dist/web'),
       production && terser.terser(),
       html(),
     ]
