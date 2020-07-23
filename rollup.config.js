@@ -37,29 +37,45 @@ const plugins = (extract) => [
 
 export const configs = {
 
-  dev: {
+  test: {
+    input: '@app/test.html',
     output: {
-      dir: 'dist/dev',
+      dir: 'dist/test',
       sourcemap: true,
       format: 'es',
       plugins: [
-        !production && livereload('dist/dev'),
+        !production && livereload('dist/test'),
       ]
     },
     preserveModules: true,
     plugins: [
       ...plugins(false),
-      ...['dev/index', 'app/test'].map(f => html({ inputPath: `src/${f}.html` })),
+      html(),
     ],
     watch: {
       clearScreen: false
     }
   },
 
-  app: {
-    input: ['main', 'preload'].map(f => `src/desktop/${f}.js`),
+  web: {
+    input: '@web/index.html',
     output: {
-      dir: 'dist/gtm-dash',
+      dir: 'dist/web',
+      format: 'iife',
+      name: 'app',
+    },
+    plugins: [
+      ...plugins(false),
+        !production && livereload('dist/web'),
+      production && terser.terser(),
+      html(),
+    ]
+  },
+
+  electron: {
+    input: ['main', 'preload'].map(f => `@electron/${f}.js`),
+    output: {
+      dir: 'dist/electron',
       sourcemap: true,
       format: 'cjs',
     },
@@ -67,9 +83,9 @@ export const configs = {
       ...plugins(true),
       copy({
         targets: [
-          { src: 'src/desktop/index.html', dest: 'dist/gtm-dash' },
+          { src: '@electron/index.html', dest: 'dist/electron' },
           ...['', '.exe'].map(ext => {
-            return { src: `gtmserv/target/${production ? 'release' : 'debug'}/gtmserv${ext}`, dest: 'dist/gtm-dash' }
+            return { src: `target/${production ? 'release' : 'debug'}/gtmcli${ext}`, dest: 'dist/electron' }
           })
         ],
       }),
@@ -78,25 +94,6 @@ export const configs = {
     watch: {
       clearScreen: false
     }
-  },
-
-  demo: {
-    input: 'src/demo/index.html',
-    output: {
-      dir: 'dist/demo',
-      format: 'iife',
-      name: 'app',
-    },
-    plugins: [
-      ...plugins(false),
-      production && terser.terser(),
-      html(),
-      copy({
-        targets: [
-          { src: 'assets/data/', dest: 'dist/demo' },
-        ],
-      }),
-    ]
   },
 
 }

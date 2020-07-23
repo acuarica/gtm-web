@@ -1,5 +1,6 @@
 /.gtm/
-/node_modules/
-/src/**/*.js
 /@*/*.js
 /dist/
+/node_modules/
+/target/
+/.env.sh

@@ -132,7 +132,7 @@ const commands = {
           const data = await service.getVersion()
           send(res, 200, data);
         })
-        .get('/data/commits', async (req, res) => {
+        .get('/v1/data/commits', async (req, res) => {
           ui.logln(`Request: ${req.path}${req.search}`)
           const range = {
             start: req.query.from,
@@ -153,12 +153,12 @@ const commands = {
             console.warn("Argument to or from not defined:", range)
           }
         })
-        .get('/data/projects', async (req, res) => {
+        .get('/v1/data/projects', async (req, res) => {
           ui.logln(`Request projects: ${req.path}`)
           const data = await service.fetchProjectList()
           send(res, 200, data);
         })
-        .get('/data/status', async (req, res) => {
+        .get('/v1/data/status', async (req, res) => {
           ui.logln(`Request workdir status: ${req.path}`)
           const data = await service.fetchWorkdirStatus()
           send(res, 200, data);

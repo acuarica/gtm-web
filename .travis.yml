@@ -16,7 +16,7 @@ cache:
   yarn: true
   directories:
     - node_modules
-    - gtmserv/target
+    # - gtmserv/target
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] || [ "$TRAVIS_OS_NAME" = "osx" ]; then nvm install node && npm install --global yarn ; fi
@@ -29,12 +29,12 @@ before_install:
   - yarn --version || true
 
 install:
-  - cargo build --release --manifest-path gtmserv/Cargo.toml
+  - cargo build --release
   - yarn install --check-files
   - yarn build
 
 script:
-  - cargo test --release --manifest-path gtmserv/Cargo.toml
+  - cargo test --release
   - yarn test
 
 before_deploy:
