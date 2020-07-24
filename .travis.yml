@@ -66,10 +66,10 @@ deploy:
     overwrite: true
     on:
       tags: true
-  - provider: pages
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    local_dir: dist/demo
-    on:
-      branch: master
-      condition: $TRAVIS_OS_NAME = linux
+  # - provider: pages
+  #   skip_cleanup: true
+  #   github_token: $GITHUB_TOKEN
+  #   local_dir: dist/demo
+  #   on:
+  #     branch: master
+  #     condition: $TRAVIS_OS_NAME = linux
